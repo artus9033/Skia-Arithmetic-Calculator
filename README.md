@@ -26,7 +26,7 @@ Business logic is implemented as a static library, and the GUI is implemented as
 ## Prerequisites
 
 - CMake 3.20 or higher
-- C++23 compatible compiler
+- C++20 compatible compiler
 - Git
 - Python 3.x (required by Skia build scripts)
 
@@ -43,7 +43,9 @@ This project uses [Just](https://github.com/casey/just) to simplify all operatio
 The available commands are:
 
 - `just configure` - Configure the project
+- `just configure-debug` - Configure the project in debug mode
 - `just build-all` - Build everything
+- `just build-all-debug` - Build everything in debug mode
 - `just build-gui` - Build the GUI application
 - `just build-tests` - Build the tests
 - `just build-docs` - Build the documentation

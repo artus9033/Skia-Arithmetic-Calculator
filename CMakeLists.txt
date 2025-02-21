@@ -2,14 +2,27 @@ cmake_minimum_required(VERSION 3.20)
 project(FlowArithmeticCalculator VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ standard
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# resolve warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake >= 3.24:
-# set policy to mark extracted files at extraction time instead of using timestamps from the archive
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    # resolve warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake >= 3.24:
+    # set policy to mark extracted files at extraction time instead of using timestamps from the archive
     cmake_policy(SET CMP0135 NEW)
+
+    # resolve warning about CMP0175 in CMake >= 3.24:
+    # explicitly configure behaviour of add_custom_command() with invalid arguments
+    cmake_policy(SET CMP0175 NEW)
 endif()
+
+# by default, build in release mode
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # custom build options that can be passed to the project
 option(BUILD_TESTS "Build tests" ON)
@@ -25,8 +38,12 @@ include(FetchContent)
 # CTest for testing
 include(CTest)
 
-# third_party dependencies
-add_subdirectory(third_party)
+# third_party dependencies - include as-is in this file
+include(third_party/CMakeLists.txt)
+
+# propagate third party dependencies to project components
+link_libraries(${Boost_LIBRARIES})
+include_directories(${Boost_INCLUDE_DIRS})
 
 # project components
 add_subdirectory(src/business_logic)
@@ -39,32 +56,5 @@ endif()
 
 # configure Doxygen (if enabled)
 if(BUILD_DOCS)
-    find_package(Doxygen REQUIRED)
-
-    # set Doxygen variables
-    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
-    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-
-    # configure Doxyfile
-    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-
-    # add docs target
-    add_custom_target(docs
-        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "Generating documentation with Doxygen"
-        VERBATIM
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/docs/mainpage.md
-    )
-
-    # make docs depend on source files (to properly handle caching)
-    file(GLOB_RECURSE SOURCE_FILES
-        ${CMAKE_SOURCE_DIR}/src/*.cpp
-        ${CMAKE_SOURCE_DIR}/src/*.hpp
-        ${CMAKE_SOURCE_DIR}/include/*.hpp
-    )
-    add_custom_command(
-        TARGET docs
-        DEPENDS ${SOURCE_FILES}
-    )
+    add_subdirectory(docs)
 endif()

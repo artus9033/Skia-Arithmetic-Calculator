@@ -4,24 +4,39 @@ help:
     just --list
 
 configure:
-    cd build && cmake -DCMAKE_BUILD_TYPE=Release ..
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+configure-debug:
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
 
 build-all:
-    cmake --build . --config Release
+    echo "Building all in Release mode"
+    cmake --build build --config Release
+    just build-docs
+
+build-all-debug:
+    echo "Building all in Debug mode"
+    cmake --build build --config Debug
+    just build-docs
 
 build-gui:
-    cmake --build . --target gui_app
+    echo "Building gui_app"
+    cmake --build build --target gui_app
 
 build-tests:
-    cmake --build . --target run_tests
+    echo "Building tests"
+    cmake --build build --target run_tests
 
 build-docs:
-    cmake --build . --target docs
+    echo "Building docs"
+    cmake --build build --target docs
 
 run-gui:
-    cmake --build . --target gui_app
-    ./build/src/gui_app/gui_app
+    echo "Building & running gui_app"
+    just build-gui
+    ./build/bin/gui_app
 
 run-tests:
-    cmake --build . --target run_tests
-    ./build/src/tests/run_tests
+    echo "Building & running tests"
+    just build-tests
+    ./build/bin/run_tests

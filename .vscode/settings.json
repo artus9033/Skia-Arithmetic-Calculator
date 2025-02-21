@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "regex": "cpp",
+    "sstream": "cpp"
+  }
+}

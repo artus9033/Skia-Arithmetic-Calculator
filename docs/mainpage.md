@@ -11,4 +11,4 @@ The project is divided into two main modules:
 
 ## Getting Started
 
-See the README.md file for build instructions and project setup.
+See the [README.md](./README.md) file for build instructions and project setup.

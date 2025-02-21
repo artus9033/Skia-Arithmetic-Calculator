@@ -1,14 +1,15 @@
+file(GLOB_RECURSE IMPL_SOURCE_FILES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+
 add_executable(gui_app
-    src/main.cpp
-    src/window.cpp
-    src/renderer.cpp
+    ${IMPL_SOURCE_FILES}
 )
 
 target_include_directories(gui_app
     PUBLIC
-        ${CMAKE_SOURCE_DIR}/include/gui_app
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_link_libraries(gui_app
