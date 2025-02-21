@@ -5,6 +5,12 @@ project(FlowArithmeticCalculator VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# resolve warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake >= 3.24:
+# set policy to mark extracted files at extraction time instead of using timestamps from the archive
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 # custom build options that can be passed to the project
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_DOCS "Build documentation" ON)
