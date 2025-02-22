@@ -1,6 +1,7 @@
 #include <stdexcept>
 
-#include "GUI/window/window.h"
+#include "GUI/renderer/SkiaRendererImpl.h"
+#include "GUI/window/GLFWWindowImpl.h"
 
 /**
  * @brief Main application entry point
@@ -8,7 +9,8 @@
  */
 int main() {
     try {
-        Window window("Flow Arithmetic Calculator");
+        gui::window::GLFWWindowImpl<gui::renderer::SkiaRendererImpl> window(
+            "Flow Arithmetic Calculator");
         window.run();
     } catch (const std::exception& e) {
         return -1;

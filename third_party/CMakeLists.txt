@@ -11,6 +11,7 @@ endif()
 find_package(Boost 1.87.0 EXACT REQUIRED)
 
 # GLFW
+message("Fetching GLFW, this may take a while...")
 FetchContent_Declare(
     glfw
     GIT_REPOSITORY https://github.com/glfw/glfw.git
@@ -21,7 +22,17 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(glfw)
 
+# spd
+message("Fetching spdlog, this may take a while...")
+FetchContent_Declare(
+    spd
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.15.1
+)
+FetchContent_MakeAvailable(spd)
+
 # Google Test
+message("Fetching GTest, this may take a while...")
 FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
@@ -31,8 +42,9 @@ set(gtest_force_shared_crt OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Skia + configuration for static linkage GN build
-if(NOT EXISTS ${FETCHCONTENT_BASE_DIR}/skia)
-    message("Cloning Skia to ${FETCHCONTENT_BASE_DIR}/skia, this may take a while...")
+set(SKIA_CLONE_PATH ${FETCHCONTENT_BASE_DIR}/skia)
+if(NOT EXISTS ${SKIA_CLONE_PATH})
+    message("Cloning Skia to ${SKIA_CLONE_PATH}, this may take a while...")
 
     # clone Skia
     execute_process(
@@ -42,19 +54,19 @@ if(NOT EXISTS ${FETCHCONTENT_BASE_DIR}/skia)
 
     execute_process(
         COMMAND git checkout cca9328df6ca5f636801cc625992a1f7c34e0d66
-        WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
+        WORKING_DIRECTORY ${SKIA_CLONE_PATH}
     )
     
     # get dependencies
     execute_process(
         COMMAND python tools/git-sync-deps
-        WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
+        WORKING_DIRECTORY ${SKIA_CLONE_PATH}
     )
 else()
-    message("\nSkia already cloned to ${FETCHCONTENT_BASE_DIR}/skia")
+    message("\nSkia already cloned to ${SKIA_CLONE_PATH}")
 endif()
 
-set(SKIA_SHARED_LIB ${FETCHCONTENT_BASE_DIR}/skia/out/Release/libskia.a)
+set(SKIA_SHARED_LIB ${SKIA_CLONE_PATH}/out/Release/libskia.a)
 
 if(NOT EXISTS ${SKIA_SHARED_LIB})
     message("\n(!) ${SKIA_SHARED_LIB} does not exist -> will prepare & build Skia")
@@ -92,20 +104,20 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
     message("\nSyncing Skia dependencies, this may take a while...")
     execute_process(
         COMMAND python tools/git-sync-deps
-        WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
+        WORKING_DIRECTORY ${SKIA_CLONE_PATH}
     )
 
     message("\nConfiguring Skia build with gn, this may take a while...")
     execute_process(
         COMMAND bin/gn gen out/Release --args=${SKIA_BUILD_ARGS_STR}
-        WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
+        WORKING_DIRECTORY ${SKIA_CLONE_PATH}
     )
 
     # build Skia
     message("\nBuilding Skia with ninja, this may take a while...")
     execute_process(
         COMMAND ninja -C out/Release
-        WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
+        WORKING_DIRECTORY ${SKIA_CLONE_PATH}
     )
 else()
     message("Skia already built to ${SKIA_SHARED_LIB}")
@@ -116,13 +128,14 @@ add_library(skia STATIC IMPORTED GLOBAL)
 
 if(WIN32)
     set_target_properties(skia PROPERTIES
-        IMPORTED_LOCATION ${FETCHCONTENT_BASE_DIR}/skia/out/Release/skia.lib
+        IMPORTED_LOCATION ${SKIA_CLONE_PATH}/out/Release/skia.lib
     )
 else()
     set_target_properties(skia PROPERTIES
-        IMPORTED_LOCATION ${FETCHCONTENT_BASE_DIR}/skia/out/Release/libskia.a
+        IMPORTED_LOCATION ${SKIA_CLONE_PATH}/out/Release/libskia.a
     )
 endif()
 
-target_include_directories(skia INTERFACE ${FETCHCONTENT_BASE_DIR}) # allow includes in style of skia/include/core/SkCanvas.h
-target_include_directories(skia INTERFACE ${FETCHCONTENT_BASE_DIR}/skia) # allow includes in style of include/core/SkCanvas.h
+get_filename_component(SKIA_CLONE_PARENT_DIR "${SKIA_CLONE_PATH}/.." ABSOLUTE)
+target_include_directories(skia INTERFACE ${SKIA_CLONE_PARENT_DIR}) # allow includes in style of skia/include/core/SkCanvas.h
+target_include_directories(skia INTERFACE ${SKIA_CLONE_PATH}) # allow includes in style of include/core/SkCanvas.h
