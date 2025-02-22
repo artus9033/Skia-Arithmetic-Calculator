@@ -4,10 +4,7 @@ help:
     just --list
 
 configure:
-    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-
-configure-debug:
-    cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
+    cmake -B build -S .
 
 build-all:
     @echo "== Building all in Release mode ==\n"

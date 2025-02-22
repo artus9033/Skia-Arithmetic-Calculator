@@ -36,8 +36,13 @@ if(NOT EXISTS ${FETCHCONTENT_BASE_DIR}/skia)
 
     # clone Skia
     execute_process(
-        COMMAND git clone https://skia.googlesource.com/skia.git --branch=canvaskit/0.38.2 --single-branch
+        COMMAND git clone https://skia.googlesource.com/skia.git
         WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}
+    )
+
+    execute_process(
+        COMMAND git checkout cca9328df6ca5f636801cc625992a1f7c34e0d66
+        WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
     )
     
     # get dependencies
@@ -46,19 +51,18 @@ if(NOT EXISTS ${FETCHCONTENT_BASE_DIR}/skia)
         WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
     )
 else()
-    message("Skia already cloned to ${FETCHCONTENT_BASE_DIR}/skia")
+    message("\nSkia already cloned to ${FETCHCONTENT_BASE_DIR}/skia")
 endif()
 
 set(SKIA_SHARED_LIB ${FETCHCONTENT_BASE_DIR}/skia/out/Release/libskia.a)
 
 if(NOT EXISTS ${SKIA_SHARED_LIB})
-    message("${SKIA_SHARED_LIB} does not exist -> will prepare & build Skia")
+    message("\n(!) ${SKIA_SHARED_LIB} does not exist -> will prepare & build Skia")
 
     # configure GN build with static linking
     set(SKIA_BUILD_ARGS "is_official_build=true"
         "is_debug=false"
         "is_component_build=false"
-        "skia_use_system_libraries=false"
         "skia_use_gl=true"
         "skia_enable_gpu=true"
         "skia_enable_tools=false"
@@ -67,6 +71,8 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
         "skia_use_system_libpng=false"
         "skia_use_system_libwebp=false"
         "skia_use_system_zlib=false"
+        "skia_use_icu=true"
+        "skia_use_system_icu=false"
     )
 
     if(WIN32)
@@ -77,22 +83,26 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
         list(APPEND SKIA_BUILD_ARGS "target_os=\"linux\"")
     endif()
 
+    if (APPLE)
+        list(APPEND SKIA_BUILD_ARGS "skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false")
+    endif()
+
     string(JOIN " " SKIA_BUILD_ARGS_STR ${SKIA_BUILD_ARGS})
 
-    message("Syncing Skia dependencies, this may take a while...")
+    message("\nSyncing Skia dependencies, this may take a while...")
     execute_process(
         COMMAND python tools/git-sync-deps
         WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
     )
 
-    message("Configuring Skia build with gn, this may take a while...")
+    message("\nConfiguring Skia build with gn, this may take a while...")
     execute_process(
         COMMAND bin/gn gen out/Release --args=${SKIA_BUILD_ARGS_STR}
         WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
     )
 
     # build Skia
-    message("Building Skia with ninja, this may take a while...")
+    message("\nBuilding Skia with ninja, this may take a while...")
     execute_process(
         COMMAND ninja -C out/Release
         WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/skia
@@ -114,6 +124,5 @@ else()
     )
 endif()
 
-set_target_properties(skia PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES ${FETCHCONTENT_BASE_DIR}/skia
-)
+target_include_directories(skia INTERFACE ${FETCHCONTENT_BASE_DIR}) # allow includes in style of skia/include/core/SkCanvas.h
+target_include_directories(skia INTERFACE ${FETCHCONTENT_BASE_DIR}/skia) # allow includes in style of include/core/SkCanvas.h

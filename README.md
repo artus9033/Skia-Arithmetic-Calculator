@@ -36,6 +36,22 @@ The project automatically downloads and builds all other dependencies:
 - Skia
 - Google Test
 
+### MacOS
+
+On MacOS, additionally the following is needed:
+
+```bash
+brew install harfbuzz
+```
+
+## Quickstart
+
+To quickly have it all running, execute:
+
+```bash
+just configure build-all run-tests run-gui
+```
+
 ## Simplified scripts - Just
 
 This project uses [Just](https://github.com/casey/just) to simplify all operations, centralizing them in a single file.
