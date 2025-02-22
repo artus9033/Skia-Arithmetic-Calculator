@@ -1,9 +1,9 @@
 Language: Cpp
 BasedOnStyle: Google
 
-# parameters in same line as function declarations
-BinPackParameters: true
-BinPackArguments: true
+# parameters not in same line as function declarations
+BinPackParameters: false
+BinPackArguments: false
 
 # indentation
 IndentWidth: 4
@@ -23,3 +23,7 @@ SpacesInParentheses: false
 # braces
 BreakBeforeBraces: Attach
 NamespaceIndentation: All
+
+# keep a trailing newline
+InsertNewlineAtEOF: true
+TrimFinalNewlines: true
