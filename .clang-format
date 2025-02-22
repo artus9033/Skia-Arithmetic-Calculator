@@ -1,0 +1,25 @@
+Language: Cpp
+BasedOnStyle: Google
+
+# parameters in same line as function declarations
+BinPackParameters: true
+BinPackArguments: true
+
+# indentation
+IndentWidth: 4
+
+# function declaration style
+AllowShortFunctionsOnASingleLine: All
+AlignAfterOpenBracket: Align
+
+# line breaking
+ColumnLimit: 100
+
+# spacing
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInParentheses: false
+
+# braces
+BreakBeforeBraces: Attach
+NamespaceIndentation: All
