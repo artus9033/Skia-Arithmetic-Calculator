@@ -1,12 +1,15 @@
 #include "SkiaRendererImpl.h"
 
 namespace gui::renderer {
-    SkiaRendererImpl::SkiaRendererImpl(gui::window::IWindow* window, int width, int height)
-        : IRenderer(window, width, height),
+    SkiaRendererImpl::SkiaRendererImpl(
+        gui::window::IWindow* window, int winWidth, int winHeight, int fbWidth, int fbHeight)
+        : IRenderer(window, winWidth, winHeight, fbWidth, fbHeight),
           Loggable("SkiaRendererImpl"),
           window(window),
-          width(width),
-          height(height) {
+          winWidth(winWidth),
+          winHeight(winHeight),
+          fbWidth(fbWidth),
+          fbHeight(fbHeight) {
         if (!window) {
             throw std::runtime_error("Invalid window handle provided to SkiaRendererImpl");
         }
@@ -20,13 +23,29 @@ namespace gui::renderer {
     }
 
     void SkiaRendererImpl::reinitializeSurface() {
-        logger->info("Reinitializing Skia surface with width {} and height {}", width, height);
+        logger->info(
+            "Reinitializing Skia surface with width {} and height {}", winWidth, winHeight);
 
         sk_sp<const GrGLInterface> interface = GrGLMakeNativeInterface();
-        sk_sp<GrDirectContext> context = GrDirectContexts::MakeGL(interface);
-        SkImageInfo info = SkImageInfo::MakeN32Premul(width, height);
-        skSurface =
-            sk_sp<SkSurface>(SkSurfaces::RenderTarget(context.get(), skgpu::Budgeted::kNo, info));
+        if (!interface) {
+            throw std::runtime_error("Failed to create GL interface");
+        }
+
+        grContext = GrDirectContexts::MakeGL(interface);
+
+        GrGLFramebufferInfo framebufferInfo;
+        framebufferInfo.fFBOID = 0;
+        framebufferInfo.fFormat = GL_RGBA8;
+
+        GrBackendRenderTarget renderTarget =
+            GrBackendRenderTargets::MakeGL(fbWidth, fbHeight, 0, 8, framebufferInfo);
+
+        skSurface = SkSurfaces::WrapBackendRenderTarget(grContext.get(),
+                                                        renderTarget,
+                                                        kBottomLeft_GrSurfaceOrigin,
+                                                        kRGBA_8888_SkColorType,
+                                                        nullptr,
+                                                        nullptr);
     }
 
     SkiaRendererImpl::~SkiaRendererImpl() {
@@ -34,12 +53,30 @@ namespace gui::renderer {
         grContext.reset();
     }
 
-    void SkiaRendererImpl::render() {}
+    void SkiaRendererImpl::render() {
+        SkCanvas* canvas = skSurface->getCanvas();
+        canvas->clear(SK_ColorLTGRAY);
 
-    void SkiaRendererImpl::handleWindowResized(int width, int height) {
-        this->width = width;
-        this->height = height;
+        SkPaint paint;
+        paint.setColor(SK_ColorRED);
+
+        // draw a circle in the center of the screen
+        canvas->drawCircle(winWidth / 2, winHeight / 2, std::min(winWidth, winHeight) / 4, paint);
+
+        grContext->flush();
+    }
+
+    void SkiaRendererImpl::handleWindowResized(
+        int winWidth, int winHeight, int fbWidth, int fbHeight, double xScale, double yScale) {
+        this->winWidth = winWidth;
+        this->winHeight = winHeight;
+        this->fbWidth = fbWidth;
+        this->fbHeight = fbHeight;
 
         reinitializeSurface();
+
+        SkCanvas* canvas = skSurface->getCanvas();
+
+        canvas->scale(xScale, yScale);
     }
 }  // namespace gui::renderer

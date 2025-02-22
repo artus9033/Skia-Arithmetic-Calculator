@@ -60,7 +60,8 @@ namespace gui::window {
                 throw std::runtime_error("Failed to get primary monitor's video mode");
             }
 
-            initializeGLFWWindow(videoMode->width, videoMode->height, title);
+            initializeGLFWWindow(
+                std::round(videoMode->width * 0.6), std::round(videoMode->height * 0.6), title);
         };
 
         GLFWWindowImpl(const GLFWWindowImpl&) = delete;
@@ -84,10 +85,8 @@ namespace gui::window {
          */
         void run() override {
             while (!shouldClose()) {
+                glfwMakeContextCurrent(glfwWindow);
                 glfwPollEvents();
-
-                // Clear the screen
-                glClear(GL_COLOR_BUFFER_BIT);
 
                 renderer->render();
 
@@ -105,11 +104,6 @@ namespace gui::window {
 
        private:
         /**
-         * @brief Static callback for window resize events
-         */
-        static void staticFramebufferSizeHandler(GLFWwindow* window, int width, int height);
-
-        /**
          * @brief Initializes GLFW
          */
         void initGLFW() {
@@ -117,6 +111,10 @@ namespace gui::window {
                 logger->info("Initializing GLFW");
 
                 if (glfwInit()) {
+                    glfwSetErrorCallback([](int error, const char* description) {
+                        fprintf(stderr, "GLFW Error %d: %s\n", error, description);
+                    });
+
                     logger->info("Initialized GLFW");
 
                     initializedGLFW = true;
@@ -139,6 +137,14 @@ namespace gui::window {
          * @param title The title of the window
          */
         void initializeGLFWWindow(int width, int height, const char* title) {
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_STENCIL_BITS, 0);
+            glfwWindowHint(GLFW_DEPTH_BITS, 0);
+
             glfwWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
             logger->info(
@@ -150,22 +156,52 @@ namespace gui::window {
             }
 
             glfwMakeContextCurrent(glfwWindow);
+            glfwSwapInterval(1);
             glfwSetWindowUserPointer(glfwWindow, this);
-            glfwSetFramebufferSizeCallback(
-                glfwWindow, [](GLFWwindow* window, int width, int height) {
-                    auto* self = static_cast<GLFWWindowImpl*>(glfwGetWindowUserPointer(window));
+            glfwSetWindowSizeCallback(glfwWindow,
+                                      [](GLFWwindow* window, int winWidth, int winHeight) {
+                                          handleWindowResized(window, winWidth, winHeight);
+                                      });
 
-                    if (self && self->renderer) {
-                        self->logger->info("Informing renderer {} of window size change to {}x{}",
-                                           business_logic::stringifyAddressOf(self->renderer.get()),
-                                           width,
-                                           height);
+            int fbWidth, fbHeight;
+            glfwGetFramebufferSize(glfwWindow, &fbWidth, &fbHeight);
 
-                        self->renderer->handleWindowResized(width, height);
-                    }
-                });
+            renderer = std::make_unique<RendererImpl>(this, width, height, fbWidth, fbHeight);
 
-            renderer = std::make_unique<RendererImpl>(this, width, height);
+            handleWindowResized(glfwWindow, width, height);
+        }
+
+        /**
+         * @brief Handles the window resized event
+         * @param window The GLFW window
+         * @param winWidth The width of the window
+         * @param winHeight The height of the window
+         */
+        static void handleWindowResized(GLFWwindow* window, int winWidth, int winHeight) {
+            auto* self = static_cast<GLFWWindowImpl*>(glfwGetWindowUserPointer(window));
+
+            if (self && self->renderer) {
+                int fbWidth, fbHeight;
+                glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+
+                double xScale = static_cast<double>(fbWidth) / winWidth;
+                double yScale = static_cast<double>(fbHeight) / winHeight;
+
+                self->logger->info(
+                    "Informing renderer {} of window size change to {}x{}, framebuffer size to "
+                    "{}x{} "
+                    "and scales to {:.2f}x{:.2f}",
+                    business_logic::stringifyAddressOf(self->renderer.get()),
+                    winWidth,
+                    winHeight,
+                    fbWidth,
+                    fbHeight,
+                    xScale,
+                    yScale);
+
+                self->renderer->handleWindowResized(
+                    winWidth, winHeight, fbWidth, fbHeight, xScale, yScale);
+            }
         }
     };
 }  // namespace gui::window

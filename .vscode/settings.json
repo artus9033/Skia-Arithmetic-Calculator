@@ -34,6 +34,7 @@
     "*.ipp": "cpp",
     "any": "cpp",
     "bitset": "cpp",
-    "optional": "cpp"
+    "optional": "cpp",
+    "*.inc": "cpp"
   }
 }
