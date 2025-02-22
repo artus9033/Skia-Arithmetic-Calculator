@@ -6,28 +6,29 @@ build-type := "Release"
 help:
     just --list
 
-# Core build commands
+# build configuration command
 configure:
     cmake -B build -S . -DCMAKE_BUILD_TYPE={{build-type}}
 
+# core build commands
 build-all: configure
     @echo "== Building all ({{build-type}}) =="
-    cmake --build build --config {{build-type}}
-    cmake --build build --target docs
+    cmake --build build --config {{build-type}} -- -j12
+    cmake --build build --target docs -- -j12
 
 build-gui: configure
     @echo "== Building gui_app ({{build-type}}) =="
-    cmake --build build --target gui_app --config {{build-type}}
+    cmake --build build --target gui_app --config {{build-type}} -- -j12
 
 build-tests: configure
     @echo "== Building tests ({{build-type}}) =="
-    cmake --build build --target run_tests --config {{build-type}}
+    cmake --build build --target run_tests --config {{build-type}} -- -j12
 
 build-docs: configure
     @echo "== Building docs =="
-    cmake --build build --target docs
+    cmake --build build --target docs -- -j12
 
-# Run commands
+# run commands
 run-gui: build-gui
     @echo "== Running gui_app ({{build-type}}) =="
     ./build/bin/gui_app
