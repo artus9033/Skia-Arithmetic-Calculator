@@ -8,7 +8,7 @@
  */
 int main() {
     try {
-        Window window(800, 600, "Flow Arithmetic Calculator");
+        Window window("Flow Arithmetic Calculator");
         window.run();
     } catch (const std::exception& e) {
         return -1;

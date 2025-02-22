@@ -72,6 +72,14 @@ class Window {
      */
     bool shouldClose() const;
 
+    /**
+     * @brief Initializes the GLFW window
+     * @param width The width of the window
+     * @param height The height of the window
+     * @param title The title of the window
+     */
+    void initializeGLFWWindow(int width, int height, const char* title);
+
     GLFWwindow* glfwWindow;
     std::unique_ptr<SkiaRenderer> m_renderer;
     static bool initializedGLFW;

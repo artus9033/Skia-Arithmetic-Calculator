@@ -30,7 +30,7 @@ SkiaRenderer::SkiaRenderer(Window* window, int width, int height)
 
 void SkiaRenderer::reinitializeSurface() {
     sk_sp<const GrGLInterface> interface = GrGLMakeNativeInterface();
-    sk_sp<GrDirectContext> context = GrDirectContexts::MakeGL(nullptr);
+    sk_sp<GrDirectContext> context = GrDirectContexts::MakeGL(interface);
     SkImageInfo info = SkImageInfo::MakeN32Premul(width, height);
     skSurface =
         sk_sp<SkSurface>(SkSurfaces::RenderTarget(context.get(), skgpu::Budgeted::kNo, info));

@@ -3,17 +3,7 @@
 Window::Window(int width, int height, const char* title) {
     initGLFW();
 
-    glfwWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
-    if (!glfwWindow) {
-        glfwTerminate();
-        throw std::runtime_error("Failed to create GLFW window");
-    }
-
-    glfwMakeContextCurrent(glfwWindow);
-    glfwSetWindowUserPointer(glfwWindow, this);
-    glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
-
-    m_renderer = std::make_unique<SkiaRenderer>(this, width, height);
+    initializeGLFWWindow(width, height, title);
 }
 
 Window::Window(const char* title) {
@@ -31,7 +21,21 @@ Window::Window(const char* title) {
         throw std::runtime_error("Failed to get primary monitor's video mode");
     }
 
-    Window(800, 600, title);
+    initializeGLFWWindow(videoMode->width, videoMode->height, title);
+}
+
+void Window::initializeGLFWWindow(int width, int height, const char* title) {
+    glfwWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    if (!glfwWindow) {
+        glfwTerminate();
+        throw std::runtime_error("Failed to create GLFW window");
+    }
+
+    glfwMakeContextCurrent(glfwWindow);
+    glfwSetWindowUserPointer(glfwWindow, this);
+    glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
+
+    m_renderer = std::make_unique<SkiaRenderer>(this, width, height);
 }
 
 void Window::initGLFW() {
@@ -72,9 +76,8 @@ void Window::run() {
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // TODO: Add your rendering code here
-
         m_renderer->render();
+
         // swap front and back buffers
         glfwSwapBuffers(glfwWindow);
     }
