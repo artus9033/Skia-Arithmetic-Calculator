@@ -52,6 +52,17 @@ To quickly have it all running, execute:
 just configure build-all run-tests run-gui
 ```
 
+## VS Code scenarios
+
+The project carries the following preconfigured launch scenarios:
+
+- GUI App (Debug)
+- GUI App (Release)
+- Tests (Debug)
+- Tests (Release)
+
+Debug scenarios attach a debugger - `lldb` on MacOS (since GDB is not supported by Apple Silicon chips) and `gdb` on other platforms.
+
 ## Simplified scripts - Just
 
 This project uses [Just](https://github.com/casey/just) to simplify all operations, centralizing them in a single file.
