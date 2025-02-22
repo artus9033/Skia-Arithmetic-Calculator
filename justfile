@@ -1,39 +1,37 @@
 set windows-powershell := true
 
+# Default to Release if not specified
+build-type := "Release"
+
 help:
     just --list
 
+# Core build commands
 configure:
-    cmake -B build -S .
+    cmake -B build -S . -DCMAKE_BUILD_TYPE={{build-type}}
 
-build-all:
-    @echo "== Building all in Release mode ==\n"
-    cmake --build build --config Release
-    just build-docs
-
-build-all-debug:
-    @echo "== Building all in Debug mode ==\n"
-    cmake --build build --config Debug
-    just build-docs
-
-build-gui:
-    @echo "== Building gui_app ==\n"
-    cmake --build build --target gui_app
-
-build-tests:
-    @echo "== Building tests ==\n"
-    cmake --build build --target run_tests
-
-build-docs:
-    @echo "== Building docs ==\n"
+build-all: configure
+    @echo "== Building all ({{build-type}}) =="
+    cmake --build build --config {{build-type}}
     cmake --build build --target docs
 
-run-gui:
-    @echo "== Building & running gui_app ==\n"
-    just build-gui
+build-gui: configure
+    @echo "== Building gui_app ({{build-type}}) =="
+    cmake --build build --target gui_app --config {{build-type}}
+
+build-tests: configure
+    @echo "== Building tests ({{build-type}}) =="
+    cmake --build build --target run_tests --config {{build-type}}
+
+build-docs: configure
+    @echo "== Building docs =="
+    cmake --build build --target docs
+
+# Run commands
+run-gui: build-gui
+    @echo "== Running gui_app ({{build-type}}) =="
     ./build/bin/gui_app
 
-run-tests:
-    @echo "== Building & running tests ==\n"
-    just build-tests
+run-tests: build-tests
+    @echo "== Running tests ({{build-type}}) =="
     ./build/bin/run_tests

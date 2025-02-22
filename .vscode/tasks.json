@@ -4,7 +4,7 @@
     {
       "label": "Build GUI Debug",
       "type": "shell",
-      "command": "just configure-debug && just build-gui",
+      "command": "just build-type=\"Debug\" configure && just build-gui",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -13,19 +13,19 @@
     {
       "label": "Build GUI Release",
       "type": "shell",
-      "command": "just configure && just build-gui",
+      "command": "just build-type=\"Release\" configure && just build-gui",
       "group": "build"
     },
     {
       "label": "Build Tests Debug",
       "type": "shell",
-      "command": "just configure-debug && just build-tests",
+      "command": "just build-type=\"Debug\" configure && just build-tests",
       "group": "build"
     },
     {
       "label": "Build Tests Release",
       "type": "shell",
-      "command": "just configure && just build-tests",
+      "command": "just build-type=\"Release\" configure && just build-tests",
       "group": "build"
     }
   ]

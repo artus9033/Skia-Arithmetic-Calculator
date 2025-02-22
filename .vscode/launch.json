@@ -11,7 +11,7 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "${if:macos,lldb,gdb}",
+      "MIMode": "lldb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
@@ -31,7 +31,7 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "${if:macos,lldb,gdb}",
+      "MIMode": "lldb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
@@ -51,7 +51,7 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "${if:macos,lldb,gdb}",
+      "MIMode": "lldb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
@@ -71,7 +71,7 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "${if:macos,lldb,gdb}",
+      "MIMode": "lldb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

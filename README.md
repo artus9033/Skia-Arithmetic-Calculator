@@ -67,17 +67,21 @@ Debug scenarios attach a debugger - `lldb` on MacOS (since GDB is not supported 
 
 This project uses [Just](https://github.com/casey/just) to simplify all operations, centralizing them in a single file.
 
+The available variables are:
+
+- `build-type` with possible values: `"Debug"`, `"Release"` that distinguishes between debug and release builds
+
 The available commands are:
 
 - `just configure` - Configure the project
-- `just configure-debug` - Configure the project in debug mode
 - `just build-all` - Build everything
-- `just build-all-debug` - Build everything in debug mode
 - `just build-gui` - Build the GUI application
 - `just build-tests` - Build the tests
 - `just build-docs` - Build the documentation
 - `just run-gui` - Run the GUI application
 - `just run-tests` - Run the tests
+
+The general syntax is `just build-type="{Debug,Release}" command1 [? ...commands]`
 
 **For an initial setup**, run: `just configure build-all`
 
