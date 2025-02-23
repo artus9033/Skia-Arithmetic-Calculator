@@ -1,3 +1,6 @@
+#ifndef MISC_H
+#define MISC_H
+
 #include <format>
 #include <string>
 
@@ -13,3 +16,5 @@ namespace business_logic {
         return std::format("0x{:x}", reinterpret_cast<std::intptr_t>(value));
     }
 }  // namespace business_logic
+
+#endif  // MISC_H

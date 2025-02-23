@@ -26,7 +26,7 @@ namespace gui::window {
      */
     template <IsIRenderer RendererImpl>
     class GLFWWindowImpl : protected business_logic::Loggable<GLFWWindowImpl<RendererImpl>>,
-                           public window::IWindow {
+                           public window::WindowBase {
        private:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
         // current scope; so as not to use this->logger explicitly each time, the below brings it to
@@ -45,7 +45,7 @@ namespace gui::window {
          * @param title GLFWWindowImpl title
          */
         explicit GLFWWindowImpl(int width, int height, const char* title)
-            : business_logic::Loggable<GLFWWindowImpl<RendererImpl>>(), window::IWindow() {
+            : business_logic::Loggable<GLFWWindowImpl<RendererImpl>>(), window::WindowBase(logger) {
             initGLFW();
 
             initializeGLFWWindow(width, height, title);
@@ -56,7 +56,7 @@ namespace gui::window {
          * @param title GLFWWindowImpl title
          */
         explicit GLFWWindowImpl(const char* title)
-            : business_logic::Loggable<GLFWWindowImpl<RendererImpl>>(), window::IWindow() {
+            : business_logic::Loggable<GLFWWindowImpl<RendererImpl>>(), window::WindowBase(logger) {
             initGLFW();
 
             // Get primary monitor
@@ -92,11 +92,10 @@ namespace gui::window {
         }
 
         /**
-         * @brief Runs the main window loop
+         * \copydoc WindowBase::run
          */
         void run() override {
             while (!shouldClose()) {
-                glfwMakeContextCurrent(glfwWindow);
                 glfwPollEvents();
 
                 renderer->render();
@@ -136,8 +135,7 @@ namespace gui::window {
         };
 
         /**
-         * @brief Whether the window should close
-         * @return bool True if the window should close, false otherwise
+         * \copydoc WindowBase::shouldClose
          */
         bool shouldClose() const override { return glfwWindowShouldClose(glfwWindow); }
 
@@ -170,14 +168,41 @@ namespace gui::window {
             glfwSwapInterval(1);
             glfwSetWindowUserPointer(glfwWindow, this);
             glfwSetWindowSizeCallback(glfwWindow,
-                                      [](GLFWwindow* window, int winWidth, int winHeight) {
-                                          handleWindowResized(window, winWidth, winHeight);
+                                      [](GLFWwindow* glfwWindow, int winWidth, int winHeight) {
+                                          handleWindowResized(glfwWindow, winWidth, winHeight);
                                       });
+
+            glfwSetMouseButtonCallback(
+                glfwWindow,
+                [](GLFWwindow* glfwWindow, int button, int action, [[maybe_unused]] int mods) {
+                    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+                        WindowBase* window =
+                            static_cast<WindowBase*>(glfwGetWindowUserPointer(glfwWindow));
+
+                        window->handleMouseDown();
+                    } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+                        WindowBase* window =
+                            static_cast<WindowBase*>(glfwGetWindowUserPointer(glfwWindow));
+
+                        window->handleMouseUp();
+                    } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+                        WindowBase* window =
+                            static_cast<WindowBase*>(glfwGetWindowUserPointer(glfwWindow));
+
+                        window->handleRightClick();
+                    }
+                });
+            glfwSetCursorPosCallback(glfwWindow, [](GLFWwindow* glfwWindow, double x, double y) {
+                WindowBase* window = static_cast<WindowBase*>(glfwGetWindowUserPointer(glfwWindow));
+
+                window->handleMouseMove(x, y);
+            });
 
             int fbWidth, fbHeight;
             glfwGetFramebufferSize(glfwWindow, &fbWidth, &fbHeight);
 
-            renderer = std::make_unique<RendererImpl>(this, width, height, fbWidth, fbHeight);
+            renderer = std::make_unique<RendererImpl>(
+                this, width, height, fbWidth, fbHeight, blocksManager);
 
             handleWindowResized(glfwWindow, width, height);
         }

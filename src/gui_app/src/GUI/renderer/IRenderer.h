@@ -1,7 +1,7 @@
 #ifndef IRenderer_H
 #define IRenderer_H
 
-#include "GUI/window/IWindow.h"
+#include "GUI/window/WindowBase.h"
 
 namespace gui::renderer {
     /**
@@ -15,7 +15,7 @@ namespace gui::renderer {
        public:
         // since virtual constructors are not allowed in interfaces, unfortunately this
         // constructor is not virtual
-        explicit IRenderer([[maybe_unused]] gui::window::IWindow* window,
+        explicit IRenderer([[maybe_unused]] gui::window::WindowBase* window,
                            [[maybe_unused]] int winWidth,
                            [[maybe_unused]] int winHeight,
                            [[maybe_unused]] int fbWidth,

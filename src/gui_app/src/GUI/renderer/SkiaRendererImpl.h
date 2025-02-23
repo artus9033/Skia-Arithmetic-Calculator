@@ -5,8 +5,11 @@
 
 #include <stdexcept>
 
+#include "GUI/elements/base/BaseBlock.h"
+#include "GUI/logic/BlocksManager.h"
 #include "GUI/renderer/IRenderer.h"
-#include "GUI/window/IWindow.h"
+#include "GUI/window/WindowBase.h"
+#include "constants.h"
 #include "logging/Loggable.h"
 #include "skia/include/core/SkCanvas.h"
 #include "skia/include/core/SkColorSpace.h"
@@ -34,9 +37,14 @@ namespace gui::renderer {
          * @param winHeight Window height
          * @param fbWidth Framebuffer width
          * @param fbHeight Framebuffer height
+         * @param blocksManager Blocks manager
          */
-        explicit SkiaRendererImpl(
-            gui::window::IWindow* window, int winWidth, int winHeight, int fbWidth, int fbHeight);
+        explicit SkiaRendererImpl(gui::window::WindowBase* window,
+                                  int winWidth,
+                                  int winHeight,
+                                  int fbWidth,
+                                  int fbHeight,
+                                  std::shared_ptr<gui::logic::BlocksManager> blocksManager);
 
         /**
          * @brief Destructor
@@ -58,7 +66,9 @@ namespace gui::renderer {
         // the current scope explicitly
         using business_logic::Loggable<SkiaRendererImpl>::logger;
 
-        [[maybe_unused]] gui::window::IWindow* window;
+        std::shared_ptr<gui::logic::BlocksManager> blocksManager;
+
+        [[maybe_unused]] gui::window::WindowBase* window;
         int winWidth;
         int winHeight;
         int fbWidth;

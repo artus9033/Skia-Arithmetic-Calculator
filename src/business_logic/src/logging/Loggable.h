@@ -16,17 +16,22 @@
 
 namespace business_logic {
     /**
-     * Class that provides a logger for the derived class; automatically deduces the logger name
-     * (tag) from the derived class's name. This name is demangled if GNU libstdc++ is available,
+     * Class that provides a logger for the given class; automatically deduces the logger name
+     * (tag) from the given class's name. This name is demangled if GNU libstdc++ is available,
      * otherwise a possibly-mangled fallback is used.
-     * @tparam Derived The derived class to deduce the logger name (tag) from
+     * @tparam Clazz The given class to deduce the logger name (tag) from
      */
-    template <typename Derived>
+    template <typename Clazz>
     class Loggable {
        public:
+        /**
+         * The name of this logger
+         */
+        const char* name;
+
         Loggable() {
-            // get the name of the derived class; may be mangled
-            auto name = typeid(Derived).name();
+            // get the name of the given class; may be mangled
+            name = typeid(Clazz).name();
 
             // if gnu libstdc++ available, demangle it
 #ifdef __GNUC__

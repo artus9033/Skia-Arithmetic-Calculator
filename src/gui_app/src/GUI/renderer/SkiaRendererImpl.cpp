@@ -1,10 +1,15 @@
 #include "SkiaRendererImpl.h"
 
 namespace gui::renderer {
-    SkiaRendererImpl::SkiaRendererImpl(
-        gui::window::IWindow* window, int winWidth, int winHeight, int fbWidth, int fbHeight)
+    SkiaRendererImpl::SkiaRendererImpl(gui::window::WindowBase* window,
+                                       int winWidth,
+                                       int winHeight,
+                                       int fbWidth,
+                                       int fbHeight,
+                                       std::shared_ptr<gui::logic::BlocksManager> blocksManager)
         : IRenderer(window, winWidth, winHeight, fbWidth, fbHeight),
           business_logic::Loggable<SkiaRendererImpl>(),
+          blocksManager(blocksManager),
           window(window),
           winWidth(winWidth),
           winHeight(winHeight),
@@ -55,13 +60,9 @@ namespace gui::renderer {
 
     void SkiaRendererImpl::render() {
         SkCanvas* canvas = skSurface->getCanvas();
-        canvas->clear(SK_ColorLTGRAY);
+        canvas->clear(constants::WINDOW_BACKGROUND_COLOR);
 
-        SkPaint paint;
-        paint.setColor(SK_ColorRED);
-
-        // draw a circle in the center of the screen
-        canvas->drawCircle(winWidth / 2, winHeight / 2, std::min(winWidth, winHeight) / 4, paint);
+        blocksManager->render(canvas);
 
         grContext->flush();
     }
