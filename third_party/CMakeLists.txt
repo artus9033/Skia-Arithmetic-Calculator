@@ -3,12 +3,23 @@ include(FetchContent)
 # set static build for all dependencies
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 
+# Windows specific configuration
+if (WIN32)
+    # make it discover packages installed with winget
+    set(CMAKE_PREFIX_PATH "C:/Program Files/Boost;C:/Program Files/Doxygen;C:/Program Files (x86)/Boost;C:/Program Files (x86)/Doxygen")
+endif()
+
+# Linux specific configuration
+if (LINUX AND NOT APPLE)
+    set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu;/usr/lib/x86_64-linux-gnu/cmake/XCB;/usr/lib/x86_64-linux-gnu/XCB")
+endif()
+
 # Boost
 if(POLICY CMP0167)
   cmake_policy(SET CMP0167 NEW)
 endif()
 
-find_package(Boost 1.87.0 EXACT REQUIRED)
+find_package(Boost 1.83...1.87 REQUIRED)
 
 # GLFW
 message("Fetching GLFW, this may take a while...")
@@ -96,7 +107,7 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
     endif()
 
     if (APPLE)
-        list(APPEND SKIA_BUILD_ARGS "skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false")
+        list(APPEND SKIA_BUILD_ARGS "skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false")
     endif()
 
     string(JOIN " " SKIA_BUILD_ARGS_STR ${SKIA_BUILD_ARGS})

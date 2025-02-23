@@ -16,6 +16,13 @@ target_link_libraries(gui_app
         skia
 )
 
+# if linux
+if(UNIX AND NOT APPLE)
+    find_package(Freetype REQUIRED)
+    find_package(XCB REQUIRED)
+    target_link_libraries(gui_app PRIVATE Freetype::Freetype XCB::XCB)
+endif()
+
 # ensure static linkage on Windows
 if(WIN32)
     target_link_options(gui_app PRIVATE

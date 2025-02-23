@@ -29,20 +29,15 @@ Business logic is implemented as a static library, and the GUI is implemented as
 - C++20 compatible compiler
 - Git
 - Python 3.x (required by Skia build scripts)
+- Boost installed
+- Doxygen installed
+- (MacOS only) harfbuzz installed (`brew install harfbuzz`)
 
 The project automatically downloads and builds all other dependencies:
 
 - GLFW
 - Skia
 - Google Test
-
-### MacOS
-
-On MacOS, additionally the following is needed:
-
-```bash
-brew install harfbuzz
-```
 
 ## Quickstart
 
