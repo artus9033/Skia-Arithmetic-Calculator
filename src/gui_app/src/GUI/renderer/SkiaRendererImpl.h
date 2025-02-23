@@ -24,7 +24,8 @@ namespace gui::renderer {
     /**
      * @brief Class responsible for rendering the GUI using Skia and GLFW
      */
-    class SkiaRendererImpl : public IRenderer, protected business_logic::Loggable {
+    class SkiaRendererImpl : public IRenderer,
+                             protected business_logic::Loggable<SkiaRendererImpl> {
        public:
         /**
          * @brief Constructs a new SkiaRendererImpl
@@ -52,6 +53,11 @@ namespace gui::renderer {
                                  double yScale) override;
 
        private:
+        // since Loggable is a template base class, the compiler does not see Logger::logger in the
+        // current scope; so as not to use this->logger explicitly each time, the below brings it to
+        // the current scope explicitly
+        using business_logic::Loggable<SkiaRendererImpl>::logger;
+
         [[maybe_unused]] gui::window::IWindow* window;
         int winWidth;
         int winHeight;

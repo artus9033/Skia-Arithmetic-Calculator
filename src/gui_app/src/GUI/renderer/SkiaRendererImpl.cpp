@@ -4,7 +4,7 @@ namespace gui::renderer {
     SkiaRendererImpl::SkiaRendererImpl(
         gui::window::IWindow* window, int winWidth, int winHeight, int fbWidth, int fbHeight)
         : IRenderer(window, winWidth, winHeight, fbWidth, fbHeight),
-          Loggable("SkiaRendererImpl"),
+          business_logic::Loggable<SkiaRendererImpl>(),
           window(window),
           winWidth(winWidth),
           winHeight(winHeight),

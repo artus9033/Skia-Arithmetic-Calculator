@@ -11,17 +11,28 @@
 #include "utils/misc.h"
 
 namespace gui::window {
-
-    // SFINAE guard to make sure T conforms to IRenderer
+    /**
+     * @tparam RendererImpl The renderer implementation type
+     * @brief SFINAE guard to make sure T conforms to IRenderer
+     */
     template <typename RendererImpl>
     concept IsIRenderer = std::is_base_of_v<renderer::IRenderer, RendererImpl>;
 
     /**
      * @brief Class responsible for managing the GLFW window and its lifecycle
+     * @tparam RendererImpl The renderer implementation type, must conform to `IsIRenderer`
+     * @see IsIRenderer
+     * @see IRenderer
      */
     template <IsIRenderer RendererImpl>
-    class GLFWWindowImpl : protected business_logic::Loggable, public window::IWindow {
+    class GLFWWindowImpl : protected business_logic::Loggable<GLFWWindowImpl<RendererImpl>>,
+                           public window::IWindow {
        private:
+        // since Loggable is a template base class, the compiler does not see Logger::logger in the
+        // current scope; so as not to use this->logger explicitly each time, the below brings it to
+        // the current scope explicitly
+        using business_logic::Loggable<GLFWWindowImpl<RendererImpl>>::logger;
+
         GLFWwindow* glfwWindow;
         std::unique_ptr<renderer::IRenderer> renderer;
         static bool initializedGLFW;
@@ -34,7 +45,7 @@ namespace gui::window {
          * @param title GLFWWindowImpl title
          */
         explicit GLFWWindowImpl(int width, int height, const char* title)
-            : business_logic::Loggable("GLFWWindowImpl"), window::IWindow() {
+            : business_logic::Loggable<GLFWWindowImpl<RendererImpl>>(), window::IWindow() {
             initGLFW();
 
             initializeGLFWWindow(width, height, title);
@@ -45,7 +56,7 @@ namespace gui::window {
          * @param title GLFWWindowImpl title
          */
         explicit GLFWWindowImpl(const char* title)
-            : business_logic::Loggable("GLFWWindowImpl"), window::IWindow() {
+            : business_logic::Loggable<GLFWWindowImpl<RendererImpl>>(), window::IWindow() {
             initGLFW();
 
             // Get primary monitor
@@ -68,7 +79,7 @@ namespace gui::window {
         GLFWWindowImpl& operator=(const GLFWWindowImpl&) = delete;
 
         /**
-         * @brief Destructor
+         * @brief Destructor that cleans up the GLFW window and terminates GLFW
          */
         ~GLFWWindowImpl() {
             logger->info("GLFWWindowImpl {} has been destroyed",

@@ -5,6 +5,7 @@ namespace business_logic {
     /**
      * @brief Convert a pointer to a string in format "0x..." containing its hexadecimal address
      * @param value The pointer to convert
+     * @tparam T The type of the pointer
      * @return The string
      */
     template <typename T>
