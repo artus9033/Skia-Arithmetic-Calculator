@@ -49,9 +49,11 @@ namespace gui::renderer {
         inputHeadlineFont.setTypeface(typeface);
         inputHeadlineFont.setEmbolden(true);
 
+        inputCaptionFont.setSize(INPUT_CAPTION_FONT_SIZE_BASE);
+        inputCaptionFont.setTypeface(typeface);
+
         inputChoiceFont.setSize(INPUT_CHOICE_FONT_SIZE_BASE);
         inputChoiceFont.setTypeface(typeface);
-        inputChoiceFont.setEmbolden(true);
         /** Text font - end */
     }
 
@@ -107,6 +109,7 @@ namespace gui::renderer {
 
         // recalculate the sizes of fonts
         inputHeadlineFont.setSize(INPUT_HEADLINE_FONT_SIZE_BASE * xScale);
+        inputCaptionFont.setSize(INPUT_CAPTION_FONT_SIZE_BASE * xScale);
         inputChoiceFont.setSize(INPUT_CHOICE_FONT_SIZE_BASE * xScale);
     }
 
@@ -183,7 +186,6 @@ namespace gui::renderer {
 
                 auto halfMarginX = textsWidths[textIndex] *
                                    CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT / 2.0f;
-
                 // apply 1st half of the margin before the element
                 renderX += halfMarginX;
 
@@ -195,11 +197,13 @@ namespace gui::renderer {
 
                 // apply 2nd half of the margin after the element
                 renderX += textsWidths[textIndex] + halfMarginX;
+
                 textIndex++;
             }
 
             // apply 2nd half of the margin between rows
             renderY += rowsHeights[rowIndex] + halfMarginY;
+
             rowIndex++;
         }
     }
@@ -209,6 +213,9 @@ namespace gui::renderer {
         switch (variant) {
             case components::UIText::Variant::Headline:
                 return inputHeadlineFont;
+
+            case components::UIText::Variant::Caption:
+                return inputCaptionFont;
 
             case components::UIText::Variant::Choice:
                 return inputChoiceFont;

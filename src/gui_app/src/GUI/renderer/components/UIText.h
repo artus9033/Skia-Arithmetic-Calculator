@@ -10,10 +10,7 @@ namespace gui::renderer::components {
 
     class UIText {
        public:
-        enum class Variant {
-            Headline,
-            Choice,
-        };
+        enum class Variant { Headline, Choice, Caption };
 
         UIText(const std::string& text, const Variant& variant);
 

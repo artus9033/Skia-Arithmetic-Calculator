@@ -40,6 +40,18 @@ namespace gui::window {
         void handleMouseUp() { blocksManager->handleMouseUp(); }
 
         /**
+         * @brief Handles the numeric key press event; should be called internally by the window
+         * implementation
+         */
+        void handleNumericKeyPress(int number) { blocksManager->handleNumericKeyPress(number); }
+
+        /**
+         * @brief Handles the ESC key press event; should be called internally by the window
+         * implementation
+         */
+        void handleEscapeKeyPress() { blocksManager->handleEscapeKeyPress(); }
+
+        /**
          * @brief Handles the right click event; should be called internally by the window
          * implementation
          */

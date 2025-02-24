@@ -8,6 +8,27 @@ namespace gui::logic {
 
     void BlocksManager::handleMouseUp() { lastMouseClickTime = 0; }
 
+    void BlocksManager::handleEscapeKeyPress() {
+        logger->info("Escape key pressed");
+
+        clearActiveChoicesInput();
+    }
+
+    void BlocksManager::handleNumericKeyPress(int number) {
+        if (inputChoiceInteraction.has_value()) {
+            if (number >= 1 &&
+                static_cast<size_t>(number) <= inputChoiceInteraction->choices.size()) {
+                logger->info("Selected choice: {}", number);
+
+                auto choice = inputChoiceInteraction->choices[number - 1];
+                onNewBlockChoice(choice.value);
+                clearActiveChoicesInput();
+            } else {
+                logger->error("Invalid choice number: {}", number);
+            }
+        }
+    }
+
     void BlocksManager::handleMouseMove(int x, int y) {
         mouseX = x;
         mouseY = y;
@@ -46,8 +67,16 @@ namespace gui::logic {
         if (inputChoiceInteraction.has_value()) {
             std::vector<gui::renderer::components::UITextsRow> rows = {
                 gui::renderer::components::UITextsRow({gui::renderer::components::UIText(
-                    "Choose a block type:",
-                    gui::renderer::components::UIText::Variant::Headline)})};
+                    "Choose a block type:", gui::renderer::components::UIText::Variant::Headline)}),
+                gui::renderer::components::UITextsRow({
+                    gui::renderer::components::UIText(
+                        "Press a number to choose a block type. Press ESC to cancel.",
+                        gui::renderer::components::UIText::Variant::Caption),
+
+                }),
+                // some extra spacing below the above text
+                gui::renderer::components::UITextsRow({gui::renderer::components::UIText(
+                    "", gui::renderer::components::UIText::Variant::Caption)})};
 
             for (const auto& row : inputChoicesUiTextsRows) {
                 rows.push_back(row);
@@ -138,7 +167,7 @@ namespace gui::logic {
                 name = abi::__cxa_demangle(name, NULL, NULL, &status);
 #endif
 
-                logger->error("Unknown block type: {}", name);
+                logger->error("Unknown user-selected block type: {}", name);
             } break;
         }
     }
@@ -180,7 +209,7 @@ namespace gui::logic {
                 inputChoicesUiTextsRows.push_back(gui::renderer::components::UITextsRow(rowBuff));
             }
 
-            logger->info("Prepared {} choices texts for rendering", number);
+            logger->info("Prepared {} input choices for rendering", number);
         }
 
         this->inputChoiceInteraction.emplace(std::move(inputChoiceInteraction));
@@ -189,6 +218,8 @@ namespace gui::logic {
     bool BlocksManager::hasActiveChoicesInput() const { return inputChoiceInteraction.has_value(); }
 
     void BlocksManager::clearActiveChoicesInput() {
+        logger->info("Clearing active choices input");
+
         inputChoiceInteraction.reset();
 
         inputChoicesUiTextsRows.clear();

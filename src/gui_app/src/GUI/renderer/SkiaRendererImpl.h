@@ -40,6 +40,7 @@
 #endif
 
 #define INPUT_HEADLINE_FONT_SIZE_BASE 17
+#define INPUT_CAPTION_FONT_SIZE_BASE 10
 #define INPUT_CHOICE_FONT_SIZE_BASE 14
 
 // below: 20% margin between texts, 10% margin between rows
@@ -158,6 +159,11 @@ namespace gui::renderer {
          * @brief The font for the input headline font
          */
         SkFont inputHeadlineFont;
+
+        /**
+         * @brief The font for the input caption font
+         */
+        SkFont inputCaptionFont;
 
         /**
          * @brief The UI renderer delegate pointer

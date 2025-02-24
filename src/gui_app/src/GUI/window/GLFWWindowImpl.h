@@ -103,6 +103,8 @@ namespace gui::window {
                 // swap front and back buffers
                 glfwSwapBuffers(glfwWindow);
             }
+
+            logger->info("shouldClose() returned true, exiting gracefully");
         };
 
         /**
@@ -171,6 +173,29 @@ namespace gui::window {
                                       [](GLFWwindow* glfwWindow, int winWidth, int winHeight) {
                                           handleWindowResized(glfwWindow, winWidth, winHeight);
                                       });
+
+            glfwSetKeyCallback(
+                glfwWindow,
+                [](GLFWwindow* glfwWindow,
+                   int key,
+                   [[maybe_unused]] int scancode,
+                   int action,
+                   [[maybe_unused]] int mods) {
+                    if (action == GLFW_PRESS) {
+                        if (key >= GLFW_KEY_0 && key <= GLFW_KEY_9) {
+                            WindowBase* window =
+                                static_cast<WindowBase*>(glfwGetWindowUserPointer(glfwWindow));
+
+                            int number = key - GLFW_KEY_0;
+                            window->handleNumericKeyPress(number);
+                        } else if (key == GLFW_KEY_ESCAPE) {
+                            WindowBase* window =
+                                static_cast<WindowBase*>(glfwGetWindowUserPointer(glfwWindow));
+
+                            window->handleEscapeKeyPress();
+                        }
+                    }
+                });
 
             glfwSetMouseButtonCallback(
                 glfwWindow,

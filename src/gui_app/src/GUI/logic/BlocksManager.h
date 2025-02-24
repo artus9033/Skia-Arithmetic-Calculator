@@ -56,6 +56,17 @@ namespace gui::logic {
         void handleMouseMove(int x, int y);
 
         /**
+         * @brief Handles the numeric key press event
+         * @param number The number that was pressed
+         */
+        void handleNumericKeyPress(int number);
+
+        /**
+         * @brief Handles the ESC key press event
+         */
+        void handleEscapeKeyPress();
+
+        /**
          * @brief Renders the blocks on the canvas
          * @param canvas SkCanvas to draw on
          */
