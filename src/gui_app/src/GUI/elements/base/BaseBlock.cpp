@@ -23,18 +23,21 @@ namespace gui::elements::base {
 
     void BaseBlock::onDragProgress(int x, int y) {
         logger->info("Block {} has been dragged", getSelfId());
+
         this->x = x;
         this->y = y;
     }
 
     void BaseBlock::onDragStart(int x, int y) {
         logger->info("Block {} has been dragged", getSelfId());
+
         this->x = x;
         this->y = y;
     }
 
     void BaseBlock::onDragEnd(int x, int y) {
         logger->info("Block {} has been destroyed", getSelfId());
+
         this->x = x;
         this->y = y;
     }

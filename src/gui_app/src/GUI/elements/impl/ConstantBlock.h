@@ -3,6 +3,7 @@
 
 #include "GUI/elements/base/BaseBlock.h"
 #include "GUI/elements/base/IDoubleClickable.h"
+#include "GUI/logic/delegate/INewBlockChoiceDelegate.h"
 #include "logging/Loggable.h"
 #include "utils/misc.h"
 
@@ -19,7 +20,9 @@ namespace gui::elements::impl {
         /**
          * \copydoc BaseBlock::BaseBlock
          */
-        ConstantBlock(int cx, int cy);
+        ConstantBlock(int cx,
+                      int cy,
+                      gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate);
 
         void render(SkCanvas* canvas, bool isHovered) const override;
 
@@ -50,6 +53,11 @@ namespace gui::elements::impl {
          * The height of the block
          */
         static constexpr int CONSTANT_BLOCK_HEIGHT = 100;
+
+        /**
+         * The delegate that is notified when a new block is chosen to be added to the canvas
+         */
+        gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate;
     };
 }  // namespace gui::elements::impl
 

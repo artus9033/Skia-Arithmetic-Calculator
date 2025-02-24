@@ -3,19 +3,31 @@
 
 #include <GLFW/glfw3.h>
 
+#include <numeric>
+#include <optional>
 #include <stdexcept>
+#include <vector>
 
 #include "GUI/elements/base/BaseBlock.h"
+#include "GUI/geometry/Size2D.h"
 #include "GUI/logic/BlocksManager.h"
 #include "GUI/renderer/IRenderer.h"
+#include "GUI/renderer/delegate/UIRendererDelegate.h"
 #include "GUI/window/WindowBase.h"
+#include "components/UIText.h"
+#include "components/UITextsRow.h"
 #include "constants.h"
+#include "include/core/SkFont.h"
+#include "include/core/SkPaint.h"
+#include "include/core/SkTypeface.h"
 #include "logging/Loggable.h"
 #include "skia/include/core/SkCanvas.h"
 #include "skia/include/core/SkColorSpace.h"
 #include "skia/include/core/SkFont.h"
+#include "skia/include/core/SkFontMgr.h"
 #include "skia/include/core/SkPaint.h"
 #include "skia/include/core/SkSurface.h"
+#include "skia/include/core/SkTypeface.h"
 #include "skia/include/gpu/ganesh/GrBackendSurface.h"
 #include "skia/include/gpu/ganesh/GrDirectContext.h"
 #include "skia/include/gpu/ganesh/SkSurfaceGanesh.h"
@@ -23,11 +35,24 @@
 #include "skia/include/gpu/ganesh/gl/GrGLDirectContext.h"
 #include "skia/include/gpu/ganesh/gl/GrGLInterface.h"
 
+#ifdef __APPLE__
+#include "skia/include/ports/SkFontMgr_mac_ct.h"
+#endif
+
+#define INPUT_HEADLINE_FONT_SIZE_BASE 17
+#define INPUT_CHOICE_FONT_SIZE_BASE 14
+
+// below: 20% margin between texts, 10% margin between rows
+// for SkiaRendererImpl::renderCenteredTextsRows
+#define CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT 0.5f
+#define CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT 0.35f
+
 namespace gui::renderer {
     /**
      * @brief Class responsible for rendering the GUI using Skia and GLFW
      */
     class SkiaRendererImpl : public IRenderer,
+                             public delegate::UIRendererDelegate,
                              protected business_logic::Loggable<SkiaRendererImpl> {
        public:
         /**
@@ -51,8 +76,14 @@ namespace gui::renderer {
          */
         ~SkiaRendererImpl();
 
+        /**
+         * \copydoc IRenderer::render
+         */
         void render() override;
 
+        /**
+         * \copydoc IRenderer::handleWindowResized
+         */
         void handleWindowResized(int winWidth,
                                  int winHeight,
                                  int fbWidth,
@@ -60,27 +91,85 @@ namespace gui::renderer {
                                  double xScale,
                                  double yScale) override;
 
+        /**
+         * \copydoc UIRendererDelegate::renderCenteredTextsRows
+         */
+        void renderCenteredTextsRows(SkCanvas* canvas,
+                                     const geometry::Size2D& size,
+                                     const std::vector<components::UITextsRow>& rows) override;
+
        private:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
         // current scope; so as not to use this->logger explicitly each time, the below brings it to
         // the current scope explicitly
         using business_logic::Loggable<SkiaRendererImpl>::logger;
 
+        /**
+         * @brief The blocks manager
+         */
         std::shared_ptr<gui::logic::BlocksManager> blocksManager;
 
+        /**
+         * @brief The window
+         */
         [[maybe_unused]] gui::window::WindowBase* window;
-        int winWidth;
-        int winHeight;
-        int fbWidth;
-        int fbHeight;
 
+        /**
+         * @brief The window size
+         */
+        geometry::Size2D winSize;
+
+        /**
+         * @brief The framebuffer size
+         */
+        geometry::Size2D framebufferSize;
+
+        /**
+         * @brief The Skia context
+         */
         sk_sp<GrDirectContext> grContext;
+
+        /**
+         * @brief The Skia surface
+         */
         sk_sp<SkSurface> skSurface;
 
         /**
          * @brief Reinitializes the Skia surface using the current width and height
          */
         void reinitializeSurface();
+
+        /**
+         * @brief The paint for the text font fill
+         */
+        SkPaint textFontFillPaint;
+
+        /**
+         * @brief The paint for the text font stroke
+         */
+        SkPaint textFontStrokePaint;
+
+        /**
+         * @brief The font for the input choice font
+         */
+        SkFont inputChoiceFont;
+
+        /**
+         * @brief The font for the input headline font
+         */
+        SkFont inputHeadlineFont;
+
+        /**
+         * @brief The UI renderer delegate pointer
+         */
+        gui::renderer::delegate::UIRendererDelegate* uiRendererDelegatePtr;
+
+        /**
+         * @brief Gets the font for the given label type
+         * @param variant The variant of the label
+         * @return The font for the given label type
+         */
+        const SkFont& getFontForLabelType(const components::UIText::Variant& variant) const;
     };
 
 }  // namespace gui::renderer

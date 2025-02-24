@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "GUI/elements/BlocksRegistry.h"
+#include "GUI/input/InputChoiceInteraction.h"
 #include "GUI/logic/BlocksManager.h"
 #include "spdlog/spdlog.h"
 
@@ -44,10 +46,23 @@ namespace gui::window {
         void handleRightClick() {
             auto maybeHoveredBlock = blocksManager->getBlockAtMousePos();
 
+            // if there is no hovered block, open the add block popup
             if (!maybeHoveredBlock.has_value()) {
-                logger->info("Right clicked on empty space, opening add block popup");
+                if (blocksManager->hasActiveChoicesInput()) {
+                    logger->info(
+                        "Right clicked on empty space, but input is already active, ignoring "
+                        "event");
+                } else {
+                    logger->info("Right clicked on empty space, opening add block popup");
 
-                // TODO: show menu to add a new block
+                    this->blocksManager->setActiveChoicesInput({
+                        .choices = gui::elements::base::BlockInputChoices,
+                        .callback =
+                            [this](const gui::elements::base::BlockType& blockType) {
+                                this->blocksManager->onNewBlockChoice(blockType);
+                            },
+                    });
+                }
             }
         }
 

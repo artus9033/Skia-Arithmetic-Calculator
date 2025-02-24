@@ -1,9 +1,11 @@
 #include "ConstantBlock.h"
 
 namespace gui::elements::impl {
-    ConstantBlock::ConstantBlock(int cx, int cy)
+    ConstantBlock::ConstantBlock(
+        int cx, int cy, gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate)
         : BaseBlock(cx, cy, CONSTANT_BLOCK_WIDTH, CONSTANT_BLOCK_HEIGHT, logger),
-          selfId(business_logic::stringifyAddressOf(this)) {}
+          selfId(business_logic::stringifyAddressOf(this)),
+          newBlockChoiceDelegate(newBlockChoiceDelegate) {}
 
     void ConstantBlock::render(SkCanvas* canvas, [[maybe_unused]] bool isHovered) const {
         SkPaint paint;

@@ -63,7 +63,15 @@
     "stack": "cpp",
     "streambuf": "cpp",
     "unordered_map": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "system_error": "cpp",
+    "list": "cpp",
+    "set": "cpp",
+    "span": "cpp",
+    "unordered_set": "cpp",
+    "valarray": "cpp",
+    "__memory": "cpp",
+    "scoped_allocator": "cpp"
   },
   "C_Cpp.default.cppStandard": "c++20"
 }
