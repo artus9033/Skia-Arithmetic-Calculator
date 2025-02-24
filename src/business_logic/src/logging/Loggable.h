@@ -48,7 +48,10 @@ namespace business_logic {
                 name = match[0].str().c_str();
             }
 
-            logger = spdlog::stdout_color_mt(name);
+            logger = spdlog::get(name);
+            if (!logger) {
+                logger = spdlog::stdout_color_mt(name);
+            }
         }
 
        protected:
