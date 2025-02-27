@@ -29,6 +29,7 @@ jobs:
 
       - name: Trick CMake into thinking Skia is already built
         run: |
+          mkdir -p build/_deps/skia/out/Release
           touch build/_deps/skia/out/Release/libskia.a
 
       - name: Run static code analysis with cppcheck
