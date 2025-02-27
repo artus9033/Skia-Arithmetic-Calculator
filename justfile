@@ -43,11 +43,8 @@ clang-tidy:
     # -p to use build/compile_commands.json
     clang-tidy -format-style=file -header-filter=. -p build src/**/*.cpp
 
+sourceFiles := shell('find ./src/ -name "*.cpp" -or -name "*.h" |xargs echo')
 check-clang-format:
     # Check if all files are formatted correctly
     # Fail if any files need formatting
-    if !clang-format --dry-run --Werror --verbose $(find ./src/ -name "*.cpp" -or -name "*.h"); then \
-        echo "Some files are not formatted correctly. Please run clang-format." \
-        exit 1 \
-    fi \
-    echo "All files are properly formatted."
+    if ! clang-format --dry-run --Werror --verbose {{sourceFiles}}; then echo "Some files are not formatted correctly. Please run clang-format." exit 1; fi; echo "All files are properly formatted."
