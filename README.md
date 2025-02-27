@@ -32,6 +32,7 @@ Business logic is implemented as a static library, and the GUI is implemented as
 - Boost installed
 - Doxygen installed
 - harfbuzz installed
+- Qt6 installed
 
 The project automatically downloads and builds all other dependencies:
 

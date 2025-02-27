@@ -3,6 +3,26 @@ file(GLOB_RECURSE IMPL_SOURCE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+
+if (APPLE)
+    execute_process(
+        COMMAND brew --prefix qt@6
+        OUTPUT_VARIABLE QT_PREFIX
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${QT_PREFIX}")
+endif()
+
+# Qt
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+link_libraries(Qt6::Core Qt6::Gui Qt6::Widgets)
+
+
 add_executable(gui_app
     ${IMPL_SOURCE_FILES}
 )
@@ -16,11 +36,12 @@ target_link_libraries(gui_app
         skia
 )
 
+
 # if linux
 if(UNIX AND NOT APPLE)
     find_package(Freetype REQUIRED)
     find_package(XCB REQUIRED)
-    target_link_libraries(gui_app PRIVATE Freetype::Freetype XCB::XCB)
+    target_link_libraries(gui_app PUBLIC Freetype::Freetype XCB::XCB)
 endif()
 
 # ensure static linkage on Windows

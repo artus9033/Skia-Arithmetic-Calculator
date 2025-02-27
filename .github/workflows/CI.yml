@@ -44,7 +44,7 @@ jobs:
       - name: Install dependencies (MacOS only)
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
-          brew install --formula boost@1.87 doxygen graphviz harfbuzz
+          brew install --formula boost@1.87 doxygen graphviz harfbuzz qt@6.8.2
 
       - name: Generate Skia cache key based on third_party/CMakeLists.txt hash
         id: generate-cache-key

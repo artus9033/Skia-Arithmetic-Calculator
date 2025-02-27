@@ -6,12 +6,12 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 # Windows specific configuration
 if (WIN32)
     # make it discover packages installed with winget
-    set(CMAKE_PREFIX_PATH "C:/Program Files/Boost;C:/Program Files/Doxygen;C:/Program Files (x86)/Boost;C:/Program Files (x86)/Doxygen")
+    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};C:/Program Files/Boost;C:/Program Files/Doxygen;C:/Program Files (x86)/Boost;C:/Program Files (x86)/Doxygen")
 endif()
 
 # Linux specific configuration
 if (LINUX AND NOT APPLE)
-    set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu;/usr/lib/x86_64-linux-gnu/cmake/XCB;/usr/lib/x86_64-linux-gnu/XCB")
+    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};/usr/lib/x86_64-linux-gnu;/usr/lib/x86_64-linux-gnu/cmake/XCB;/usr/lib/x86_64-linux-gnu/XCB")
 endif()
 
 # Boost
@@ -150,3 +150,17 @@ endif()
 get_filename_component(SKIA_CLONE_PARENT_DIR "${SKIA_CLONE_PATH}/.." ABSOLUTE)
 target_include_directories(skia INTERFACE ${SKIA_CLONE_PARENT_DIR}) # allow includes in style of skia/include/core/SkCanvas.h
 target_include_directories(skia INTERFACE ${SKIA_CLONE_PATH}) # allow includes in style of include/core/SkCanvas.h
+
+if (APPLE)
+    execute_process(
+        COMMAND brew --prefix qt@6
+        OUTPUT_VARIABLE QT_PREFIX
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${QT_PREFIX}")
+endif()
+
+# Qt
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+
