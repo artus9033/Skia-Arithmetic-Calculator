@@ -1,0 +1,71 @@
+name: CD
+
+# on:
+#   push:
+
+jobs:
+  build-produce-artifacts:
+    strategy:
+      fail-fast: false
+      matrix:
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Just
+        uses: extractions/setup-just@v2
+
+      - name: Install ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Install winget (Windows only)
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: Cyberboss/install-winget@v1
+
+      - name: Install dependencies (Windows only)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          winget install --accept-source-agreements --accept-package-agreements --id Boost.Boost --version 1.87
+          winget install --accept-source-agreements --accept-package-agreements --id DimitriVanHeesch.Doxygen
+          winget install --accept-source-agreements --accept-package-agreements --id Graphviz.Graphviz
+
+      - name: Install dependencies (Linux only)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo add-apt-repository universe
+          sudo apt update
+          sudo apt install libboost-all-dev=1.83.0.1ubuntu2 doxygen xorg-dev graphviz libharfbuzz-dev libfreetype6-dev libxcb1-dev libxcb-util-dev libxcb-xkb-dev
+
+      - name: Install dependencies (MacOS only)
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: |
+          brew install --formula boost@1.87 doxygen graphviz harfbuzz qt@6.8.2
+
+      - name: Generate Skia cache key based on third_party/CMakeLists.txt hash
+        id: generate-cache-key
+        run: |
+          FILE_HASH=$(sha256sum third_party/CMakeLists.txt | cut -d ' ' -f 1)
+          echo "SKIA_CACHE_KEY=skia-dep-${FILE_HASH}" >> $GITHUB_ENV
+
+      - name: Set up Cache for Skia built dependency
+        uses: actions/cache@v3
+        with:
+          path: build/_deps/skia
+          key: ${{ env.SKIA_CACHE_KEY }}
+
+      - name: Configure build
+        run: just configure
+
+      - name: Test results
+        run: ls build/_deps/skia/out/Release
+
+      # - name: Build
+      #   run: just build-all
+
+      # - name: Run unit tests
+      #   run: just run-tests

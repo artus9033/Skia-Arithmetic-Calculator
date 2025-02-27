@@ -26,4 +26,3 @@ NamespaceIndentation: All
 
 # keep a trailing newline
 InsertNewlineAtEOF: true
-TrimFinalNewlines: true
