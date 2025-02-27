@@ -30,17 +30,11 @@ namespace gui::renderer {
 
         /**
          * @brief Handles window resize events
-         * @param winWidth New window width
-         * @param winHeight New window height
-         * @param fbWidth New framebuffer width
-         * @param fbHeight New framebuffer height
+         * @param window The window
          * @param xScale New window x scale
          * @param yScale New window y scale
          */
-        virtual void handleWindowResized(int winWidth,
-                                         int winHeight,
-                                         int fbWidth,
-                                         int fbHeight,
+        virtual void handleWindowResized(gui::window::WindowBase* window,
                                          double xScale,
                                          double yScale) = 0;
 

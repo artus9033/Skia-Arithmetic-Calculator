@@ -2,11 +2,15 @@
 
 namespace gui::elements::base {
 
-    BaseBlock::BaseBlock(
-        int cx, int cy, int blockWidth, int blockHeight, std::shared_ptr<spdlog::logger> logger)
+    BaseBlock::BaseBlock(int cx,
+                         int cy,
+                         int blockWidth,
+                         int blockHeight,
+                         std::shared_ptr<spdlog::logger> logger,
+                         const geometry::Size2D& windowSize)
         : width(blockWidth), height(blockHeight), logger(logger) {
-        int leftTopX = cx - blockWidth / 2;
-        int leftTopY = cy - blockHeight / 2;
+        int leftTopX = std::min(std::max(0, cx - blockWidth / 2), windowSize.width - blockWidth);
+        int leftTopY = std::min(std::max(0, cy - blockHeight / 2), windowSize.height - blockHeight);
 
         cacheBottomRightCorner();
 

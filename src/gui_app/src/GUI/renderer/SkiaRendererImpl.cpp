@@ -12,8 +12,6 @@ namespace gui::renderer {
           business_logic::Loggable<SkiaRendererImpl>(),
           blocksManager(blocksManager),
           window(window),
-          winSize(geometry::Size2D(winWidth, winHeight)),
-          framebufferSize(geometry::Size2D(fbWidth, fbHeight)),
           uiRendererDelegatePtr(static_cast<delegate::UIRendererDelegate*>(this)) {
         if (!window) {
             throw std::runtime_error("Invalid window handle provided to SkiaRendererImpl");
@@ -58,9 +56,10 @@ namespace gui::renderer {
     }
 
     void SkiaRendererImpl::reinitializeSurface() {
+        auto windowSize = window->getWindowSize();
         logger->info("Reinitializing Skia surface with width {} and height {}",
-                     winSize.width,
-                     winSize.height);
+                     windowSize.width,
+                     windowSize.height);
 
         sk_sp<const GrGLInterface> interface = GrGLMakeNativeInterface();
         if (!interface) {
@@ -73,6 +72,7 @@ namespace gui::renderer {
         framebufferInfo.fFBOID = 0;
         framebufferInfo.fFormat = GL_RGBA8;
 
+        auto framebufferSize = window->getFramebufferSize();
         GrBackendRenderTarget renderTarget = GrBackendRenderTargets::MakeGL(
             framebufferSize.width, framebufferSize.height, 0, 8, framebufferInfo);
 
@@ -93,16 +93,14 @@ namespace gui::renderer {
         SkCanvas* canvas = skSurface->getCanvas();
         canvas->clear(constants::WINDOW_BACKGROUND_COLOR);
 
-        blocksManager->render(canvas, winSize, uiRendererDelegatePtr);
+        blocksManager->render(canvas, window->getWindowSize(), uiRendererDelegatePtr);
 
         grContext->flush();
     }
 
-    void SkiaRendererImpl::handleWindowResized(
-        int winWidth, int winHeight, int fbWidth, int fbHeight, double xScale, double yScale) {
-        winSize = geometry::Size2D(winWidth, winHeight);
-        framebufferSize = geometry::Size2D(fbWidth, fbHeight);
-
+    void SkiaRendererImpl::handleWindowResized([[maybe_unused]] gui::window::WindowBase* window,
+                                               double xScale,
+                                               double yScale) {
         reinitializeSurface();
 
         skSurface->getCanvas()->scale(xScale, yScale);

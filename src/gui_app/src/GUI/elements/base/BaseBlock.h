@@ -3,6 +3,7 @@
 
 #include <skia/include/core/SkCanvas.h>
 
+#include "GUI/geometry/Size2D.h"
 #include "IDraggable.h"
 #include "logging/Loggable.h"
 
@@ -15,12 +16,14 @@ namespace gui::elements::base {
          * @param cy The center y coordinate where to place the center of the block
          * @param blockWidth The width of the block
          * @param blockHeight The height of the block
+         * @param windowSize The size of the window
          */
         BaseBlock(int cx,
                   int cy,
                   int blockWidth,
                   int blockHeight,
-                  std::shared_ptr<spdlog::logger> logger);
+                  std::shared_ptr<spdlog::logger> logger,
+                  const geometry::Size2D& windowSize);
 
         /**
          * @brief Updates the width and height of the block

@@ -49,6 +49,8 @@ namespace gui::window {
             initGLFW();
 
             initializeGLFWWindow(width, height, title);
+
+            postInitialize();
         }
 
         /**
@@ -73,10 +75,20 @@ namespace gui::window {
 
             initializeGLFWWindow(
                 std::round(videoMode->width * 0.6), std::round(videoMode->height * 0.6), title);
+
+            postInitialize();
         };
 
         GLFWWindowImpl(const GLFWWindowImpl&) = delete;
         GLFWWindowImpl& operator=(const GLFWWindowImpl&) = delete;
+
+        void postInitialize() {
+            // initially invoke window->handleMouseMove
+            double mouseX, mouseY;
+            glfwGetCursorPos(glfwWindow, &mouseX, &mouseY);
+
+            handleMouseMove(mouseX, mouseY);
+        }
 
         /**
          * @brief Destructor that cleans up the GLFW window and terminates GLFW
@@ -245,6 +257,9 @@ namespace gui::window {
                 int fbWidth, fbHeight;
                 glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
 
+                self->winSize = geometry::Size2D(winWidth, winHeight);
+                self->framebufferSize = geometry::Size2D(fbWidth, fbHeight);
+
                 double xScale = static_cast<double>(fbWidth) / winWidth;
                 double yScale = static_cast<double>(fbHeight) / winHeight;
 
@@ -260,10 +275,14 @@ namespace gui::window {
                     xScale,
                     yScale);
 
-                self->renderer->handleWindowResized(
-                    winWidth, winHeight, fbWidth, fbHeight, xScale, yScale);
+                self->renderer->handleWindowResized(self, xScale, yScale);
             }
         }
+
+        /**
+         * @brief Focus the window
+         */
+        void focusWindow() override { glfwFocusWindow(glfwWindow); }
     };
 }  // namespace gui::window
 

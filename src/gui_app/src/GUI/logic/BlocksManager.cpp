@@ -1,8 +1,11 @@
 #include "BlocksManager.h"
 
+#include "MessageBox.h"
+
 namespace gui::logic {
 
-    BlocksManager::BlocksManager() : lastMouseClickTime(0) {}
+    BlocksManager::BlocksManager(gui::window::delegate::IWindowDelegate* windowDelegate)
+        : lastMouseClickTime(0), windowDelegate(windowDelegate) {}
 
     void BlocksManager::handleMouseDown() { lastMouseClickTime = time(nullptr); }
 
@@ -25,6 +28,12 @@ namespace gui::logic {
                 clearActiveChoicesInput();
             } else {
                 logger->error("Invalid choice number: {}", number);
+                MessageBox::showInfo("Invalid choice",
+                                     "You entered: " + std::to_string(number) +
+                                         " which is out of range. Pick a "
+                                         "number between 1 and " +
+                                         std::to_string(inputChoiceInteraction->choices.size()),
+                                     windowDelegate);
             }
         }
     }
@@ -114,8 +123,8 @@ namespace gui::logic {
     void BlocksManager::onNewBlockChoice(const gui::elements::base::BlockType& blockType) {
         switch (blockType) {
             case gui::elements::base::BlockType::Constant: {
-                blocks.push_back(
-                    std::make_shared<gui::elements::impl::ConstantBlock>(mouseX, mouseY, this));
+                blocks.push_back(std::make_shared<gui::elements::impl::ConstantBlock>(
+                    mouseX, mouseY, this, windowDelegate->getWindowSize()));
             } break;
 
                 // case gui::elements::base::BlockType::Add: {
@@ -159,15 +168,14 @@ namespace gui::logic {
                 // } break;
 
             default: {
-                auto name = typeid(blockType).name();
-
-                // if gnu libstdc++ available, demangle it
-#ifdef __GNUC__
-                int status = 0;
-                name = abi::__cxa_demangle(name, NULL, NULL, &status);
-#endif
+                auto name = magic_enum::enum_name(blockType);
 
                 logger->error("Unknown user-selected block type: {}", name);
+
+                MessageBox::showInfo(
+                    "Invalid choice",
+                    "You selected an invalid block type: '" + std::string(name) + "'",
+                    windowDelegate);
             } break;
         }
     }

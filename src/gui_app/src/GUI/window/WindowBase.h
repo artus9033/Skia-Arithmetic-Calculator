@@ -6,13 +6,14 @@
 #include "GUI/elements/BlocksRegistry.h"
 #include "GUI/input/InputChoiceInteraction.h"
 #include "GUI/logic/BlocksManager.h"
+#include "GUI/window/delegate/IWindowDelegate.h"
 #include "spdlog/spdlog.h"
 
 namespace gui::window {
-    class WindowBase {
+    class WindowBase : public delegate::IWindowDelegate {
        public:
         WindowBase(std::shared_ptr<spdlog::logger> logger)
-            : blocksManager(std::make_shared<gui::logic::BlocksManager>()), logger(logger) {}
+            : blocksManager(std::make_shared<gui::logic::BlocksManager>(this )), logger(logger) {}
 
         virtual ~WindowBase() = default;
 
@@ -84,6 +85,16 @@ namespace gui::window {
          */
         void handleMouseMove(int x, int y) { blocksManager->handleMouseMove(x, y); }
 
+        /**
+         * \copydoc delegate::IWindowDelegate::getWindowSize
+         */
+        geometry::Size2D getWindowSize() { return winSize; }
+
+        /**
+         * \copydoc delegate::IWindowDelegate::getFramebufferSize
+         */
+        geometry::Size2D getFramebufferSize() { return framebufferSize; }
+
        protected:
         /**
          * The blocks manager, this class will pass it the interaction events
@@ -94,6 +105,16 @@ namespace gui::window {
          * The logger for the window
          */
         std::shared_ptr<spdlog::logger> logger;
+
+        /**
+         * The window size
+         */
+        geometry::Size2D winSize;
+
+        /**
+         * The framebuffer size
+         */
+        geometry::Size2D framebufferSize;
     };
 }  // namespace gui::window
 

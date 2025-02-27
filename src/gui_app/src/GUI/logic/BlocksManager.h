@@ -1,6 +1,7 @@
 #ifndef GUI_LOGIC_BLOCKS_MANAGER_H
 #define GUI_LOGIC_BLOCKS_MANAGER_H
 
+#include <QMessageBox>
 #include <algorithm>
 #include <boost/range/adaptor/reversed.hpp>
 #include <memory>
@@ -12,16 +13,11 @@
 #include "GUI/geometry/Size2D.h"
 #include "GUI/input/InputChoiceInteraction.h"
 #include "GUI/renderer/delegate/UIRendererDelegate.h"
+#include "GUI/window/delegate/IWindowDelegate.h"
 #include "constants.h"
 #include "delegate/INewBlockChoiceDelegate.h"
 #include "logging/Loggable.h"
-
-// GCC-specific demangling API
-#ifdef __GNUC__
-#include <cxxabi.h>
-
-#include <cstdlib>
-#endif
+#include "magic_enum/magic_enum.hpp"
 
 #define MAX_INPUT_CHOICES_PER_ROW 3
 
@@ -32,7 +28,7 @@ namespace gui::logic {
     class BlocksManager : public gui::logic::delegate::INewBlockChoiceDelegate,
                           public business_logic::Loggable<BlocksManager> {
        public:
-        BlocksManager();
+        BlocksManager(gui::window::delegate::IWindowDelegate* windowDelegate);
 
         /**
          * @brief Handles the mouse down event
@@ -152,6 +148,11 @@ namespace gui::logic {
         time_t lastMouseClickTime;
 
         /**
+         * The window delegate
+         */
+        gui::window::delegate::IWindowDelegate* windowDelegate;
+
+        /**
          * @brief Renders the dragged line on the canvas
          * @param canvas SkCanvas to draw on
          */
@@ -162,11 +163,6 @@ namespace gui::logic {
          */
         std::optional<gui::input::InputChoiceInteraction<gui::elements::base::BlockType>>
             inputChoiceInteraction;
-
-        /**
-         * @brief The UI renderer delegate
-         */
-        gui::renderer::delegate::UIRendererDelegate* uiRendererDelegate;
 
         /**
          * @brief The UI texts for the choices; prepared inside `setActiveChoicesInput(...)` and

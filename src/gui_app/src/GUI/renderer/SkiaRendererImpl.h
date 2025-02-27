@@ -85,10 +85,7 @@ namespace gui::renderer {
         /**
          * \copydoc IRenderer::handleWindowResized
          */
-        void handleWindowResized(int winWidth,
-                                 int winHeight,
-                                 int fbWidth,
-                                 int fbHeight,
+        void handleWindowResized(gui::window::WindowBase* window,
                                  double xScale,
                                  double yScale) override;
 
@@ -114,16 +111,6 @@ namespace gui::renderer {
          * @brief The window
          */
         [[maybe_unused]] gui::window::WindowBase* window;
-
-        /**
-         * @brief The window size
-         */
-        geometry::Size2D winSize;
-
-        /**
-         * @brief The framebuffer size
-         */
-        geometry::Size2D framebufferSize;
 
         /**
          * @brief The Skia context
@@ -166,9 +153,9 @@ namespace gui::renderer {
         SkFont inputCaptionFont;
 
         /**
-         * @brief The UI renderer delegate pointer
+         * @brief The UI renderer delegate
          */
-        gui::renderer::delegate::UIRendererDelegate* uiRendererDelegatePtr;
+        delegate::UIRendererDelegate* uiRendererDelegatePtr;
 
         /**
          * @brief Gets the font for the given label type

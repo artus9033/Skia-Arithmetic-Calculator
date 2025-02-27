@@ -18,11 +18,15 @@ namespace gui::elements::impl {
                           public gui::elements::base::IDoubleClickable {
        public:
         /**
-         * \copydoc BaseBlock::BaseBlock
+         * @brief Constructor
+         * @param cx The center x coordinate where to place the center of the block
+         * @param cy The center y coordinate where to place the center of the block
+         * @param windowSize The size of the window
          */
         ConstantBlock(int cx,
                       int cy,
-                      gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate);
+                      gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
+                      const geometry::Size2D& windowSize);
 
         void render(SkCanvas* canvas, bool isHovered) const override;
 
