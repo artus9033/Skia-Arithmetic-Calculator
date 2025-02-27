@@ -164,3 +164,14 @@ endif()
 # Qt
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
+# magic_enum
+message("Fetching magic_enum, this may take a while...")
+FetchContent_Declare(
+    magic_enum
+    GIT_REPOSITORY https://github.com/Neargye/magic_enum.git
+    GIT_TAG v0.9.7
+)
+FetchContent_MakeAvailable(magic_enum)
+
+# set var with include dir for magic_enum
+set(MAGIC_ENUM_INCLUDE_DIR ${FETCHCONTENT_BASE_DIR}/magic_enum-src/include)

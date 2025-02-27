@@ -27,7 +27,7 @@ add_executable(gui_app
     ${IMPL_SOURCE_FILES}
 )
 
-target_include_directories(gui_app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(gui_app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src ${MAGIC_ENUM_INCLUDE_DIR})
 
 target_link_libraries(gui_app
     PRIVATE
