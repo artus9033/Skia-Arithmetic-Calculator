@@ -1,0 +1,40 @@
+# .github/actions/my-action/action.yml
+name: "Basic Setup"
+description: "Clones the repository and installs dependencies platform-independently"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Just
+      uses: extractions/setup-just@v2
+
+    - name: Install ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+
+    - name: Install winget (Windows only)
+      if: ${{ matrix.os == 'windows-latest' }}
+      uses: Cyberboss/install-winget@v1
+
+    - name: Install dependencies (Windows only)
+      if: ${{ matrix.os == 'windows-latest' }}
+      shell: pwsh
+      run: |
+        winget install --accept-source-agreements --accept-package-agreements --id Boost.Boost --version 1.87
+        winget install --accept-source-agreements --accept-package-agreements --id DimitriVanHeesch.Doxygen
+        winget install --accept-source-agreements --accept-package-agreements --id Graphviz.Graphviz
+
+    - name: Install dependencies (Linux only)
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      shell: bash
+      run: |
+        sudo add-apt-repository universe
+        sudo apt update
+        sudo apt install -y libboost1.83-all-dev doxygen xorg-dev \
+            graphviz libharfbuzz-dev libfreetype6-dev libxcb1-dev libxcb-util-dev \
+            libglx-dev libgl1-mesa-dev libxcb-xkb-dev qt6-base-dev
+
+    - name: Install dependencies (MacOS only)
+      if: ${{ matrix.os == 'macos-latest' }}
+      shell: bash
+      run: |
+        brew install --formula boost@1.87 doxygen graphviz harfbuzz qt@6.8.2

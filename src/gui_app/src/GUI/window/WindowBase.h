@@ -13,7 +13,7 @@ namespace gui::window {
     class WindowBase : public delegate::IWindowDelegate {
        public:
         WindowBase(std::shared_ptr<spdlog::logger> logger)
-            : blocksManager(std::make_shared<gui::logic::BlocksManager>(this )), logger(logger) {}
+            : blocksManager(std::make_shared<gui::logic::BlocksManager>(this)), logger(logger) {}
 
         virtual ~WindowBase() = default;
 

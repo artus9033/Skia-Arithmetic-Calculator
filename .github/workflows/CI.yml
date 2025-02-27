@@ -11,21 +11,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Just
-        uses: extractions/setup-just@v2
-
-      - name: Install ninja
-        uses: seanmiddleditch/gha-setup-ninja@master
-
-      - name: Install dependencies
-        run: |
-          sudo add-apt-repository universe
-          sudo apt update
-          sudo apt install libboost-all-dev=1.83.0.1ubuntu2 doxygen xorg-dev graphviz libharfbuzz-dev libfreetype6-dev libxcb1-dev libxcb-util-dev libxcb-xkb-dev
+      - name: Environment basic setup
+        uses: ./.github/actions/basic-setup
 
       - name: Install tools
         run: |
-          sudo apt install clang-format clang-tidy cppcheck
+          sudo apt update
+          sudo apt install -y clang-format clang-tidy cppcheck
 
       - name: Trick CMake into thinking Skia is already built
         run: |
