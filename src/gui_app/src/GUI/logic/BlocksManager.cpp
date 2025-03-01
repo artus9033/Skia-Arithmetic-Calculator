@@ -105,7 +105,7 @@ namespace gui::logic {
             for (const auto& block : blocks) {
                 auto isFocused = maybeHoveredBlock.has_value() && (maybeHoveredBlock == block);
 
-                block->render(canvas, isFocused);
+                block->render(canvas, mouseX, mouseY, isFocused);
             }
 
             maybeRenderDraggedLine(canvas);

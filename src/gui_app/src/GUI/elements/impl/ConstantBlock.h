@@ -28,7 +28,7 @@ namespace gui::elements::impl {
                       gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
                       const geometry::Size2D& windowSize);
 
-        void render(SkCanvas* canvas, bool isHovered) const override;
+        void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) const override;
 
         /**
          * \copydoc IDoubleClickable::onDoubleClick
@@ -51,17 +51,42 @@ namespace gui::elements::impl {
         /**
          * The width of the block
          */
-        static constexpr int CONSTANT_BLOCK_WIDTH = 100;
+        static constexpr int CONSTANT_BLOCK_WIDTH = 120;
 
         /**
          * The height of the block
          */
-        static constexpr int CONSTANT_BLOCK_HEIGHT = 100;
+        static constexpr int CONSTANT_BLOCK_HEIGHT = 120;
 
         /**
          * The delegate that is notified when a new block is chosen to be added to the canvas
          */
         gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate;
+
+        /**
+         * \copydoc BaseBlock::getInputPorts
+         */
+        const std::vector<gui::elements::base::Port>& getInputPorts() const override {
+            return inputPorts;
+        }
+
+        /**
+         * \copydoc BaseBlock::getOutputPorts
+         */
+        const std::vector<gui::elements::base::Port>& getOutputPorts() const override {
+            return outputPorts;
+        }
+
+       protected:
+        /**
+         * The input ports of the block
+         */
+        static std::vector<gui::elements::base::Port> inputPorts;
+
+        /**
+         * The output ports of the block
+         */
+        static std::vector<gui::elements::base::Port> outputPorts;
     };
 }  // namespace gui::elements::impl
 
