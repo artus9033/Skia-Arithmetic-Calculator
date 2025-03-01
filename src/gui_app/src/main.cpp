@@ -8,6 +8,8 @@
  * @return 0 on success, non-zero on failure
  */
 int main() {
+    spdlog::set_level(SET_LOG_ACTIVE_LEVEL);
+
     try {
         gui::window::GLFWWindowImpl<gui::renderer::SkiaRendererImpl> window(
             "Flow Arithmetic Calculator");

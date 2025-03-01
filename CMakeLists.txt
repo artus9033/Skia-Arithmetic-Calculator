@@ -19,6 +19,13 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-undefined-var-template")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
+# define SPDLOG_ACTIVE_LEVEL based on the active variant for main.cpp to set it
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DSET_LOG_ACTIVE_LEVEL=spdlog::level::debug)
+else()
+    add_definitions(-DSET_LOG_ACTIVE_LEVEL=spdlog::level::info)
+endif()
+
 # custom build options that can be passed to the project
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_DOCS "Build documentation" ON)
