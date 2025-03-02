@@ -10,11 +10,11 @@ namespace gui::logic {
         }
     }
 
-    void MessageBox::showInfo(const std::string& title,
-                              const std::string& message,
-                              gui::window::delegate::IWindowDelegate* windowDelegate) {
+    void MessageBox::showWarning(const std::string& title,
+                                 const std::string& message,
+                                 gui::window::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
-        QMessageBox::information(
+        QMessageBox::warning(
             nullptr, QString::fromStdString(title), QString::fromStdString(message));
 
         // restore focus to the window

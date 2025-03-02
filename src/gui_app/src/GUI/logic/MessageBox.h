@@ -10,9 +10,9 @@ namespace gui::logic {
 
     class MessageBox {
        public:
-        static void showInfo(const std::string& title,
-                             const std::string& message,
-                             gui::window::delegate::IWindowDelegate* windowDelegate);
+        static void showWarning(const std::string& title,
+                                const std::string& message,
+                                gui::window::delegate::IWindowDelegate* windowDelegate);
 
        private:
         static void ensureQApplication();

@@ -1,20 +1,53 @@
 #include "BlocksManager.h"
 
-#include "MessageBox.h"
-
 namespace gui::logic {
-
     BlocksManager::BlocksManager(gui::window::delegate::IWindowDelegate* windowDelegate)
         : lastMouseClickTime(0), windowDelegate(windowDelegate) {}
 
-    void BlocksManager::handleMouseDown() { lastMouseClickTime = time(nullptr); }
+    void BlocksManager::handleMouseDown() {
+        // do not handle mouse down if we have an active choices input
+        if (hasActiveChoicesInput()) {
+            logger->info("Skipping mouse down because we have an active choices input");
+
+            return;
+        }
+
+        lastMouseClickTime = time(nullptr);
+
+        auto maybeClickedBlock = getBlockAtMousePos();
+
+        if (maybeClickedBlock.has_value()) {
+            auto clickedBlock = maybeClickedBlock.value();
+
+            auto maybeClickedPort = clickedBlock->getPortAtCoordinates({.x = mouseX, .y = mouseY});
+
+            if (maybeClickedPort.value_or(nullptr) != nullptr) {
+                logger->info("Clicked port {} on block {}",
+                             maybeClickedPort.value()->name,
+                             clickedBlock->getSelfId());
+
+                connectPortsInteraction.handleUserInteractedWith(
+                    clickedBlock.get(), maybeClickedPort.value(), windowDelegate);
+            } else {
+                logger->warn("Clicked block {}, but not a port of it", clickedBlock->getSelfId());
+            }
+        } else {
+            logger->info("Clicked outside any block");
+        }
+    }
 
     void BlocksManager::handleMouseUp() { lastMouseClickTime = 0; }
 
     void BlocksManager::handleEscapeKeyPress() {
         logger->info("Escape key pressed");
 
-        clearActiveChoicesInput();
+        if (hasActiveChoicesInput()) {
+            clearActiveChoicesInput();
+        }
+
+        if (connectPortsInteraction.isStarted()) {
+            connectPortsInteraction.resetInteraction();
+        }
     }
 
     void BlocksManager::handleNumericKeyPress(int number) {
@@ -28,12 +61,12 @@ namespace gui::logic {
                 clearActiveChoicesInput();
             } else {
                 logger->error("Invalid choice number: {}", number);
-                MessageBox::showInfo("Invalid choice",
-                                     "You entered: " + std::to_string(number) +
-                                         " which is out of range. Pick a "
-                                         "number between 1 and " +
-                                         std::to_string(inputChoiceInteraction->choices.size()),
-                                     windowDelegate);
+                MessageBox::showWarning("Invalid choice",
+                                        "You entered: " + std::to_string(number) +
+                                            " which is out of range. Pick a "
+                                            "number between 1 and " +
+                                            std::to_string(inputChoiceInteraction->choices.size()),
+                                        windowDelegate);
             }
         }
     }
@@ -74,18 +107,18 @@ namespace gui::logic {
                                gui::renderer::delegate::UIRendererDelegate*& uiRendererDelegate) {
         // check if we have an active input choice interaction to render
         if (inputChoiceInteraction.has_value()) {
-            std::vector<gui::renderer::components::UITextsRow> rows = {
-                gui::renderer::components::UITextsRow({gui::renderer::components::UIText(
-                    "Choose a block type:", gui::renderer::components::UIText::Variant::Headline)}),
-                gui::renderer::components::UITextsRow({
-                    gui::renderer::components::UIText(
+            std::vector<components::UITextsRow> rows = {
+                components::UITextsRow({components::UIText("Choose a block type:",
+                                                           components::UIText::Variant::Headline)}),
+                components::UITextsRow({
+                    components::UIText(
                         "Press a number to choose a block type. Press ESC to cancel.",
-                        gui::renderer::components::UIText::Variant::Caption),
+                        components::UIText::Variant::Caption),
 
                 }),
                 // some extra spacing below the above text
-                gui::renderer::components::UITextsRow({gui::renderer::components::UIText(
-                    "", gui::renderer::components::UIText::Variant::Caption)})};
+                components::UITextsRow(
+                    {components::UIText("", components::UIText::Variant::Caption)})};
 
             for (const auto& row : inputChoicesUiTextsRows) {
                 rows.push_back(row);
@@ -112,11 +145,31 @@ namespace gui::logic {
         }
     }
 
-    void BlocksManager::maybeRenderDraggedLine(SkCanvas* canvas) const {
-        if (lastMouseClickTime > 0) {
+    void BlocksManager::maybeRenderDraggedLine(SkCanvas* canvas) {
+        static SkPaint connectorPaint = []() {
             SkPaint paint;
-            paint.setColor(SK_ColorGREEN);
-            canvas->drawLine(0, 0, mouseX, mouseY, paint);
+
+            paint.setColor(colors::PURPLE_BLUE);
+            paint.setStrokeWidth(4);
+            paint.setAntiAlias(true);
+
+            return paint;
+        }();
+
+        // make sure the interaction still references valid objects
+        connectPortsInteraction.sanitize();
+
+        if (connectPortsInteraction.isStarted()) {
+            auto startSide = connectPortsInteraction.getStartSide();
+
+            auto startSideBlockPtr = startSide.block;
+            auto startSidePortPtr = startSide.port;
+
+            if (startSideBlockPtr && startSidePortPtr) {
+                auto portCoords = startSideBlockPtr->getPortCoordinates(startSidePortPtr);
+
+                canvas->drawLine(portCoords.x, portCoords.y, mouseX, mouseY, connectorPaint);
+            }
         }
     }
 
@@ -172,7 +225,7 @@ namespace gui::logic {
 
                 logger->error("Unknown user-selected block type: {}", name);
 
-                MessageBox::showInfo(
+                MessageBox::showWarning(
                     "Invalid choice",
                     "You selected an invalid block type: '" + std::string(name) + "'",
                     windowDelegate);
@@ -199,22 +252,21 @@ namespace gui::logic {
 
         inputChoicesUiTextsRows.reserve(choices.size() / MAX_INPUT_CHOICES_PER_ROW + 1);
         {
-            std::vector<gui::renderer::components::UIText> rowBuff;
+            std::vector<components::UIText> rowBuff;
             size_t number = 1;
             for (; number <= choices.size(); number++) {
-                rowBuff.push_back(gui::renderer::components::UIText(
+                rowBuff.push_back(components::UIText(
                     std::to_string(number) + " " + choices[number - 1].displayName,
-                    gui::renderer::components::UIText::Variant::Choice));
+                    components::UIText::Variant::Choice));
 
                 if (number % MAX_INPUT_CHOICES_PER_ROW == 0) {
-                    inputChoicesUiTextsRows.push_back(
-                        gui::renderer::components::UITextsRow(rowBuff));
+                    inputChoicesUiTextsRows.push_back(components::UITextsRow(rowBuff));
                     rowBuff.clear();
                 }
             }
 
             if (!rowBuff.empty()) {
-                inputChoicesUiTextsRows.push_back(gui::renderer::components::UITextsRow(rowBuff));
+                inputChoicesUiTextsRows.push_back(components::UITextsRow(rowBuff));
             }
 
             logger->info("Prepared {} input choices for rendering", number);

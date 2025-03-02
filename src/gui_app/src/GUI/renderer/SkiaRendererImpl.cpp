@@ -27,13 +27,13 @@ namespace gui::renderer {
         /** Text font paint - start */
 
         // black stroke
-        textFontStrokePaint.setColor(SK_ColorBLACK);
+        textFontStrokePaint.setColor(colors::TEXT_OUTLINE_COLOR);
         textFontStrokePaint.setStyle(SkPaint::kStroke_Style);
         textFontStrokePaint.setStrokeWidth(4);
         textFontStrokePaint.setAntiAlias(true);
 
         // white fill
-        textFontFillPaint.setColor(SK_ColorWHITE);
+        textFontFillPaint.setColor(colors::TEXT_COLOR);
         textFontFillPaint.setStyle(SkPaint::kFill_Style);
         textFontFillPaint.setAntiAlias(true);
 
@@ -91,7 +91,7 @@ namespace gui::renderer {
 
     void SkiaRendererImpl::render() {
         SkCanvas* canvas = skSurface->getCanvas();
-        canvas->clear(constants::WINDOW_BACKGROUND_COLOR);
+        canvas->clear(colors::WINDOW_BACKGROUND_COLOR);
 
         blocksManager->render(canvas, window->getWindowSize(), uiRendererDelegatePtr);
 

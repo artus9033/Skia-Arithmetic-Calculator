@@ -12,6 +12,7 @@
 #include "GUI/geometry/Size2D.h"
 #include "GUI/logic/BlocksManager.h"
 #include "GUI/renderer/IRenderer.h"
+#include "GUI/renderer/colors.h"
 #include "GUI/renderer/delegate/UIRendererDelegate.h"
 #include "GUI/window/WindowBase.h"
 #include "components/UIText.h"
@@ -49,6 +50,11 @@
 #define CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT 0.35f
 
 namespace gui::renderer {
+    // using an empty namespace to avoid polluting the outer scope of gui::renderer
+    namespace {
+        namespace colors = gui::renderer::colors;
+    }
+
     /**
      * @brief Class responsible for rendering the GUI using Skia and GLFW
      */

@@ -28,7 +28,7 @@ namespace gui::elements::impl {
                       gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
                       const geometry::Size2D& windowSize);
 
-        void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) const override;
+        void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) override;
 
         /**
          * \copydoc IDoubleClickable::onDoubleClick
@@ -81,12 +81,12 @@ namespace gui::elements::impl {
         /**
          * The input ports of the block
          */
-        static std::vector<gui::elements::base::Port> inputPorts;
+        static const std::vector<gui::elements::base::Port> inputPorts;
 
         /**
          * The output ports of the block
          */
-        static std::vector<gui::elements::base::Port> outputPorts;
+        static const std::vector<gui::elements::base::Port> outputPorts;
     };
 }  // namespace gui::elements::impl
 

@@ -10,7 +10,7 @@ namespace gui::elements::impl {
           selfId(business_logic::stringifyAddressOf(this)),
           newBlockChoiceDelegate(newBlockChoiceDelegate) {}
 
-    void ConstantBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) const {
+    void ConstantBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) {
         BaseBlock::render(canvas, mouseX, mouseY, isHovered);
     }
 
@@ -20,10 +20,9 @@ namespace gui::elements::impl {
         // TODO: open editor
     }
 
-    std::vector<gui::elements::base::Port> ConstantBlock::inputPorts = {
-        {"b"},
+    const std::vector<gui::elements::base::Port> ConstantBlock::inputPorts = {};
+    const std::vector<gui::elements::base::Port> ConstantBlock::outputPorts = {
+        {.name = "value", .type = gui::elements::base::Port::Type::OUTPUT},
     };
-    std::vector<gui::elements::base::Port> ConstantBlock::outputPorts = {{.name = "constant"},
-                                                                         {"X"}};
 
 }  // namespace gui::elements::impl

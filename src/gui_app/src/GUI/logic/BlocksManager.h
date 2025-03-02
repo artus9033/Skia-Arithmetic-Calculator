@@ -11,9 +11,12 @@
 #include "GUI/elements/BlocksRegistry.h"
 #include "GUI/elements/base/BaseBlock.h"
 #include "GUI/geometry/Size2D.h"
+#include "GUI/input/ConnectPortsInteraction.h"
 #include "GUI/input/InputChoiceInteraction.h"
+#include "GUI/renderer/colors.h"
 #include "GUI/renderer/delegate/UIRendererDelegate.h"
 #include "GUI/window/delegate/IWindowDelegate.h"
+#include "MessageBox.h"
 #include "constants.h"
 #include "delegate/INewBlockChoiceDelegate.h"
 #include "logging/Loggable.h"
@@ -22,6 +25,12 @@
 #define MAX_INPUT_CHOICES_PER_ROW 3
 
 namespace gui::logic {
+    // using an empty namespace to avoid polluting the outer scope of gui::logic
+    namespace {
+        namespace components = gui::renderer::components;
+        namespace colors = gui::renderer::colors;
+    }  // namespace
+
     /**
      * @brief Manages the blocks in the GUI, both their rendering and interaction
      */
@@ -156,13 +165,18 @@ namespace gui::logic {
          * @brief Renders the dragged line on the canvas
          * @param canvas SkCanvas to draw on
          */
-        void maybeRenderDraggedLine(SkCanvas* canvas) const;
+        void maybeRenderDraggedLine(SkCanvas* canvas);
 
         /**
          * @brief The input choice interaction
          */
         std::optional<gui::input::InputChoiceInteraction<gui::elements::base::BlockType>>
             inputChoiceInteraction;
+
+        /**
+         * @brief The connect ports interaction singleton
+         */
+        gui::input::ConnectPortsInteraction connectPortsInteraction;
 
         /**
          * @brief The UI texts for the choices; prepared inside `setActiveChoicesInput(...)` and

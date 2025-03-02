@@ -1,5 +1,5 @@
 #include "BaseBlock.h"
-#define CAPTION_FONT_SIZE 8
+
 namespace gui::elements::base {
 
     BaseBlock::BaseBlock(int cx,
@@ -64,12 +64,12 @@ namespace gui::elements::base {
         centerY = (topY + bottomY) / 2.0f;
     }
 
-    void BaseBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) const {
-        // dark blue grey outline
-        static SkPaint outlinePaint = []() {
+    void BaseBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) {
+        // dark gray outline
+        static SkPaint blockOutlinePaint = []() {
             SkPaint paint;
 
-            paint.setColor(SkColorSetARGB(255, 100, 100, 100));
+            paint.setColor(colors::BLOCK_OUTLINE_COLOR);
             paint.setStyle(SkPaint::Style::kStroke_Style);
             paint.setStrokeWidth(BLOCK_OUTLINE_WIDTH);
             paint.setAntiAlias(true);
@@ -77,11 +77,11 @@ namespace gui::elements::base {
             return paint;
         }();
 
-        // dark blue grey outline
-        static SkPaint outlineHoveredPaint = []() {
+        // red hovered outline
+        static SkPaint blockOutlineHoveredPaint = []() {
             SkPaint paint;
 
-            paint.setColor(SK_ColorRED);
+            paint.setColor(colors::BLOCK_HOVERED_OUTLINE_COLOR);
             paint.setStyle(SkPaint::Style::kStroke_Style);
             paint.setStrokeWidth(BLOCK_OUTLINE_WIDTH);
             paint.setAntiAlias(true);
@@ -89,11 +89,11 @@ namespace gui::elements::base {
             return paint;
         }();
 
-        // blue-purple outline
-        static SkPaint outlineHoveredPortPaint = []() {
+        // blueish hovered outline
+        static SkPaint portOutlineHoveredPaint = []() {
             SkPaint paint;
 
-            paint.setColor(SkColorSetARGB(255, 100, 100, 255));
+            paint.setColor(colors::PURPLE_BLUE);
             paint.setStyle(SkPaint::Style::kStroke_Style);
             paint.setStrokeWidth(PORT_CIRCLE_OUTLINE_WIDTH);
             paint.setAntiAlias(true);
@@ -101,10 +101,10 @@ namespace gui::elements::base {
             return paint;
         }();
 
-        static SkPaint outlinePortPaint = []() {
+        static SkPaint portOutlinePaint = []() {
             SkPaint paint;
 
-            paint.setColor(SkColorSetARGB(255, 100, 100, 100));
+            paint.setColor(colors::BLOCK_PORT_OUTLINE_COLOR);
             paint.setStyle(SkPaint::Style::kStroke_Style);
             paint.setStrokeWidth(PORT_CIRCLE_OUTLINE_WIDTH);
             paint.setAntiAlias(true);
@@ -112,11 +112,11 @@ namespace gui::elements::base {
             return paint;
         }();
 
-        // light blue grey fill
-        static SkPaint fillPaint = []() {
+        // light blue gray fill
+        static SkPaint blockFillPaint = []() {
             SkPaint paint;
 
-            paint.setColor(SkColorSetARGB(255, 50, 50, 50));
+            paint.setColor(colors::BLOCK_BACKGROUND_COLOR);
             paint.setStyle(SkPaint::Style::kFill_Style);
 
             return paint;
@@ -125,7 +125,7 @@ namespace gui::elements::base {
         static SkPaint textPaint = []() {
             SkPaint paint;
 
-            paint.setColor(SK_ColorWHITE);
+            paint.setColor(colors::TEXT_COLOR);
             paint.setStyle(SkPaint::Style::kStroke_Style);
             paint.setAntiAlias(true);
 
@@ -145,7 +145,8 @@ namespace gui::elements::base {
             return font;
         }();
 
-        auto inputPorts = getInputPorts(), outputPorts = getOutputPorts();
+        auto& inputPorts = getInputPorts();
+        auto& outputPorts = getOutputPorts();
 
         // note: the below uses int arithmetic for performance optimization; the assumption is that
         // PORT_CIRCLE_RADIUS is an int already, which is guarded by static_assert in the header
@@ -161,8 +162,8 @@ namespace gui::elements::base {
 
         // draw the block
         canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY),
-                         isHovered ? outlineHoveredPaint : outlinePaint);
-        canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY), fillPaint);
+                         isHovered ? blockOutlineHoveredPaint : blockOutlinePaint);
+        canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY), blockFillPaint);
 
         // draw the input ports
         for (size_t i = 0; i < inputPorts.size(); i++) {
@@ -171,10 +172,10 @@ namespace gui::elements::base {
                                  mouseX, mouseY, inputCx, inputCy, TOTAL_PORT_HITBOX_RADIUS);
 
             const SkPaint& renderOutlinePaint =
-                isPortHovered ? outlineHoveredPortPaint : outlinePortPaint;
+                isPortHovered ? portOutlineHoveredPaint : portOutlinePaint;
 
             canvas->drawCircle(inputCx, inputCy, PORT_CIRCLE_RADIUS, renderOutlinePaint);
-            canvas->drawCircle(inputCx, inputCy, PORT_CIRCLE_RADIUS, fillPaint);
+            canvas->drawCircle(inputCx, inputCy, PORT_CIRCLE_RADIUS, blockFillPaint);
 
             if (isPortHovered) {
                 auto cstr = inputPorts[i].name.c_str();
@@ -190,6 +191,9 @@ namespace gui::elements::base {
                                    textPaint);
             }
 
+            // update the port coordinates map
+            portCoordinates[&inputPorts[i]] = {.x = inputCx, .y = inputCy};
+
             inputCy += TOTAL_PORT_RADIUS * 2 + PORT_CIRCLE_MARGIN;
         }
 
@@ -200,16 +204,13 @@ namespace gui::elements::base {
                                  mouseX, mouseY, outputCx, outputCy, TOTAL_PORT_HITBOX_RADIUS);
 
             const SkPaint& renderOutlinePaint =
-                isPortHovered ? outlineHoveredPortPaint : outlinePortPaint;
+                isPortHovered ? portOutlineHoveredPaint : portOutlinePaint;
 
             canvas->drawCircle(outputCx, outputCy, PORT_CIRCLE_RADIUS, renderOutlinePaint);
-            canvas->drawCircle(outputCx, outputCy, PORT_CIRCLE_RADIUS, fillPaint);
+            canvas->drawCircle(outputCx, outputCy, PORT_CIRCLE_RADIUS, blockFillPaint);
 
             if (isPortHovered) {
                 auto cstr = outputPorts[i].name.c_str();
-
-                // measure the text
-                SkScalar width = captionFont.measureText(cstr, strlen(cstr), SkTextEncoding::kUTF8);
 
                 // render port name to the right of the port
                 canvas->drawString(cstr,
@@ -219,8 +220,49 @@ namespace gui::elements::base {
                                    textPaint);
             }
 
+            // update the port coordinates map
+            portCoordinates[&outputPorts[i]] = {.x = outputCx, .y = outputCy};
+
             outputCy += TOTAL_PORT_RADIUS * 2 + PORT_CIRCLE_MARGIN;
         }
     }
 
+    gui::geometry::Point2D BaseBlock::getPortCoordinates(
+        const gui::elements::base::Port* port) const {
+        if (portCoordinates.find(port) != portCoordinates.end()) {
+            return portCoordinates.at(port);
+        }
+
+        return {.x = 0, .y = 0};
+    }
+
+    std::optional<const gui::elements::base::Port*> BaseBlock::checkPort(
+        const gui::elements::base::Port* port, const geometry::Point2D& point) const {
+        auto predCoordinates = getPortCoordinates(port);
+
+        if (gui::geometry::isCircleHovered(
+                point.x, point.y, predCoordinates.x, predCoordinates.y, TOTAL_PORT_HITBOX_RADIUS)) {
+            return std::make_optional(port);
+        }
+
+        return std::nullopt;
+    }
+
+    std::optional<const gui::elements::base::Port*> BaseBlock::getPortAtCoordinates(
+        const geometry::Point2D& point) const {
+        for (const auto& port : getInputPorts()) {
+            if (auto maybePort = checkPort(&port, point)) {
+                return maybePort;
+            }
+        }
+
+        for (const auto& port : getOutputPorts()) {
+            if (auto maybePort = checkPort(&port, point)) {
+                return maybePort;
+            }
+        }
+
+        // port not found
+        return std::nullopt;
+    }
 }  // namespace gui::elements::base

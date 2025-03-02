@@ -1,6 +1,7 @@
 #ifndef GUI_ELEMENTS_BASE_BLOCK_TYPE_H
 #define GUI_ELEMENTS_BASE_BLOCK_TYPE_H
 
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>

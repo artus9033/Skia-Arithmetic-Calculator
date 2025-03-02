@@ -11,12 +11,18 @@
 #include "skia/include/ports/SkFontMgr_mac_ct.h"
 #endif
 
+#include <memory>
+#include <unordered_map>
 #include <vector>
 
+#include "GUI/geometry/Point2D.h"
 #include "GUI/geometry/Size2D.h"
 #include "GUI/geometry/helpers.h"
+#include "GUI/renderer/colors.h"
 #include "IDraggable.h"
 #include "logging/Loggable.h"
+
+#define CAPTION_FONT_SIZE 8  // TODO: replace this with a centralized registry of static fonts
 
 // note: the assumption is that PORT_CIRCLE_RADIUS is divisible by 2 (int arithmetic for performance
 // reasons)
@@ -47,11 +53,30 @@ static_assert(BLOCK_OUTLINE_WIDTH % 2 == 0, "BLOCK_OUTLINE_WIDTH must be divisib
 #define HALF_BLOCK_OUTLINE_WIDTH BLOCK_OUTLINE_WIDTH / 2
 
 namespace gui::elements::base {
+    // using an empty namespace to avoid polluting the outer scope of gui::elements::base
+    namespace {
+        namespace colors = gui::renderer::colors;
+    }
+
     /**
      * @brief Represents a port on a block
      */
     struct Port {
-        std::string name;  // name/label of the port
+       public:
+        /**
+         * @brief The name/label of the port
+         */
+        std::string name;
+
+        /**
+         * @brief The type of the port
+         */
+        enum class Type { INPUT, OUTPUT };
+
+        /**
+         * @brief The type of the port
+         */
+        Type type;
     };
 
     class BaseBlock : public IDraggable {
@@ -97,7 +122,7 @@ namespace gui::elements::base {
          * @param mouseY The y coordinate of the mouse
          * @param isHovered True if the block is hovered over, false otherwise
          */
-        virtual void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) const;
+        virtual void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered);
 
         /**
          * \copydoc IDraggable::onDragStart
@@ -113,6 +138,27 @@ namespace gui::elements::base {
          * \copydoc IDraggable::onDragEnd
          */
         void onDragEnd(int x, int y) override;
+
+        /**
+         * @brief Gets the coordinates of a port
+         * @param port The port to get the coordinates of
+         * @return The coordinates of the port
+         */
+        geometry::Point2D getPortCoordinates(const gui::elements::base::Port* port) const;
+
+        /**
+         * @brief Gets the port at given coordinates
+         * @param point The coordinates to check
+         * @return An optional carrying the Port if it is hit or `std::nullopt` otherwise
+         */
+        std::optional<const gui::elements::base::Port*> getPortAtCoordinates(
+            const geometry::Point2D& point) const;
+
+        /**
+         * The unique identifier of the block (its address in memory), used for logging
+         * purposes; should return the same value as `business_logic::stringifyAddressOf(this)`
+         */
+        virtual std::string getSelfId() const = 0;
 
        protected:
         /**
@@ -166,12 +212,6 @@ namespace gui::elements::base {
         geometry::Size2D windowSize;
 
         /**
-         * The unique identifier of the block (its address in memory), used for logging
-         * purposes; should return the same value as `business_logic::stringifyAddressOf(this)`
-         */
-        virtual std::string getSelfId() const = 0;
-
-        /**
          * @brief Gets the input ports of the block
          * @return Vector of input ports
          */
@@ -188,11 +228,26 @@ namespace gui::elements::base {
          */
         std::shared_ptr<spdlog::logger> logger;
 
+       private:
+        /**
+         * @brief Caches the coordinates of the ports of the block; must be updated after rendering
+         */
+        std::unordered_map<const gui::elements::base::Port*, geometry::Point2D> portCoordinates;
+
         /**
          * @brief Caches the bottom right corner of the block, so that it is not recalculated every
          * time `isHovered()` is called
          */
         void cacheCornerCoordinates();
+
+        /**
+         * @brief Checks if a point is inside the hitbox of a port
+         * @param portsCollection The collection of ports to check
+         * @param point The point to check
+         * @return An optional carrying the Port if it is hit or `std::nullopt` otherwise
+         */
+        std::optional<const gui::elements::base::Port*> checkPort(
+            const gui::elements::base::Port* port, const geometry::Point2D& point) const;
     };
 }  // namespace gui::elements::base
 
