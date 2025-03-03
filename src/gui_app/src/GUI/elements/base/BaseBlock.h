@@ -2,14 +2,6 @@
 #define GUI_ELEMENTS_BASE_I_BLOCK_H
 
 #include <skia/include/core/SkCanvas.h>
-#include <skia/include/core/SkFont.h>
-#include <skia/include/core/SkFontMgr.h>
-
-#include "skia/include/core/SkTypeface.h"
-
-#ifdef __APPLE__
-#include "skia/include/ports/SkFontMgr_mac_ct.h"
-#endif
 
 #include <memory>
 #include <unordered_map>
@@ -18,11 +10,11 @@
 #include "GUI/geometry/Point2D.h"
 #include "GUI/geometry/Size2D.h"
 #include "GUI/geometry/helpers.h"
+#include "GUI/renderer/FontManager.h"
 #include "GUI/renderer/colors.h"
+#include "GUI/renderer/components/UIText.h"
 #include "IDraggable.h"
 #include "logging/Loggable.h"
-
-#define CAPTION_FONT_SIZE 8  // TODO: replace this with a centralized registry of static fonts
 
 // note: the assumption is that PORT_CIRCLE_RADIUS is divisible by 2 (int arithmetic for performance
 // reasons)
@@ -56,7 +48,8 @@ namespace gui::elements::base {
     // using an empty namespace to avoid polluting the outer scope of gui::elements::base
     namespace {
         namespace colors = gui::renderer::colors;
-    }
+        namespace components = gui::renderer::components;
+    }  // namespace
 
     /**
      * @brief Represents a port on a block

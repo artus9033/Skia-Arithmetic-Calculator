@@ -113,12 +113,12 @@ namespace gui::logic {
                 components::UITextsRow({
                     components::UIText(
                         "Press a number to choose a block type. Press ESC to cancel.",
-                        components::UIText::Variant::Caption),
+                        components::UIText::Variant::MenuCaption),
 
                 }),
                 // some extra spacing below the above text
                 components::UITextsRow(
-                    {components::UIText("", components::UIText::Variant::Caption)})};
+                    {components::UIText("", components::UIText::Variant::MenuCaption)})};
 
             for (const auto& row : inputChoicesUiTextsRows) {
                 rows.push_back(row);

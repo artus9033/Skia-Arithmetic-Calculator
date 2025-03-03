@@ -132,19 +132,6 @@ namespace gui::elements::base {
             return paint;
         }();
 
-        static sk_sp<SkFontMgr> fontMgr = SkFontMgr_New_CoreText(nullptr);
-        static auto typeface = fontMgr->legacyMakeTypeface(nullptr, SkFontStyle::Normal());
-
-        static SkFont captionFont = []() {
-            SkFont font;
-
-            font.setSize(CAPTION_FONT_SIZE);
-            font.setTypeface(typeface);
-            font.setEmbolden(true);
-
-            return font;
-        }();
-
         auto& inputPorts = getInputPorts();
         auto& outputPorts = getOutputPorts();
 
@@ -164,6 +151,10 @@ namespace gui::elements::base {
         canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY),
                          isHovered ? blockOutlineHoveredPaint : blockOutlinePaint);
         canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY), blockFillPaint);
+
+        auto& captionFont =
+            components::UIText::getFontForVariant(components::UIText::Variant::Caption);
+        auto captionFontSize = captionFont.getSize();
 
         // draw the input ports
         for (size_t i = 0; i < inputPorts.size(); i++) {
@@ -185,8 +176,8 @@ namespace gui::elements::base {
 
                 // render port name to the left of the port
                 canvas->drawString(cstr,
-                                   inputCx - TOTAL_PORT_RADIUS_HALF - CAPTION_FONT_SIZE - width,
-                                   inputCy + TOTAL_PORT_RADIUS_HALF - CAPTION_FONT_SIZE / 2,
+                                   inputCx - TOTAL_PORT_RADIUS_HALF - captionFontSize - width,
+                                   inputCy + TOTAL_PORT_RADIUS_HALF - captionFontSize / 2,
                                    captionFont,
                                    textPaint);
             }
@@ -214,8 +205,8 @@ namespace gui::elements::base {
 
                 // render port name to the right of the port
                 canvas->drawString(cstr,
-                                   outputCx + TOTAL_PORT_RADIUS_HALF + CAPTION_FONT_SIZE,
-                                   outputCy + TOTAL_PORT_RADIUS_HALF - CAPTION_FONT_SIZE / 2,
+                                   outputCx + TOTAL_PORT_RADIUS_HALF + captionFontSize,
+                                   outputCy + TOTAL_PORT_RADIUS_HALF - captionFontSize / 2,
                                    captionFont,
                                    textPaint);
             }

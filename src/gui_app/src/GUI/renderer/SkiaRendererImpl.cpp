@@ -23,36 +23,6 @@ namespace gui::renderer {
             throw std::runtime_error(
                 "Failed to create Skia surface (SkSurfaces::RenderTarget returned null)");
         }
-
-        /** Text font paint - start */
-
-        // black stroke
-        textFontStrokePaint.setColor(colors::TEXT_OUTLINE_COLOR);
-        textFontStrokePaint.setStyle(SkPaint::kStroke_Style);
-        textFontStrokePaint.setStrokeWidth(4);
-        textFontStrokePaint.setAntiAlias(true);
-
-        // white fill
-        textFontFillPaint.setColor(colors::TEXT_COLOR);
-        textFontFillPaint.setStyle(SkPaint::kFill_Style);
-        textFontFillPaint.setAntiAlias(true);
-
-        /** Text font paint - end */
-
-        /** Text font - start */
-        sk_sp<SkFontMgr> fontMgr = SkFontMgr_New_CoreText(nullptr);
-        auto typeface = fontMgr->legacyMakeTypeface(nullptr, SkFontStyle::Normal());
-
-        inputHeadlineFont.setSize(INPUT_HEADLINE_FONT_SIZE_BASE);
-        inputHeadlineFont.setTypeface(typeface);
-        inputHeadlineFont.setEmbolden(true);
-
-        inputCaptionFont.setSize(INPUT_CAPTION_FONT_SIZE_BASE);
-        inputCaptionFont.setTypeface(typeface);
-
-        inputChoiceFont.setSize(INPUT_CHOICE_FONT_SIZE_BASE);
-        inputChoiceFont.setTypeface(typeface);
-        /** Text font - end */
     }
 
     void SkiaRendererImpl::reinitializeSurface() {
@@ -105,10 +75,7 @@ namespace gui::renderer {
 
         skSurface->getCanvas()->scale(xScale, yScale);
 
-        // recalculate the sizes of fonts
-        inputHeadlineFont.setSize(INPUT_HEADLINE_FONT_SIZE_BASE * xScale);
-        inputCaptionFont.setSize(INPUT_CAPTION_FONT_SIZE_BASE * xScale);
-        inputChoiceFont.setSize(INPUT_CHOICE_FONT_SIZE_BASE * xScale);
+        FontManager::recalculateFontSizes(xScale);
     }
 
     void SkiaRendererImpl::renderCenteredTextsRows(
@@ -118,14 +85,12 @@ namespace gui::renderer {
         // calculate a list of heights of rows (each height is the max height of a text in the row)
         auto rowsHeights = std::vector<SkScalar>(rows.size());
         std::transform(
-            rows.begin(),
-            rows.end(),
-            rowsHeights.begin(),
-            [this](const components::UITextsRow& row) {
+            rows.begin(), rows.end(), rowsHeights.begin(), [](const components::UITextsRow& row) {
                 SkScalar maxHeight = 0.0f;
                 for (const auto& text : row.getUiTexts()) {
-                    maxHeight =
-                        std::max(maxHeight, getFontForLabelType(text.getVariant()).getSize());
+                    maxHeight = std::max(
+                        maxHeight,
+                        components::UIText::getFontForVariant(text.getVariant()).getSize());
                 }
 
                 return maxHeight *
@@ -153,8 +118,8 @@ namespace gui::renderer {
             std::transform(row.getUiTexts().begin(),
                            row.getUiTexts().end(),
                            textsWidths.begin(),
-                           [this](const components::UIText& uiText) {
-                               return getFontForLabelType(uiText.getVariant())
+                           [](const components::UIText& uiText) {
+                               return components::UIText::getFontForVariant(uiText.getVariant())
                                    .measureText(uiText.getText().c_str(),
                                                 uiText.getText().length(),
                                                 SkTextEncoding::kUTF8);
@@ -179,7 +144,7 @@ namespace gui::renderer {
             // render the texts in this row
             int textIndex = 0;
             for (const auto& uiText : row.getUiTexts()) {
-                auto font = getFontForLabelType(uiText.getVariant());
+                auto font = components::UIText::getFontForVariant(uiText.getVariant());
                 auto text = uiText.getText();
 
                 auto halfMarginX = textsWidths[textIndex] *
@@ -188,10 +153,12 @@ namespace gui::renderer {
                 renderX += halfMarginX;
 
                 // render stroke
-                canvas->drawString(text.c_str(), renderX, renderY, font, textFontStrokePaint);
+                canvas->drawString(
+                    text.c_str(), renderX, renderY, font, FontManager::textFontStrokePaint);
 
                 // render fill on top of stroke
-                canvas->drawString(text.c_str(), renderX, renderY, font, textFontFillPaint);
+                canvas->drawString(
+                    text.c_str(), renderX, renderY, font, FontManager::textFontFillPaint);
 
                 // apply 2nd half of the margin after the element
                 renderX += textsWidths[textIndex] + halfMarginX;
@@ -203,20 +170,6 @@ namespace gui::renderer {
             renderY += rowsHeights[rowIndex] + halfMarginY;
 
             rowIndex++;
-        }
-    }
-
-    const SkFont& SkiaRendererImpl::getFontForLabelType(
-        const components::UIText::Variant& variant) const {
-        switch (variant) {
-            case components::UIText::Variant::Headline:
-                return inputHeadlineFont;
-
-            case components::UIText::Variant::Caption:
-                return inputCaptionFont;
-
-            case components::UIText::Variant::Choice:
-                return inputChoiceFont;
         }
     }
 }  // namespace gui::renderer

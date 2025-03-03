@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include "FontManager.h"
 #include "GUI/elements/base/BaseBlock.h"
 #include "GUI/geometry/Size2D.h"
 #include "GUI/logic/BlocksManager.h"
@@ -18,31 +19,17 @@
 #include "components/UIText.h"
 #include "components/UITextsRow.h"
 #include "constants.h"
-#include "include/core/SkFont.h"
-#include "include/core/SkPaint.h"
-#include "include/core/SkTypeface.h"
 #include "logging/Loggable.h"
 #include "skia/include/core/SkCanvas.h"
 #include "skia/include/core/SkColorSpace.h"
-#include "skia/include/core/SkFont.h"
-#include "skia/include/core/SkFontMgr.h"
 #include "skia/include/core/SkPaint.h"
 #include "skia/include/core/SkSurface.h"
-#include "skia/include/core/SkTypeface.h"
 #include "skia/include/gpu/ganesh/GrBackendSurface.h"
 #include "skia/include/gpu/ganesh/GrDirectContext.h"
 #include "skia/include/gpu/ganesh/SkSurfaceGanesh.h"
 #include "skia/include/gpu/ganesh/gl/GrGLBackendSurface.h"
 #include "skia/include/gpu/ganesh/gl/GrGLDirectContext.h"
 #include "skia/include/gpu/ganesh/gl/GrGLInterface.h"
-
-#ifdef __APPLE__
-#include "skia/include/ports/SkFontMgr_mac_ct.h"
-#endif
-
-#define INPUT_HEADLINE_FONT_SIZE_BASE 17
-#define INPUT_CAPTION_FONT_SIZE_BASE 10
-#define INPUT_CHOICE_FONT_SIZE_BASE 14
 
 // below: 20% margin between texts, 10% margin between rows
 // for SkiaRendererImpl::renderCenteredTextsRows
@@ -134,41 +121,9 @@ namespace gui::renderer {
         void reinitializeSurface();
 
         /**
-         * @brief The paint for the text font fill
-         */
-        SkPaint textFontFillPaint;
-
-        /**
-         * @brief The paint for the text font stroke
-         */
-        SkPaint textFontStrokePaint;
-
-        /**
-         * @brief The font for the input choice font
-         */
-        SkFont inputChoiceFont;
-
-        /**
-         * @brief The font for the input headline font
-         */
-        SkFont inputHeadlineFont;
-
-        /**
-         * @brief The font for the input caption font
-         */
-        SkFont inputCaptionFont;
-
-        /**
          * @brief The UI renderer delegate
          */
         delegate::UIRendererDelegate* uiRendererDelegatePtr;
-
-        /**
-         * @brief Gets the font for the given label type
-         * @param variant The variant of the label
-         * @return The font for the given label type
-         */
-        const SkFont& getFontForLabelType(const components::UIText::Variant& variant) const;
     };
 
 }  // namespace gui::renderer
