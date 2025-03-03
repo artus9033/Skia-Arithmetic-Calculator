@@ -2,6 +2,16 @@
 #define SKIA_RENDERER_H
 
 #include <GLFW/glfw3.h>
+#include <skia/include/core/SkCanvas.h>
+#include <skia/include/core/SkColorSpace.h>
+#include <skia/include/core/SkPaint.h>
+#include <skia/include/core/SkSurface.h>
+#include <skia/include/gpu/ganesh/GrBackendSurface.h>
+#include <skia/include/gpu/ganesh/GrDirectContext.h>
+#include <skia/include/gpu/ganesh/SkSurfaceGanesh.h>
+#include <skia/include/gpu/ganesh/gl/GrGLBackendSurface.h>
+#include <skia/include/gpu/ganesh/gl/GrGLDirectContext.h>
+#include <skia/include/gpu/ganesh/gl/GrGLInterface.h>
 
 #include <numeric>
 #include <optional>
@@ -20,16 +30,6 @@
 #include "components/UITextsRow.h"
 #include "constants.h"
 #include "logging/Loggable.h"
-#include "skia/include/core/SkCanvas.h"
-#include "skia/include/core/SkColorSpace.h"
-#include "skia/include/core/SkPaint.h"
-#include "skia/include/core/SkSurface.h"
-#include "skia/include/gpu/ganesh/GrBackendSurface.h"
-#include "skia/include/gpu/ganesh/GrDirectContext.h"
-#include "skia/include/gpu/ganesh/SkSurfaceGanesh.h"
-#include "skia/include/gpu/ganesh/gl/GrGLBackendSurface.h"
-#include "skia/include/gpu/ganesh/gl/GrGLDirectContext.h"
-#include "skia/include/gpu/ganesh/gl/GrGLInterface.h"
 
 // below: 20% margin between texts, 10% margin between rows
 // for SkiaRendererImpl::renderCenteredTextsRows

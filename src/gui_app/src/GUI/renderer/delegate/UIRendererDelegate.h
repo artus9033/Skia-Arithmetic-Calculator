@@ -1,12 +1,13 @@
 #ifndef UIRenderDelegate_H
 #define UIRenderDelegate_H
 
+#include <skia/include/core/SkCanvas.h>
+
 #include <string>
 #include <vector>
 
 #include "GUI/geometry/Size2D.h"
 #include "GUI/renderer/components/UITextsRow.h"
-#include "skia/include/core/SkCanvas.h"
 
 namespace gui::renderer::delegate {
 

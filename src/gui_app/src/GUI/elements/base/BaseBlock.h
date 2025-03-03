@@ -3,17 +3,22 @@
 
 #include <skia/include/core/SkCanvas.h>
 
+#include <boost/multiprecision/cpp_dec_float.hpp>
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
+#include "GUI/elements/base/BlockType.h"
 #include "GUI/geometry/Point2D.h"
 #include "GUI/geometry/Size2D.h"
 #include "GUI/geometry/helpers.h"
+#include "GUI/logic/delegate/IBlockLifecycleManagerDelegate.h"
+#include "GUI/logic/delegate/INewBlockChoiceDelegate.h"
 #include "GUI/renderer/FontManager.h"
 #include "GUI/renderer/colors.h"
 #include "GUI/renderer/components/UIText.h"
 #include "IDraggable.h"
+#include "Port.h"
 #include "logging/Loggable.h"
 
 // note: the assumption is that PORT_CIRCLE_RADIUS is divisible by 2 (int arithmetic for performance
@@ -33,7 +38,7 @@ static_assert(PORT_CIRCLE_OUTLINE_WIDTH < PORT_CIRCLE_RADIUS,
 #define TOTAL_PORT_RADIUS (PORT_CIRCLE_RADIUS + PORT_CIRCLE_OUTLINE_WIDTH)
 #define TOTAL_PORT_RADIUS_HALF TOTAL_PORT_RADIUS / 2
 
-#define PORT_CIRCLE_MARGIN PORT_CIRCLE_RADIUS / 2
+#define PORT_CIRCLE_MARGIN 0  // PORT_CIRCLE_RADIUS / 2
 #define PORT_CIRCLE_MARGIN_HALF PORT_CIRCLE_MARGIN / 2
 
 // note: the assumption is that BLOCK_OUTLINE_WIDTH is divisible by 2 (int arithmetic for
@@ -51,27 +56,6 @@ namespace gui::elements::base {
         namespace components = gui::renderer::components;
     }  // namespace
 
-    /**
-     * @brief Represents a port on a block
-     */
-    struct Port {
-       public:
-        /**
-         * @brief The name/label of the port
-         */
-        std::string name;
-
-        /**
-         * @brief The type of the port
-         */
-        enum class Type { INPUT, OUTPUT };
-
-        /**
-         * @brief The type of the port
-         */
-        Type type;
-    };
-
     class BaseBlock : public IDraggable {
        public:
         /**
@@ -80,14 +64,21 @@ namespace gui::elements::base {
          * @param cy The center y coordinate where to place the center of the block
          * @param blockWidth The width of the block
          * @param blockHeight The height of the block
+         * @param newBlockChoiceDelegate The delegate that is notified when a new block is chosen to
+         * be added to the canvas
+         * @param blockLifecycleManagerDelegate The delegate that manages the lifecycles of blocks
+         * @param logger The logger for the block
          * @param windowSize The size of the window
          */
-        BaseBlock(int cx,
-                  int cy,
-                  int blockWidth,
-                  int blockHeight,
-                  std::shared_ptr<spdlog::logger> logger,
-                  const geometry::Size2D& windowSize);
+        BaseBlock(
+            int cx,
+            int cy,
+            int blockWidth,
+            int blockHeight,
+            gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
+            gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
+            std::shared_ptr<spdlog::logger> logger,
+            const geometry::Size2D& windowSize);
 
         /**
          * @brief Updates the width and height of the block
@@ -96,7 +87,7 @@ namespace gui::elements::base {
          */
         void updateWidthHeight(int newWidth, int newHeight);
 
-        virtual ~BaseBlock() = default;
+        virtual ~BaseBlock();
 
         /**
          * @brief Checks if the block is hovered over by the mouse
@@ -137,21 +128,36 @@ namespace gui::elements::base {
          * @param port The port to get the coordinates of
          * @return The coordinates of the port
          */
-        geometry::Point2D getPortCoordinates(const gui::elements::base::Port* port) const;
+        geometry::Point2D getPortCoordinates(const Port* port) const;
 
         /**
          * @brief Gets the port at given coordinates
          * @param point The coordinates to check
          * @return An optional carrying the Port if it is hit or `std::nullopt` otherwise
          */
-        std::optional<const gui::elements::base::Port*> getPortAtCoordinates(
-            const geometry::Point2D& point) const;
+        std::optional<const Port*> getPortAtCoordinates(const geometry::Point2D& point) const;
 
         /**
          * The unique identifier of the block (its address in memory), used for logging
          * purposes; should return the same value as `business_logic::stringifyAddressOf(this)`
          */
         virtual std::string getSelfId() const = 0;
+
+        /**
+         * @brief Gets the type of the block
+         * @return The type of the block
+         */
+        virtual BlockType getBlockType() const = 0;
+
+        /**
+         * @brief Gets the value of the port
+         * @param port The port to get the value of
+         * @return The value of the port
+         */
+        const boost::multiprecision::cpp_dec_float_50& getPortValue(const Port* port) const;
+
+        // make the hash function a friend to allow it to access non-public members
+        friend struct std::hash<BaseBlock>;
 
        protected:
         /**
@@ -221,11 +227,26 @@ namespace gui::elements::base {
          */
         std::shared_ptr<spdlog::logger> logger;
 
+        /**
+         * @brief The registry of port values
+         */
+        std::unordered_map<const Port*, boost::multiprecision::cpp_dec_float_50> portValues;
+
+        /**
+         * The delegate that is notified when a new block is chosen to be added to the canvas
+         */
+        gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate;
+
+        /**
+         * The delegate that manages the lifecycles of blocks
+         */
+        gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate;
+
        private:
         /**
          * @brief Caches the coordinates of the ports of the block; must be updated after rendering
          */
-        std::unordered_map<const gui::elements::base::Port*, geometry::Point2D> portCoordinates;
+        std::unordered_map<const Port*, geometry::Point2D> portCoordinates;
 
         /**
          * @brief Caches the bottom right corner of the block, so that it is not recalculated every
@@ -239,9 +260,19 @@ namespace gui::elements::base {
          * @param point The point to check
          * @return An optional carrying the Port if it is hit or `std::nullopt` otherwise
          */
-        std::optional<const gui::elements::base::Port*> checkPort(
-            const gui::elements::base::Port* port, const geometry::Point2D& point) const;
+        std::optional<const Port*> checkPort(const Port* port,
+                                             const geometry::Point2D& point) const;
     };
 }  // namespace gui::elements::base
+
+// the hash function is required for std unordered containers
+namespace std {
+    template <>
+    struct hash<gui::elements::base::BaseBlock> {
+        std::size_t operator()(const gui::elements::base::BaseBlock& p) const {
+            return std::hash<int>()(p.cx) ^ (std::hash<int>()(p.cy) << 1);
+        }
+    };
+}  // namespace std
 
 #endif  // GUI_ELEMENTS_BASE_I_BLOCK_H

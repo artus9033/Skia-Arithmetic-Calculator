@@ -10,14 +10,18 @@
 
 #include "GUI/elements/BlocksRegistry.h"
 #include "GUI/elements/base/BaseBlock.h"
+#include "GUI/elements/impl/ConstantBlock.h"
+#include "GUI/elements/impl/MonitorBlock.h"
 #include "GUI/geometry/Size2D.h"
 #include "GUI/input/ConnectPortsInteraction.h"
 #include "GUI/input/InputChoiceInteraction.h"
+#include "GUI/logic/PortsConnectionSide.h"
 #include "GUI/renderer/colors.h"
 #include "GUI/renderer/delegate/UIRendererDelegate.h"
 #include "GUI/window/delegate/IWindowDelegate.h"
 #include "MessageBox.h"
 #include "constants.h"
+#include "delegate/IBlockLifecycleManagerDelegate.h"
 #include "delegate/INewBlockChoiceDelegate.h"
 #include "logging/Loggable.h"
 #include "magic_enum/magic_enum.hpp"
@@ -35,6 +39,7 @@ namespace gui::logic {
      * @brief Manages the blocks in the GUI, both their rendering and interaction
      */
     class BlocksManager : public gui::logic::delegate::INewBlockChoiceDelegate,
+                          public gui::logic::delegate::IBlockLifecycleManagerDelegate,
                           public business_logic::Loggable<BlocksManager> {
        public:
         BlocksManager(gui::window::delegate::IWindowDelegate* windowDelegate);
@@ -120,6 +125,23 @@ namespace gui::logic {
          */
         void clearActiveChoicesInput();
 
+        /**
+         * \copydoc gui::logic::delegate::IBlockLifecycleManagerDelegate::onPortsConnected
+         */
+        void onPortsConnected(const gui::logic::PortsConnectionSide& source,
+                              const gui::logic::PortsConnectionSide& dest) override;
+
+        /**
+         * \copydoc gui::logic::delegate::IBlockLifecycleManagerDelegate::hasConnectionBetween
+         */
+        bool hasConnectionBetween(const gui::logic::PortsConnectionSide& source,
+                                  const gui::logic::PortsConnectionSide& dest) const override;
+
+        /**
+         * \copydoc gui::logic::delegate::IBlockLifecycleManagerDelegate::onBlockDeleted
+         */
+        void onBlockDeleted(const gui::elements::base::BaseBlock* block) override;
+
        protected:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
         // current scope; so as not to use this->logger explicitly each time, the below brings it to
@@ -183,6 +205,17 @@ namespace gui::logic {
          * used in `render(...)`
          */
         std::vector<gui::renderer::components::UITextsRow> inputChoicesUiTextsRows;
+
+        /**
+         * @brief The blocks registry
+         */
+        std::unordered_map<gui::logic::PortsConnectionSide, gui::logic::PortsConnectionSide>
+            connectionsRegistry;
+
+        /**
+         * @brief The paint for the connector lines
+         */
+        static SkPaint connectorPaint;
     };
 
 }  // namespace gui::logic

@@ -1,20 +1,18 @@
-#ifndef GUI_ELEMENTS_IMPL_CONSTANT_BLOCK_H
-#define GUI_ELEMENTS_IMPL_CONSTANT_BLOCK_H
+#ifndef GUI_ELEMENTS_IMPL_MONITOR_BLOCK_H
+#define GUI_ELEMENTS_IMPL_MONITOR_BLOCK_H
 
 #include "GUI/elements/base/BaseBlock.h"
-#include "GUI/elements/base/IDoubleClickable.h"
+#include "GUI/elements/base/BlockType.h"
+#include "GUI/renderer/FontManager.h"
 #include "logging/Loggable.h"
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
     /**
-     * A constant block that holds a constant value (scalar)
-     *
-     * Can be double-clicked to edit the value and dragged around to change its position.
+     * A monitor block that displays the value of its input port
      */
-    class ConstantBlock : public business_logic::Loggable<ConstantBlock>,
-                          public gui::elements::base::BaseBlock,
-                          public gui::elements::base::IDoubleClickable {
+    class MonitorBlock : public business_logic::Loggable<MonitorBlock>,
+                         public gui::elements::base::BaseBlock {
        public:
         /**
          * @brief Constructor
@@ -25,7 +23,7 @@ namespace gui::elements::impl {
          * @param blockLifecycleManagerDelegate The delegate that manages the lifecycles of blocks
          * @param windowSize The size of the window
          */
-        ConstantBlock(
+        MonitorBlock(
             int cx,
             int cy,
             gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
@@ -34,18 +32,13 @@ namespace gui::elements::impl {
 
         void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) override;
 
-        /**
-         * \copydoc IDoubleClickable::onDoubleClick
-         */
-        void onDoubleClick(int x, int y) override;
-
         std::string getSelfId() const override { return selfId; }
 
        protected:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
         // current scope; so as not to use this->logger explicitly each time, the below brings it to
         // the current scope explicitly
-        using business_logic::Loggable<ConstantBlock>::logger;
+        using business_logic::Loggable<MonitorBlock>::logger;
 
         /**
          * The address of the block in memory, used for logging purposes
@@ -55,12 +48,12 @@ namespace gui::elements::impl {
         /**
          * The width of the block
          */
-        static constexpr int CONSTANT_BLOCK_WIDTH = 120;
+        static constexpr int MONITOR_BLOCK_WIDTH = 120;
 
         /**
          * The height of the block
          */
-        static constexpr int CONSTANT_BLOCK_HEIGHT = 120;
+        static constexpr int MONITOR_BLOCK_HEIGHT = 120;
 
         /**
          * \copydoc BaseBlock::getInputPorts
@@ -80,7 +73,7 @@ namespace gui::elements::impl {
          * \copydoc BaseBlock::getBlockType
          */
         gui::elements::base::BlockType getBlockType() const override {
-            return gui::elements::base::BlockType::Constant;
+            return gui::elements::base::BlockType::Monitor;
         }
 
        protected:
@@ -96,4 +89,4 @@ namespace gui::elements::impl {
     };
 }  // namespace gui::elements::impl
 
-#endif  // GUI_ELEMENTS_IMPL_CONSTANT_BLOCK_H
+#endif  // GUI_ELEMENTS_IMPL_MONITOR_BLOCK_H

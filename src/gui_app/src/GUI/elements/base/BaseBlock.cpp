@@ -2,18 +2,28 @@
 
 namespace gui::elements::base {
 
-    BaseBlock::BaseBlock(int cx,
-                         int cy,
-                         int blockWidth,
-                         int blockHeight,
-                         std::shared_ptr<spdlog::logger> logger,
-                         const geometry::Size2D& windowSize)
-        : width(blockWidth), height(blockHeight), windowSize(windowSize), logger(logger) {
+    BaseBlock::BaseBlock(
+        int cx,
+        int cy,
+        int blockWidth,
+        int blockHeight,
+        gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
+        gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
+        std::shared_ptr<spdlog::logger> logger,
+        const geometry::Size2D& windowSize)
+        : width(blockWidth),
+          height(blockHeight),
+          windowSize(windowSize),
+          logger(logger),
+          newBlockChoiceDelegate(newBlockChoiceDelegate),
+          blockLifecycleManagerDelegate(blockLifecycleManagerDelegate) {
         this->cx = cx;
         this->cy = cy;
 
         cacheCornerCoordinates();
     }
+
+    BaseBlock::~BaseBlock() { blockLifecycleManagerDelegate->onBlockDeleted(this); }
 
     void BaseBlock::updateWidthHeight(int newWidth, int newHeight) {
         width = newWidth;
@@ -61,7 +71,7 @@ namespace gui::elements::base {
             bottomY = windowSize.height;
         }
 
-        centerY = (topY + bottomY) / 2.0f;
+        centerY = static_cast<float>(topY + bottomY) / 2.0f;
     }
 
     void BaseBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) {
@@ -126,7 +136,7 @@ namespace gui::elements::base {
             SkPaint paint;
 
             paint.setColor(colors::TEXT_COLOR);
-            paint.setStyle(SkPaint::Style::kStroke_Style);
+            paint.setStyle(SkPaint::Style::kFill_Style);
             paint.setAntiAlias(true);
 
             return paint;
@@ -140,11 +150,11 @@ namespace gui::elements::base {
         int inputCx = leftX + TOTAL_PORT_RADIUS_HALF, outputCx = rightX - TOTAL_PORT_RADIUS_HALF,
             inputCy =
                 centerY -
-                (PORT_CIRCLE_RADIUS_HALF + PORT_CIRCLE_OUTLINE_WIDTH / 2) * inputPorts.size() -
+                (PORT_CIRCLE_RADIUS_HALF - PORT_CIRCLE_OUTLINE_WIDTH / 2) * inputPorts.size() -
                 PORT_CIRCLE_MARGIN_HALF * (inputPorts.size() - 1),
             outputCy =
                 centerY -
-                (PORT_CIRCLE_RADIUS_HALF + PORT_CIRCLE_OUTLINE_WIDTH / 2) * outputPorts.size() -
+                (PORT_CIRCLE_RADIUS_HALF - PORT_CIRCLE_OUTLINE_WIDTH / 2) * outputPorts.size() -
                 PORT_CIRCLE_MARGIN_HALF * (outputPorts.size() - 1);
 
         // draw the block
@@ -155,6 +165,17 @@ namespace gui::elements::base {
         auto& captionFont =
             components::UIText::getFontForVariant(components::UIText::Variant::Caption);
         auto captionFontSize = captionFont.getSize();
+
+        auto blockNameCstr = BlockTypeNames.at(getBlockType()).c_str();
+        auto blockNameWidth =
+            captionFont.measureText(blockNameCstr, strlen(blockNameCstr), SkTextEncoding::kUTF8);
+
+        // draw the block name
+        canvas->drawString(blockNameCstr,
+                           leftX + width / 2 - blockNameWidth / 2,
+                           centerY + captionFontSize / 4,
+                           captionFont,
+                           textPaint);
 
         // draw the input ports
         for (size_t i = 0; i < inputPorts.size(); i++) {
@@ -177,7 +198,7 @@ namespace gui::elements::base {
                 // render port name to the left of the port
                 canvas->drawString(cstr,
                                    inputCx - TOTAL_PORT_RADIUS_HALF - captionFontSize - width,
-                                   inputCy + TOTAL_PORT_RADIUS_HALF - captionFontSize / 2,
+                                   inputCy + TOTAL_PORT_RADIUS_HALF - captionFontSize / 4,
                                    captionFont,
                                    textPaint);
             }
@@ -206,7 +227,7 @@ namespace gui::elements::base {
                 // render port name to the right of the port
                 canvas->drawString(cstr,
                                    outputCx + TOTAL_PORT_RADIUS_HALF + captionFontSize,
-                                   outputCy + TOTAL_PORT_RADIUS_HALF - captionFontSize / 2,
+                                   outputCy + TOTAL_PORT_RADIUS_HALF - captionFontSize / 4,
                                    captionFont,
                                    textPaint);
             }
@@ -255,5 +276,21 @@ namespace gui::elements::base {
 
         // port not found
         return std::nullopt;
+    }
+
+    const boost::multiprecision::cpp_dec_float_50& BaseBlock::getPortValue(
+        const gui::elements::base::Port* port) const {
+        // trick to be able to return a static reference for this function; also optimizes the
+        // function call
+        static const boost::multiprecision::cpp_dec_float_50 staticNaN =
+            std::numeric_limits<boost::multiprecision::cpp_dec_float_50>::quiet_NaN();
+
+        auto maybeValueIt = portValues.find(port);
+
+        if (maybeValueIt != portValues.end()) {
+            return maybeValueIt->second;
+        }
+
+        return staticNaN;
     }
 }  // namespace gui::elements::base

@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include "skia/include/core/SkColor.h"
+#include <skia/include/core/SkColor.h>
 
 namespace constants {
     extern const int BLOCK_BORDER_RADIUS;

@@ -1,10 +1,10 @@
 #ifndef UITEXT_H
 #define UITEXT_H
 
-#include <string>
+#include <skia/include/core/SkFont.h>
+#include <skia/include/core/SkPaint.h>
 
-#include "skia/include/core/SkFont.h"
-#include "skia/include/core/SkPaint.h"
+#include <string>
 
 namespace gui::renderer::components {
 

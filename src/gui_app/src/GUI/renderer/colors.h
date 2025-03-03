@@ -1,7 +1,7 @@
 #ifndef GUI_RENDERER_COLORS_H
 #define GUI_RENDERER_COLORS_H
 
-#include "skia/include/core/SkColor.h"
+#include <skia/include/core/SkColor.h>
 
 namespace gui::renderer::colors {
 

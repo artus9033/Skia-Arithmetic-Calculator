@@ -1,17 +1,18 @@
 #ifndef FONT_MANAGER_H
 #define FONT_MANAGER_H
 
+#include <skia/include/core/SkFont.h>
+#include <skia/include/core/SkFontMgr.h>
+#include <skia/include/core/SkPaint.h>
+#include <skia/include/core/SkSurface.h>
+#include <skia/include/core/SkTypeface.h>
+
 #include "colors.h"
-#include "skia/include/core/SkFont.h"
-#include "skia/include/core/SkFontMgr.h"
-#include "skia/include/core/SkPaint.h"
-#include "skia/include/core/SkSurface.h"
-#include "skia/include/core/SkTypeface.h"
 
 #ifdef __APPLE__
-#include "skia/include/ports/SkFontMgr_mac_ct.h"
+#include <skia/include/ports/SkFontMgr_mac_ct.h>
 #else
-#include "skia/include/core/SkFontMgr.h"
+#include <skia/include/core/SkFontMgr.h>
 #endif
 
 #define MENU_HEADLINE_FONT_SIZE_BASE 17

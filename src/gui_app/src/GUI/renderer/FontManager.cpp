@@ -52,7 +52,7 @@ namespace gui::renderer {
 
     SkFont FontManager::captionFont = [] {
         SkFont font;
-        font.setSize(MENU_CAPTION_FONT_SIZE_BASE);
+        font.setSize(CAPTION_FONT_SIZE_BASE);
         font.setTypeface(FontManager::typeface);
 
         return font;

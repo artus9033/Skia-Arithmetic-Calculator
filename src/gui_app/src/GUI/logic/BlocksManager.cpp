@@ -22,12 +22,12 @@ namespace gui::logic {
             auto maybeClickedPort = clickedBlock->getPortAtCoordinates({.x = mouseX, .y = mouseY});
 
             if (maybeClickedPort.value_or(nullptr) != nullptr) {
-                logger->info("Clicked port {} on block {}",
+                logger->info("Clicked port '{}' on block {}",
                              maybeClickedPort.value()->name,
                              clickedBlock->getSelfId());
 
                 connectPortsInteraction.handleUserInteractedWith(
-                    clickedBlock.get(), maybeClickedPort.value(), windowDelegate);
+                    clickedBlock.get(), maybeClickedPort.value(), windowDelegate, this);
             } else {
                 logger->warn("Clicked block {}, but not a port of it", clickedBlock->getSelfId());
             }
@@ -141,21 +141,30 @@ namespace gui::logic {
                 block->render(canvas, mouseX, mouseY, isFocused);
             }
 
+            // render the existing port connections
+            for (const auto& [source, dest] : connectionsRegistry) {
+                auto sourceBlock = source.block;
+                auto destBlock = dest.block;
+                auto sourcePort = source.port;
+                auto destPort = dest.port;
+
+                auto sourcePortCoords = sourceBlock->getPortCoordinates(sourcePort);
+                auto destPortCoords = destBlock->getPortCoordinates(destPort);
+
+                canvas->drawLine(sourcePortCoords.x,
+                                 sourcePortCoords.y,
+                                 destPortCoords.x,
+                                 destPortCoords.y,
+                                 connectorPaint);
+            }
+
+            // render the current interaction connector line (if applicable)
+            // render the current interaction connector line (if applicable)
             maybeRenderDraggedLine(canvas);
         }
     }
 
     void BlocksManager::maybeRenderDraggedLine(SkCanvas* canvas) {
-        static SkPaint connectorPaint = []() {
-            SkPaint paint;
-
-            paint.setColor(colors::PURPLE_BLUE);
-            paint.setStrokeWidth(4);
-            paint.setAntiAlias(true);
-
-            return paint;
-        }();
-
         // make sure the interaction still references valid objects
         connectPortsInteraction.sanitize();
 
@@ -177,7 +186,7 @@ namespace gui::logic {
         switch (blockType) {
             case gui::elements::base::BlockType::Constant: {
                 blocks.push_back(std::make_shared<gui::elements::impl::ConstantBlock>(
-                    mouseX, mouseY, this, windowDelegate->getWindowSize()));
+                    mouseX, mouseY, this, this, windowDelegate->getWindowSize()));
             } break;
 
                 // case gui::elements::base::BlockType::Add: {
@@ -214,11 +223,10 @@ namespace gui::logic {
                 //         this));
                 // } break;
 
-                // case gui::elements::base::BlockType::Monitor: {
-                //     blocks.push_back(
-                //         std::make_shared<gui::elements::impl::MonitorBlock>(mouseX, mouseY,
-                //         this));
-                // } break;
+            case gui::elements::base::BlockType::Monitor: {
+                blocks.push_back(std::make_shared<gui::elements::impl::MonitorBlock>(
+                    mouseX, mouseY, this, this, windowDelegate->getWindowSize()));
+            } break;
 
             default: {
                 auto name = magic_enum::enum_name(blockType);
@@ -285,5 +293,42 @@ namespace gui::logic {
         inputChoicesUiTextsRows.clear();
         inputChoicesUiTextsRows.shrink_to_fit();
     }
+
+    bool BlocksManager::hasConnectionBetween(const gui::logic::PortsConnectionSide& source,
+                                             const gui::logic::PortsConnectionSide& dest) const {
+        auto maybeConnectionIt = connectionsRegistry.find(source);
+
+        if (maybeConnectionIt != connectionsRegistry.end()) {
+            if (maybeConnectionIt->second == dest) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void BlocksManager::onPortsConnected(const gui::logic::PortsConnectionSide& source,
+                                         const gui::logic::PortsConnectionSide& dest) {
+        connectionsRegistry[source] = dest;
+    }
+
+    void BlocksManager::onBlockDeleted(const gui::elements::base::BaseBlock* block) {
+        // erase entries where the block was the key or the value
+        for (const auto& [source, dest] : connectionsRegistry) {
+            if (source.block == block || dest.block == block) {
+                connectionsRegistry.erase(source);
+            }
+        }
+    }
+
+    SkPaint BlocksManager::connectorPaint = []() {
+        SkPaint paint;
+
+        paint.setColor(colors::PURPLE_BLUE);
+        paint.setStrokeWidth(4);
+        paint.setAntiAlias(true);
+
+        return paint;
+    }();
 
 }  // namespace gui::logic

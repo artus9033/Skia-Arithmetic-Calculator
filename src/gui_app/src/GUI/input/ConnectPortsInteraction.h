@@ -5,16 +5,12 @@
 #include <vector>
 
 #include "GUI/elements/base/BaseBlock.h"
+#include "GUI/elements/base/Port.h"
 #include "GUI/logic/MessageBox.h"
-#include "InputChoice.h"
+#include "GUI/logic/PortsConnectionSide.h"
 #include "logging/Loggable.h"
 
 namespace gui::input {
-    struct PortsConnectionHolder {
-        gui::elements::base::BaseBlock* block;
-        const gui::elements::base::Port* port;
-    };
-
     /**
      * @brief Connect ports via dragging interaction DTO
      */
@@ -38,15 +34,17 @@ namespace gui::input {
             }
         }
 
-        void handleUserInteractedWith(gui::elements::base::BaseBlock* block,
-                                      const gui::elements::base::Port* port,
-                                      gui::window::delegate::IWindowDelegate* windowDelegate) {
+        void handleUserInteractedWith(
+            gui::elements::base::BaseBlock* block,
+            const gui::elements::base::Port* port,
+            gui::window::delegate::IWindowDelegate* windowDelegate,
+            gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate) {
             if (isStarted()) {
                 logger->info(
                     "Interaction handling new event; it was already started, completing it");
 
                 // complete the interaction
-                endSide.emplace(PortsConnectionHolder{.block = block, .port = port});
+                endSide.emplace(gui::logic::PortsConnectionSide{.block = block, .port = port});
 
                 // sanitization: the concept is to be sure that the start side is the input port
                 // and the end side is the output port
@@ -57,7 +55,37 @@ namespace gui::input {
                 // validate if the connection is valid
                 if (startSide.value().port->type == gui::elements::base::Port::Type::INPUT &&
                     endSide.value().port->type == gui::elements::base::Port::Type::OUTPUT) {
-                    // TODO: handle the connection
+                    if (startSide.value().block == endSide.value().block) {
+                        logger->warn("Connection is invalid: start and end blocks are the same");
+
+                        gui::logic::MessageBox::showWarning(
+                            "Invalid connection",
+                            "This connection is invalid. A valid connection must "
+                            "be between an input and output port of different blocks.",
+                            windowDelegate);
+                    } else {
+                        if (blockLifecycleManagerDelegate->hasConnectionBetween(startSide.value(),
+                                                                                endSide.value())) {
+                            logger->warn("Connection is invalid: connection already exists");
+
+                            gui::logic::MessageBox::showWarning("Invalid connection",
+                                                                "Such a connection already exists.",
+                                                                windowDelegate);
+                        } else {
+                            logger->info(
+                                "Connection created between port '{}' (block {}) and port '{}' "
+                                "(block "
+                                "{})",
+                                startSide.value().port->name,
+                                startSide.value().block->getSelfId(),
+                                endSide.value().port->name,
+                                endSide.value().block->getSelfId());
+
+                            // add the connection to the connections registry
+                            blockLifecycleManagerDelegate->onPortsConnected(startSide.value(),
+                                                                            endSide.value());
+                        }
+                    }
                 } else {
                     logger->warn(
                         "Invalid connection: start side and end side are not valid port types");
@@ -76,19 +104,19 @@ namespace gui::input {
                 logger->info("Interaction handling new event; it was not started, starting it");
 
                 // start the interaction
-                startSide.emplace(PortsConnectionHolder{.block = block, .port = port});
+                startSide.emplace(gui::logic::PortsConnectionSide{.block = block, .port = port});
             }
         }
 
         /**
          * @brief Gets an immutable reference to the start side
          */
-        const PortsConnectionHolder& getStartSide() const { return startSide.value(); }
+        const gui::logic::PortsConnectionSide& getStartSide() const { return startSide.value(); }
 
         /**
          * @brief Gets an immutable reference to the end side
          */
-        const PortsConnectionHolder& getEndSide() const { return endSide.value(); }
+        const gui::logic::PortsConnectionSide& getEndSide() const { return endSide.value(); }
 
         /**
          * @brief Resets the interaction, setting both sides to `std::nullopt`
@@ -102,12 +130,12 @@ namespace gui::input {
         /**
          * @brief the first interaction side
          */
-        std::optional<PortsConnectionHolder> startSide;
+        std::optional<gui::logic::PortsConnectionSide> startSide;
 
         /**
          * @brief the second interaction side
          */
-        std::optional<PortsConnectionHolder> endSide;
+        std::optional<gui::logic::PortsConnectionSide> endSide;
 
         /**
          * @brief Returns whether the interaction is invalid (i.e., one of the sides is no longer
