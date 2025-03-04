@@ -9,6 +9,9 @@ namespace gui::logic::calculations {
     void BlocksCalculator::calculateValuesFlow() {
         auto blocks = blocksRegistryDelegate->getBlocks();
 
+        visited.clear();
+        recursionStack.clear();
+
         // check for cycles first
         for (const auto& block : blocks) {
             auto maybeCycle = hasCycle({.block = block.get(), .port = nullptr});
