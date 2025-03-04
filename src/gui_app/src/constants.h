@@ -11,6 +11,8 @@ namespace constants {
     extern const int BLOCK_TEXT_SIZE;
 
     extern const double DOUBLE_CLICK_TIME_THRESHOLD_SECONDS;
+
+    extern const int defaultValueDisplayPrecision;
 }  // namespace constants
 
 #endif  // CONSTANTS_H

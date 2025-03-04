@@ -18,6 +18,7 @@
 #include "GUI/window/delegate/IWindowDelegate.h"
 #include "IDraggable.h"
 #include "Port.h"
+#include "constants.h"
 #include "logging/Loggable.h"
 #include "typenames.h"
 
@@ -106,6 +107,26 @@ namespace gui::elements::base {
          * @param isHovered True if the block is hovered over, false otherwise
          */
         virtual void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered);
+
+        /**
+         * @brief Wrapper that gets the value of the output port above the block; if more or less
+         * than 1 output port is present, it will not be rendered
+         * @param isHovered True if the block is hovered over, false otherwise
+         * @return The value to render above the block or `std::nullopt` if the value should not be
+         * rendered
+         */
+        virtual std::optional<std::string> getValueToRenderAboveBlock(
+            [[maybe_unused]] bool isHovered);
+
+        /**
+         * @brief The actual rendering logic of the passed-in value; renders it above the block
+         * @param canvas The canvas to render the block on
+         * @param isHovered True if the block is hovered over, false otherwise
+         * @param blockValue The value to render
+         */
+        virtual void renderValueAboveBlock(SkCanvas* canvas,
+                                           bool isHovered,
+                                           const std::string& blockValue);
 
         /**
          * \copydoc IDraggable::onDragStart

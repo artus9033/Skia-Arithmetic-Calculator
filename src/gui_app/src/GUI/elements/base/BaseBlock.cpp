@@ -231,6 +231,41 @@ namespace gui::elements::base {
 
             outputCy += TOTAL_PORT_RADIUS * 2 + PORT_CIRCLE_MARGIN;
         }
+
+        if (auto blockValue = getValueToRenderAboveBlock(isHovered)) {
+            renderValueAboveBlock(canvas, isHovered, blockValue.value());
+        }
+    }
+
+    std::optional<std::string> BaseBlock::getValueToRenderAboveBlock(bool isHovered) {
+        auto& outputPorts = getOutputPorts();
+
+        // if more or less than 1 output port is present, do not render the value above the block
+        if (outputPorts.size() != 1) {
+            return std::nullopt;
+        }
+
+        auto blockValue = getPortValue(&(outputPorts[0]));
+
+        std::ostringstream oss;
+        oss << std::scientific << std::setprecision(constants::defaultValueDisplayPrecision)
+            << blockValue;
+
+        return oss.str();
+    }
+
+    void BaseBlock::renderValueAboveBlock(SkCanvas* canvas,
+                                          [[maybe_unused]] bool isHovered,
+                                          const std::string& blockValue) {
+        auto blockValueCstr = blockValue.c_str();
+        auto blockValueWidth = gui::renderer::FontManager::captionFont.measureText(
+            blockValueCstr, strlen(blockValueCstr), SkTextEncoding::kUTF8);
+
+        canvas->drawString(blockValueCstr,
+                           leftX + width / 2 - blockValueWidth / 2,
+                           topY - gui::renderer::FontManager::captionFont.getSize(),
+                           gui::renderer::FontManager::captionFont,
+                           gui::renderer::FontManager::textFontFillPaint);
     }
 
     const gui::geometry::Point2D& BaseBlock::getPortCoordinates(

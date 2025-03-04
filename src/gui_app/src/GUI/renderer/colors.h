@@ -8,6 +8,9 @@ namespace gui::renderer::colors {
     // purple-blue
     extern const SkColor PURPLE_BLUE;
 
+    // red
+    extern const SkColor RED;
+
     // gray
     extern const SkColor WINDOW_BACKGROUND_COLOR;
 

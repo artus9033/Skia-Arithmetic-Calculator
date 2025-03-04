@@ -7,6 +7,7 @@
 #include "GUI/elements/base/BaseBlock.h"
 #include "GUI/elements/base/BlockType.h"
 #include "GUI/renderer/FontManager.h"
+#include "constants.h"
 #include "logging/Loggable.h"
 #include "utils/misc.h"
 
@@ -33,7 +34,15 @@ namespace gui::elements::impl {
             gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
             gui::window::delegate::IWindowDelegate* windowDelegate);
 
-        void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) override;
+        /**
+         * @brief Wrapper that gets the value of the output port above the block; if the input port
+         * is not connected, it will not be rendered
+         * @param isHovered True if the block is hovered over, false otherwise
+         * @return The value to render above the block or `std::nullopt` if the value should not be
+         * rendered
+         */
+        std::optional<std::string> getValueToRenderAboveBlock(
+            [[maybe_unused]] bool isHovered) override;
 
         std::string getSelfId() const override { return selfId; }
 
