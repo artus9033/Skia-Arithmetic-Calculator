@@ -70,9 +70,18 @@ namespace gui::logic::calculations {
                 return side.block == predSide.block;
             })) {
             // cycle found
-            return std::unordered_set<gui::logic::PortsConnectionSide>{
-                {.block = side.block, .port = nullptr},
-            };
+            std::unordered_set<gui::logic::PortsConnectionSide> cycle = {
+                {.block = side.block, .port = nullptr}};
+
+            for (const auto& side : visited) {
+                cycle.insert(side);
+            }
+
+            for (const auto& side : recursionStack) {
+                cycle.insert(side);
+            }
+
+            return cycle;
         }
 
         if (visited.contains(side)) {
@@ -96,6 +105,12 @@ namespace gui::logic::calculations {
                         for (const auto& side : visited) {
                             cycle.insert(side);
                         }
+
+                        for (const auto& side : recursionStack) {
+                            cycle.insert(side);
+                        }
+
+                        cycle.insert(dest);
 
                         return cycle;
                     }

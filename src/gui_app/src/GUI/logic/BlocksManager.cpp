@@ -184,8 +184,13 @@ namespace gui::logic {
 
             try {
                 calculateValuesFlow();
+
+                // reset the cycle path
+                maybeGraphCycle = std::nullopt;
             } catch (const errors::GraphCycleException& e) {
                 logger->error("Graph cycle detected: {}", e.what());
+
+                maybeGraphCycle = e.getCyclePath();
             }
 
             auto maybeHoveredBlock = getBlockAtMousePos();
@@ -208,13 +213,17 @@ namespace gui::logic {
                     auto& destBlock = dest.block;
                     auto& destPort = dest.port;
 
+                    auto isPartOfCycle =
+                        maybeGraphCycle.has_value() &&
+                        maybeGraphCycle->contains({.block = destBlock, .port = destPort});
+
                     auto& destPortCoords = destBlock->getPortCoordinates(destPort);
 
                     canvas->drawLine(sourcePortCoords.x,
                                      sourcePortCoords.y,
                                      destPortCoords.x,
                                      destPortCoords.y,
-                                     connectorPaint);
+                                     isPartOfCycle ? cycleConnectorPaint : connectorPaint);
                 }
             }
 
@@ -399,6 +408,16 @@ namespace gui::logic {
         SkPaint paint;
 
         paint.setColor(colors::PURPLE_BLUE);
+        paint.setStrokeWidth(4);
+        paint.setAntiAlias(true);
+
+        return paint;
+    }();
+
+    SkPaint BlocksManager::cycleConnectorPaint = []() {
+        SkPaint paint;
+
+        paint.setColor(colors::RED);
         paint.setStrokeWidth(4);
         paint.setAntiAlias(true);
 

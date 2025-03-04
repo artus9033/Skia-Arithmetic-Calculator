@@ -219,33 +219,43 @@ namespace gui::logic {
         void maybeRenderDraggedLine(SkCanvas* canvas);
 
         /**
-         * @brief The input choice interaction
+         * The input choice interaction
          */
         std::optional<gui::input::InputChoiceInteraction<gui::elements::base::BlockType>>
             inputChoiceInteraction;
 
         /**
-         * @brief The connect ports interaction singleton
+         * The connect ports interaction singleton
          */
         gui::input::ConnectPortsInteraction connectPortsInteraction;
 
         /**
-         * @brief The UI texts for the choices; prepared inside `setActiveChoicesInput(...)` and
+         * The UI texts for the choices; prepared inside `setActiveChoicesInput(...)` and
          * used in `render(...)`
          */
         std::vector<gui::renderer::components::UITextsRow> inputChoicesUiTextsRows;
 
         /**
-         * @brief The blocks registry
+         * The blocks registry
          */
         std::unordered_map<gui::logic::PortsConnectionSide,
                            std::unordered_set<gui::logic::PortsConnectionSide>>
             connectionsRegistry;
 
         /**
-         * @brief The paint for the connector lines
+         * The paint for the connector lines
          */
         static SkPaint connectorPaint;
+
+        /**
+         * The paint for the connector lines that form a cycle
+         */
+        static SkPaint cycleConnectorPaint;
+
+        /**
+         * Stores the cycle path (if present)
+         */
+        std::optional<std::unordered_set<gui::logic::PortsConnectionSide>> maybeGraphCycle;
     };
 
 }  // namespace gui::logic
