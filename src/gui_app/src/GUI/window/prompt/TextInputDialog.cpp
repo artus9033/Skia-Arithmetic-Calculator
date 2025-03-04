@@ -42,8 +42,12 @@ namespace gui::window::prompt {
             return std::nullopt;
         }
 
+        auto strValue = input.value();
+        // replace , with .
+        std::replace(strValue.begin(), strValue.end(), ',', '.');
+
         try {
-            return FloatingPoint(input.value());
+            return FloatingPoint(strValue);
         } catch (const std::runtime_error&) {
             return std::nullopt;
         }
