@@ -376,7 +376,7 @@ namespace gui::logic {
 
     void BlocksManager::onBlockDeleted(const gui::elements::base::BaseBlock* block) {
         // IMPORTANT: this method is called from base (BaseBlock) destructor, so the child
-        // class (block implementation) is already destroyed; therefore, its methods are no user
+        // class (block implementation) is already destroyed; therefore, its methods are no use
         // here and will result in errors
 
         // erase entries where the block was the key or the value
@@ -431,7 +431,20 @@ namespace gui::logic {
                          maybeClickedPort.value()->name,
                          erasedCount);
         } else {
-            logger->info("Right clicked on block '{}' - doing nothing", block->getSelfId());
+            logger->info("Right clicked on block '{}' - asking for confirmation about removal",
+                         block->getSelfId());
+
+            if (gui::window::prompt::MessageBox::promptConfirmation(
+                    "Remove Block",
+                    "Are you sure you want to remove block '" +
+                        elements::base::BlockTypeNames.at(block->getBlockType()) + "'?",
+                    windowDelegate)) {
+                logger->info("User confirmed removal of block '{}'", block->getSelfId());
+
+                blocks.erase(std::remove(blocks.begin(), blocks.end(), block), blocks.end());
+            } else {
+                logger->info("User cancelled removal of block '{}'", block->getSelfId());
+            }
         }
     }
 
