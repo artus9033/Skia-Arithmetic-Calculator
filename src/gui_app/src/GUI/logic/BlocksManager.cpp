@@ -60,7 +60,7 @@ namespace gui::logic {
                     doubleClickCtLastMouseClickTime = 0;
                 } else {
                     logger->info("Clicked block {} for dragging", clickedBlock->getSelfId());
-                    draggedBlock = clickedBlock;
+                    draggedBlock = clickedBlock.get();
 
                     dragOffset = {.width = mouseX - clickedBlock->getCx(),
                                   .height = mouseY - clickedBlock->getCy()};
@@ -83,7 +83,7 @@ namespace gui::logic {
         if (draggedBlock) {
             logger->info("Finished dragging block {}", draggedBlock->getSelfId());
             draggedBlock->onDragEnd();
-            draggedBlock.reset();
+            draggedBlock = nullptr;
         }
     }
 
@@ -189,10 +189,6 @@ namespace gui::logic {
             }
 
             auto maybeHoveredBlock = getBlockAtMousePos();
-
-            if (maybeHoveredBlock.has_value()) {
-                hoveredBlock = maybeHoveredBlock.value();  // update the state
-            }
 
             // iterate from oldest to newest (normal order) to render newer ones on top of older
             // ones
@@ -379,6 +375,10 @@ namespace gui::logic {
     }
 
     void BlocksManager::onBlockDeleted(const gui::elements::base::BaseBlock* block) {
+        // IMPORTANT: this method is called from base (BaseBlock) destructor, so the child
+        // class (block implementation) is already destroyed; therefore, its methods are no user
+        // here and will result in errors
+
         // erase entries where the block was the key or the value
         for (auto& [source, destinations] : connectionsRegistry) {
             if (source.block == block) {
@@ -390,8 +390,8 @@ namespace gui::logic {
         }
 
         // ensure draggedBlock is not referencing the deleted block
-        if (draggedBlock && draggedBlock->getSelfId() == block->getSelfId()) {
-            draggedBlock.reset();
+        if (draggedBlock && draggedBlock == block) {
+            draggedBlock = nullptr;
         }
     }
 

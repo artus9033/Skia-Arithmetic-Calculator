@@ -11,8 +11,6 @@
 
 #include "GUI/elements/BlocksRegistry.h"
 #include "GUI/elements/base/BaseBlock.h"
-#include "GUI/elements/impl/ConstantBlock.h"
-#include "GUI/elements/impl/MonitorBlock.h"
 #include "GUI/geometry/Size2D.h"
 #include "GUI/input/ConnectPortsInteraction.h"
 #include "GUI/input/InputChoiceInteraction.h"
@@ -187,12 +185,7 @@ namespace gui::logic {
         /**
          * The block that is currently being dragged
          */
-        std::shared_ptr<gui::elements::base::BaseBlock> draggedBlock;
-
-        /**
-         * The block that is currently being hovered over
-         */
-        std::shared_ptr<gui::elements::base::BaseBlock> hoveredBlock;
+        gui::elements::base::BaseBlock* draggedBlock;
 
         /**
          * The mouse X coordinate
