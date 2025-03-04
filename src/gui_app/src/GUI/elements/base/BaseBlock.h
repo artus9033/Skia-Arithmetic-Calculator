@@ -204,6 +204,18 @@ namespace gui::elements::base {
         // make the hash function a friend to allow it to access non-public members
         friend struct std::hash<BaseBlock>;
 
+        /**
+         * @brief Gets the input ports of the block
+         * @return Vector of input ports
+         */
+        virtual const std::vector<Port>& getInputPorts() const = 0;
+
+        /**
+         * @brief Gets the output ports of the block
+         * @return Vector of output ports
+         */
+        virtual const std::vector<Port>& getOutputPorts() const = 0;
+
        protected:
         /**
          * The center x coordinate of the block
@@ -249,18 +261,6 @@ namespace gui::elements::base {
          * The center y coordinate of the block; cached and used elsewhere
          */
         float centerY;
-
-        /**
-         * @brief Gets the input ports of the block
-         * @return Vector of input ports
-         */
-        virtual const std::vector<Port>& getInputPorts() const = 0;
-
-        /**
-         * @brief Gets the output ports of the block
-         * @return Vector of output ports
-         */
-        virtual const std::vector<Port>& getOutputPorts() const = 0;
 
         /**
          * The logger for the block

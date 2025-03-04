@@ -182,6 +182,16 @@ namespace gui::logic {
         } else {
             // calculate values flow, then render the blocks & friends
 
+            // first, set values to NaNs on all input ports
+            // this ensures that the values are not carried over from the previous calculation
+            // for ports that may have become disconnected
+            for (auto& block : blocks) {
+                for (auto& port : block->getInputPorts()) {
+                    block->setPortValue(&port, std::numeric_limits<FloatingPoint>::quiet_NaN());
+                }
+            }
+
+            // then, make values flow
             try {
                 calculateValuesFlow();
 
@@ -391,8 +401,10 @@ namespace gui::logic {
         // erase entries where the block was the key or the value
         for (auto& [source, destinations] : connectionsRegistry) {
             if (source.block == block) {
+                // the deleted block is the source of the connection
                 connectionsRegistry.erase(source);
             } else {
+                // the deleted block is the destination of the connection
                 std::erase_if(destinations,
                               [block](const auto& dest) { return dest.block == block; });
             }
@@ -430,19 +442,22 @@ namespace gui::logic {
         auto maybeClickedPort = block->getPortAtCoordinates({.x = mouseX, .y = mouseY});
 
         if (maybeClickedPort.has_value()) {
-            gui::logic::PortsConnectionSide candidate = {.block = block.get(),
-                                                         .port = maybeClickedPort.value()};
+            gui::logic::PortsConnectionSide sideToDelete = {.block = block.get(),
+                                                            .port = maybeClickedPort.value()};
 
             // remove all connections from the right-clicked port (if an entry exists, otherwise
             // call does nothing)
             size_t erasedCount = 0;
 
             for (auto& [source, destinations] : connectionsRegistry) {
-                if (source == candidate) {
+                if (source == sideToDelete) {
+                    // the right-clicked port is the source of the connection
                     erasedCount += connectionsRegistry.erase(source);
                 } else {
-                    erasedCount += std::erase_if(
-                        destinations, [candidate](const auto& dest) { return dest == candidate; });
+                    // the right-clicked port is the destination of the connection
+                    erasedCount += std::erase_if(destinations, [sideToDelete](const auto& dest) {
+                        return dest == sideToDelete;
+                    });
                 }
             }
 
