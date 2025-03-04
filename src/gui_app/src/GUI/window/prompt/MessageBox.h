@@ -12,6 +12,10 @@ namespace gui::window::prompt {
         static void showWarning(const std::string& title,
                                 const std::string& message,
                                 gui::window::delegate::IWindowDelegate* windowDelegate);
+
+        static bool promptConfirmation(const std::string& title,
+                                       const std::string& message,
+                                       gui::window::delegate::IWindowDelegate* windowDelegate);
     };
 
 }  // namespace gui::window::prompt
