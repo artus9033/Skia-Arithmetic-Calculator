@@ -22,7 +22,7 @@
 #include "GUI/renderer/colors.h"
 #include "GUI/renderer/delegate/UIRendererDelegate.h"
 #include "GUI/window/delegate/IWindowDelegate.h"
-#include "MessageBox.h"
+#include "GUI/window/prompt/MessageBox.h"
 #include "calculations/BlocksCalculator.h"
 #include "constants.h"
 #include "delegate/IBlockLifecycleManagerDelegate.h"
@@ -210,9 +210,9 @@ namespace gui::logic {
         geometry::Size2D dragOffset;
 
         /**
-         * The time of the last mouse click
+         * The time of the last mouse click, used for tracking double-clicks
          */
-        time_t lastMouseClickTime;
+        time_t doubleClickCtLastMouseClickTime;
 
         /**
          * The window delegate

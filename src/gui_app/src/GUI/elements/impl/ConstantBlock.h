@@ -3,7 +3,10 @@
 
 #include "GUI/elements/base/BaseBlock.h"
 #include "GUI/elements/base/IDoubleClickable.h"
+#include "GUI/window/prompt/MessageBox.h"
+#include "GUI/window/prompt/TextInputDialog.h"
 #include "logging/Loggable.h"
+#include "typenames.h"
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
@@ -23,14 +26,14 @@ namespace gui::elements::impl {
          * @param newBlockChoiceDelegate The delegate that is notified when a new block is chosen to
          * be added to the canvas
          * @param blockLifecycleManagerDelegate The delegate that manages the lifecycles of blocks
-         * @param windowSize The size of the window
+         * @param windowDelegate The delegate of the window
          */
         ConstantBlock(
             int cx,
             int cy,
             gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
             gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
-            const geometry::Size2D& windowSize);
+            gui::window::delegate::IWindowDelegate* windowDelegate);
 
         void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) override;
 
@@ -43,7 +46,6 @@ namespace gui::elements::impl {
 
         void calculateOutputValues() override {
             // do nothing
-            portValues[&outputPorts[0]] = boost::multiprecision::cpp_dec_float_50(1.05);
         }
 
        protected:

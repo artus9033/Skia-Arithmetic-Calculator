@@ -3,7 +3,7 @@
 namespace gui::logic {
     BlocksManager::BlocksManager(gui::window::delegate::IWindowDelegate* windowDelegate)
         : gui::logic::calculations::BlocksCalculator(this),
-          lastMouseClickTime(0),
+          doubleClickCtLastMouseClickTime(0),
           windowDelegate(windowDelegate) {}
 
     void BlocksManager::handleMouseDown() {
@@ -13,33 +13,69 @@ namespace gui::logic {
             return;
         }
 
-        lastMouseClickTime = time(nullptr);
-
+        // check for double-click
         auto maybeClickedBlock = getBlockAtMousePos();
 
-        if (maybeClickedBlock.has_value()) {
-            auto clickedBlock = maybeClickedBlock.value();
+        if (time(nullptr) - doubleClickCtLastMouseClickTime <
+            constants::DOUBLE_CLICK_TIME_THRESHOLD_SECONDS) {
+            // double click
 
-            auto maybeClickedPort = clickedBlock->getPortAtCoordinates({.x = mouseX, .y = mouseY});
+            if (maybeClickedBlock) {
+                auto clickedBlock = maybeClickedBlock.value();
 
-            if (maybeClickedPort.value_or(nullptr) != nullptr) {
-                logger->info("Clicked port '{}' on block {}",
-                             maybeClickedPort.value()->name,
-                             clickedBlock->getSelfId());
+                auto doubleClickableBlock =
+                    dynamic_cast<gui::elements::base::IDoubleClickable*>(clickedBlock.get());
 
-                connectPortsInteraction.handleUserInteractedWith(
-                    clickedBlock.get(), maybeClickedPort.value(), windowDelegate, this);
+                // check if the block is IDoubleClickable
+                if (doubleClickableBlock) {
+                    doubleClickableBlock->onDoubleClick(mouseX, mouseY);
+                } else {
+                    logger->info("Double clicked block {} is not IDoubleClickable",
+                                 clickedBlock->getSelfId());
+                }
             } else {
-                logger->info("Clicked block {} for dragging", clickedBlock->getSelfId());
-                draggedBlock = clickedBlock;
-
-                dragOffset = {.width = mouseX - clickedBlock->getCx(),
-                              .height = mouseY - clickedBlock->getCy()};
-
-                draggedBlock->onDragStart();
+                logger->info("Double clicked outside any block");
             }
+
+            // the next double click event should start counting now
+            doubleClickCtLastMouseClickTime = 0;
         } else {
-            logger->info("Clicked outside any block");
+            // single click
+
+            if (maybeClickedBlock) {
+                auto clickedBlock = maybeClickedBlock.value();
+
+                auto maybeClickedPort =
+                    clickedBlock->getPortAtCoordinates({.x = mouseX, .y = mouseY});
+
+                if (maybeClickedPort.value_or(nullptr) != nullptr) {
+                    logger->info("Clicked port '{}' on block {}",
+                                 maybeClickedPort.value()->name,
+                                 clickedBlock->getSelfId());
+
+                    connectPortsInteraction.handleUserInteractedWith(
+                        clickedBlock.get(), maybeClickedPort.value(), windowDelegate, this);
+
+                    // this event should not count as a possible double-click interaction part
+                    doubleClickCtLastMouseClickTime = 0;
+                } else {
+                    logger->info("Clicked block {} for dragging", clickedBlock->getSelfId());
+                    draggedBlock = clickedBlock;
+
+                    dragOffset = {.width = mouseX - clickedBlock->getCx(),
+                                  .height = mouseY - clickedBlock->getCy()};
+
+                    draggedBlock->onDragStart();
+
+                    // update the last mouse click time for double-click
+                    doubleClickCtLastMouseClickTime = time(nullptr);
+                }
+            } else {
+                logger->info("Clicked outside any block");
+
+                // update the last mouse click time for double-click
+                doubleClickCtLastMouseClickTime = time(nullptr);
+            }
         }
     }
 
@@ -49,7 +85,6 @@ namespace gui::logic {
             draggedBlock->onDragEnd();
             draggedBlock.reset();
         }
-        lastMouseClickTime = 0;
     }
 
     void BlocksManager::handleEscapeKeyPress() {
@@ -75,12 +110,13 @@ namespace gui::logic {
                 clearActiveChoicesInput();
             } else {
                 logger->error("Invalid choice number: {}", number);
-                MessageBox::showWarning("Invalid choice",
-                                        "You entered: " + std::to_string(number) +
-                                            " which is out of range. Pick a "
-                                            "number between 1 and " +
-                                            std::to_string(inputChoiceInteraction->choices.size()),
-                                        windowDelegate);
+                gui::window::prompt::MessageBox::showWarning(
+                    "Invalid choice",
+                    "You entered: " + std::to_string(number) +
+                        " which is out of range. Pick a "
+                        "number between 1 and " +
+                        std::to_string(inputChoiceInteraction->choices.size()),
+                    windowDelegate);
             }
         }
     }
@@ -213,7 +249,7 @@ namespace gui::logic {
         switch (blockType) {
             case gui::elements::base::BlockType::Constant: {
                 blocks.push_back(std::make_shared<gui::elements::impl::ConstantBlock>(
-                    mouseX, mouseY, this, this, windowDelegate->getWindowSize()));
+                    mouseX, mouseY, this, this, windowDelegate));
             } break;
 
                 // case gui::elements::base::BlockType::Add: {
@@ -252,7 +288,7 @@ namespace gui::logic {
 
             case gui::elements::base::BlockType::Monitor: {
                 blocks.push_back(std::make_shared<gui::elements::impl::MonitorBlock>(
-                    mouseX, mouseY, this, this, windowDelegate->getWindowSize()));
+                    mouseX, mouseY, this, this, windowDelegate));
             } break;
 
             default: {
@@ -260,7 +296,7 @@ namespace gui::logic {
 
                 logger->error("Unknown user-selected block type: {}", name);
 
-                MessageBox::showWarning(
+                gui::window::prompt::MessageBox::showWarning(
                     "Invalid choice",
                     "You selected an invalid block type: '" + std::string(name) + "'",
                     windowDelegate);

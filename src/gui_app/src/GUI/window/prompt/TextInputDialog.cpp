@@ -1,11 +1,13 @@
 #include "TextInputDialog.h"
 
-namespace gui::logic {
+namespace gui::window::prompt {
     std::optional<std::string> TextInputDialog::promptForTextInput(
         std::string title,
         std::string prompt,
         const std::string& defaultValue,
         gui::window::delegate::IWindowDelegate* windowDelegate) {
+        ensureQApplication();
+
         QString defaultValueQstr = QString::fromStdString(defaultValue);
 
         bool ok;
@@ -26,25 +28,25 @@ namespace gui::logic {
         windowDelegate->focusWindow();
     }
 
-    std::optional<double> TextInputDialog::promptForDoubleInput(
+    std::optional<FloatingPoint> TextInputDialog::promptForFloatingPointInput(
         std::string title,
         std::string prompt,
-        const std::optional<double>& defaultValue,
+        const std::optional<FloatingPoint>& defaultValue,
         gui::window::delegate::IWindowDelegate* windowDelegate) {
-        auto input = promptForTextInput(title,
-                                        prompt,
-                                        defaultValue ? std::to_string(defaultValue.value()) : "",
-                                        windowDelegate);
+        ensureQApplication();
+
+        auto input = promptForTextInput(
+            title, prompt, defaultValue ? (defaultValue.value()).str() : "", windowDelegate);
 
         if (!input.has_value()) {
             return std::nullopt;
         }
 
         try {
-            return std::stod(input.value());
-        } catch (const std::invalid_argument&) {
+            return FloatingPoint(input.value());
+        } catch (const std::runtime_error&) {
             return std::nullopt;
         }
     }
 
-}  // namespace gui::logic
+}  // namespace gui::window::prompt

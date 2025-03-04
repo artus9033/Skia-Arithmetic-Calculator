@@ -9,14 +9,14 @@ namespace gui::elements::base {
         int blockHeight,
         gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
         gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
-        std::shared_ptr<spdlog::logger> logger,
-        const geometry::Size2D& windowSize)
+        gui::window::delegate::IWindowDelegate* windowDelegate,
+        std::shared_ptr<spdlog::logger> logger)
         : width(blockWidth),
           height(blockHeight),
-          windowSize(windowSize),
           logger(logger),
           newBlockChoiceDelegate(newBlockChoiceDelegate),
-          blockLifecycleManagerDelegate(blockLifecycleManagerDelegate) {
+          blockLifecycleManagerDelegate(blockLifecycleManagerDelegate),
+          windowDelegate(windowDelegate) {
         this->cx = cx;
         this->cy = cy;
 
@@ -46,6 +46,8 @@ namespace gui::elements::base {
     void BaseBlock::onDragEnd() { logger->info("Block {} drag end", getSelfId()); }
 
     void BaseBlock::cacheCornerCoordinates() {
+        auto windowSize = windowDelegate->getWindowSize();
+
         leftX = std::min(std::max(0, cx - width / 2), windowSize.width - width);
         topY = std::min(std::max(0, cy - height / 2), windowSize.height - height);
 
@@ -274,12 +276,10 @@ namespace gui::elements::base {
         return std::nullopt;
     }
 
-    const boost::multiprecision::cpp_dec_float_50& BaseBlock::getPortValue(
-        const gui::elements::base::Port* port) const {
+    const FloatingPoint& BaseBlock::getPortValue(const gui::elements::base::Port* port) const {
         // trick to be able to return a static reference for this function; also optimizes the
         // function call
-        static const boost::multiprecision::cpp_dec_float_50 staticNaN =
-            std::numeric_limits<boost::multiprecision::cpp_dec_float_50>::quiet_NaN();
+        static const FloatingPoint staticNaN = std::numeric_limits<FloatingPoint>::quiet_NaN();
 
         auto maybeValueIt = portValues.find(port);
 
@@ -291,7 +291,7 @@ namespace gui::elements::base {
     }
 
     void BaseBlock::setPortValue(const gui::elements::base::Port* port,
-                                 const boost::multiprecision::cpp_dec_float_50& value) {
+                                 const FloatingPoint& value) {
         portValues[port] = value;
     }
 }  // namespace gui::elements::base

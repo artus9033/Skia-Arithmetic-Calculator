@@ -6,8 +6,8 @@
 
 #include "GUI/elements/base/BaseBlock.h"
 #include "GUI/elements/base/Port.h"
-#include "GUI/logic/MessageBox.h"
 #include "GUI/logic/PortsConnectionSide.h"
+#include "GUI/window/prompt/MessageBox.h"
 #include "logging/Loggable.h"
 
 namespace gui::input {
@@ -58,7 +58,7 @@ namespace gui::input {
                     if (startSide.value().block == endSide.value().block) {
                         logger->warn("Connection is invalid: start and end blocks are the same");
 
-                        gui::logic::MessageBox::showWarning(
+                        gui::window::prompt::MessageBox::showWarning(
                             "Invalid connection",
                             "This connection is invalid. A valid connection must "
                             "be between an input and output port of different blocks.",
@@ -69,9 +69,10 @@ namespace gui::input {
                                                                                 endSide.value())) {
                             logger->warn("Connection is invalid: connection already exists");
 
-                            gui::logic::MessageBox::showWarning("Invalid connection",
-                                                                "Such a connection already exists.",
-                                                                windowDelegate);
+                            gui::window::prompt::MessageBox::showWarning(
+                                "Invalid connection",
+                                "Such a connection already exists.",
+                                windowDelegate);
                         } else {
                             // validate if the input port is not already connected to something
                             if (blockLifecycleManagerDelegate->isInputConnected(endSide.value())) {
@@ -79,7 +80,7 @@ namespace gui::input {
                                     "Connection is invalid: input port is already connected to "
                                     "something");
 
-                                gui::logic::MessageBox::showWarning(
+                                gui::window::prompt::MessageBox::showWarning(
                                     "Invalid connection",
                                     "The chosen input port is already connected.",
                                     windowDelegate);
@@ -103,7 +104,7 @@ namespace gui::input {
                     logger->warn(
                         "Invalid connection: start side and end side are not valid port types");
 
-                    gui::logic::MessageBox::showWarning(
+                    gui::window::prompt::MessageBox::showWarning(
                         "Invalid connection",
                         "This connection is invalid. A valid connection must "
                         "be between an input and output port (the order is "

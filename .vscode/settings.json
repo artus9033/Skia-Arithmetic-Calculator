@@ -78,7 +78,8 @@
     "__mutex_base": "cpp",
     "atomic": "cpp",
     "exception": "cpp",
-    "thread": "cpp"
+    "thread": "cpp",
+    "*.hpp11": "cpp"
   },
   "C_Cpp.default.cppStandard": "c++20"
 }

@@ -6,15 +6,15 @@ namespace gui::elements::impl {
         int cy,
         gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
         gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
-        const geometry::Size2D& windowSize)
+        gui::window::delegate::IWindowDelegate* windowDelegate)
         : BaseBlock(cx,
                     cy,
                     CONSTANT_BLOCK_WIDTH,
                     CONSTANT_BLOCK_HEIGHT,
                     newBlockChoiceDelegate,
                     blockLifecycleManagerDelegate,
-                    logger,
-                    windowSize),
+                    windowDelegate,
+                    logger),
           selfId(business_logic::stringifyAddressOf(this)) {}
 
     void ConstantBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) {
@@ -24,7 +24,23 @@ namespace gui::elements::impl {
     void ConstantBlock::onDoubleClick(int x, int y) {
         logger->info("Double clicked at ({}, {}), opening editor", x, y);
 
-        // TODO: open editor
+        auto maybeNewValue = gui::window::prompt::TextInputDialog::promptForFloatingPointInput(
+            "Edit Constant Value", "Value:", portValues[&outputPorts[0]], windowDelegate);
+
+        if (maybeNewValue) {
+            auto newValue = maybeNewValue.value();
+
+            logger->info("Constant block {} value changed from '{}' to '{}'",
+                         selfId,
+                         portValues[&outputPorts[0]].str(),
+                         newValue.str());
+
+            // update the output port value
+            portValues[&outputPorts[0]] = newValue;
+        } else {
+            gui::window::prompt::MessageBox::showWarning(
+                "Invalid number", "The entered value is not a valid number", windowDelegate);
+        }
     }
 
     const std::vector<gui::elements::base::Port> ConstantBlock::inputPorts = {};

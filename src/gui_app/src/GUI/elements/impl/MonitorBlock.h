@@ -24,14 +24,14 @@ namespace gui::elements::impl {
          * @param newBlockChoiceDelegate The delegate that is notified when a new block is chosen to
          * be added to the canvas
          * @param blockLifecycleManagerDelegate The delegate that manages the lifecycles of blocks
-         * @param windowSize The size of the window
+         * @param windowDelegate The delegate of the window
          */
         MonitorBlock(
             int cx,
             int cy,
             gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
             gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
-            const geometry::Size2D& windowSize);
+            gui::window::delegate::IWindowDelegate* windowDelegate);
 
         void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) override;
 

@@ -3,23 +3,23 @@
 
 #include <skia/include/core/SkCanvas.h>
 
-#include <boost/multiprecision/cpp_dec_float.hpp>
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
 #include "GUI/elements/base/BlockType.h"
 #include "GUI/geometry/Point2D.h"
-#include "GUI/geometry/Size2D.h"
 #include "GUI/geometry/helpers.h"
 #include "GUI/logic/delegate/IBlockLifecycleManagerDelegate.h"
 #include "GUI/logic/delegate/INewBlockChoiceDelegate.h"
 #include "GUI/renderer/FontManager.h"
 #include "GUI/renderer/colors.h"
 #include "GUI/renderer/components/UIText.h"
+#include "GUI/window/delegate/IWindowDelegate.h"
 #include "IDraggable.h"
 #include "Port.h"
 #include "logging/Loggable.h"
+#include "typenames.h"
 
 // note: the assumption is that PORT_CIRCLE_RADIUS is divisible by 2 (int arithmetic for performance
 // reasons)
@@ -68,7 +68,6 @@ namespace gui::elements::base {
          * be added to the canvas
          * @param blockLifecycleManagerDelegate The delegate that manages the lifecycles of blocks
          * @param logger The logger for the block
-         * @param windowSize The size of the window
          */
         BaseBlock(
             int cx,
@@ -77,8 +76,8 @@ namespace gui::elements::base {
             int blockHeight,
             gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
             gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
-            std::shared_ptr<spdlog::logger> logger,
-            const geometry::Size2D& windowSize);
+            gui::window::delegate::IWindowDelegate* windowDelegate,
+            std::shared_ptr<spdlog::logger> logger);
 
         /**
          * @brief Updates the width and height of the block
@@ -154,15 +153,14 @@ namespace gui::elements::base {
          * @param port The port to get the value of
          * @return The value of the port
          */
-        const boost::multiprecision::cpp_dec_float_50& getPortValue(const Port* port) const;
+        const FloatingPoint& getPortValue(const Port* port) const;
 
         /**
          * @brief Sets the value of the port
          * @param port The port to set the value of
          * @param value The value to set the port to
          */
-        void setPortValue(const gui::elements::base::Port* port,
-                          const boost::multiprecision::cpp_dec_float_50& value);
+        void setPortValue(const gui::elements::base::Port* port, const FloatingPoint& value);
 
         /**
          * @brief Gets the center x coordinate of the block
@@ -232,11 +230,6 @@ namespace gui::elements::base {
         float centerY;
 
         /**
-         * The size of the window
-         */
-        geometry::Size2D windowSize;
-
-        /**
          * @brief Gets the input ports of the block
          * @return Vector of input ports
          */
@@ -256,7 +249,7 @@ namespace gui::elements::base {
         /**
          * @brief The registry of port values
          */
-        std::unordered_map<const Port*, boost::multiprecision::cpp_dec_float_50> portValues;
+        std::unordered_map<const Port*, FloatingPoint> portValues;
 
         /**
          * The delegate that is notified when a new block is chosen to be added to the canvas
@@ -267,6 +260,11 @@ namespace gui::elements::base {
          * The delegate that manages the lifecycles of blocks
          */
         gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate;
+
+        /**
+         * The delegate of the window
+         */
+        gui::window::delegate::IWindowDelegate* windowDelegate;
 
        private:
         /**

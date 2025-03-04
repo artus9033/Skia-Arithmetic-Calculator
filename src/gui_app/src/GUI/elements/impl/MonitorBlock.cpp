@@ -6,15 +6,15 @@ namespace gui::elements::impl {
         int cy,
         gui::logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
         gui::logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
-        const geometry::Size2D& windowSize)
+        gui::window::delegate::IWindowDelegate* windowDelegate)
         : BaseBlock(cx,
                     cy,
                     MONITOR_BLOCK_WIDTH,
                     MONITOR_BLOCK_HEIGHT,
                     newBlockChoiceDelegate,
                     blockLifecycleManagerDelegate,
-                    logger,
-                    windowSize),
+                    windowDelegate,
+                    logger),
           selfId(business_logic::stringifyAddressOf(this)) {}
 
     void MonitorBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) {
