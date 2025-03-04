@@ -11,10 +11,8 @@ namespace gui::elements::base {
 
         /**
          * @brief Called when dragging starts
-         * @param x Initial X coordinate
-         * @param y Initial Y coordinate
          */
-        virtual void onDragStart(int x, int y) = 0;
+        virtual void onDragStart() = 0;
 
         /**
          * @brief Called during dragging
@@ -25,10 +23,8 @@ namespace gui::elements::base {
 
         /**
          * @brief Called when dragging ends
-         * @param x Final X coordinate
-         * @param y Final Y coordinate
          */
-        virtual void onDragEnd(int x, int y) = 0;
+        virtual void onDragEnd() = 0;
     };
 
 }  // namespace gui::elements::base

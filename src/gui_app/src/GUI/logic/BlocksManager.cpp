@@ -8,7 +8,6 @@ namespace gui::logic {
         // do not handle mouse down if we have an active choices input
         if (hasActiveChoicesInput()) {
             logger->info("Skipping mouse down because we have an active choices input");
-
             return;
         }
 
@@ -29,14 +28,27 @@ namespace gui::logic {
                 connectPortsInteraction.handleUserInteractedWith(
                     clickedBlock.get(), maybeClickedPort.value(), windowDelegate, this);
             } else {
-                logger->warn("Clicked block {}, but not a port of it", clickedBlock->getSelfId());
+                logger->info("Clicked block {} for dragging", clickedBlock->getSelfId());
+                draggedBlock = clickedBlock;
+
+                dragOffset = {.width = mouseX - clickedBlock->getCx(),
+                              .height = mouseY - clickedBlock->getCy()};
+
+                draggedBlock->onDragStart();
             }
         } else {
             logger->info("Clicked outside any block");
         }
     }
 
-    void BlocksManager::handleMouseUp() { lastMouseClickTime = 0; }
+    void BlocksManager::handleMouseUp() {
+        if (draggedBlock) {
+            logger->info("Finished dragging block {}", draggedBlock->getSelfId());
+            draggedBlock->onDragEnd();
+            draggedBlock.reset();
+        }
+        lastMouseClickTime = 0;
+    }
 
     void BlocksManager::handleEscapeKeyPress() {
         logger->info("Escape key pressed");
@@ -74,6 +86,10 @@ namespace gui::logic {
     void BlocksManager::handleMouseMove(int x, int y) {
         mouseX = x;
         mouseY = y;
+
+        if (draggedBlock) {
+            draggedBlock->onDragProgress(mouseX - dragOffset.width, mouseY - dragOffset.height);
+        }
     }
 
     std::optional<std::shared_ptr<gui::elements::base::BaseBlock>>
@@ -143,13 +159,13 @@ namespace gui::logic {
 
             // render the existing port connections
             for (const auto& [source, dest] : connectionsRegistry) {
-                auto sourceBlock = source.block;
-                auto destBlock = dest.block;
-                auto sourcePort = source.port;
-                auto destPort = dest.port;
+                auto& sourceBlock = source.block;
+                auto& destBlock = dest.block;
+                auto& sourcePort = source.port;
+                auto& destPort = dest.port;
 
-                auto sourcePortCoords = sourceBlock->getPortCoordinates(sourcePort);
-                auto destPortCoords = destBlock->getPortCoordinates(destPort);
+                auto& sourcePortCoords = sourceBlock->getPortCoordinates(sourcePort);
+                auto& destPortCoords = destBlock->getPortCoordinates(destPort);
 
                 canvas->drawLine(sourcePortCoords.x,
                                  sourcePortCoords.y,
@@ -158,7 +174,6 @@ namespace gui::logic {
                                  connectorPaint);
             }
 
-            // render the current interaction connector line (if applicable)
             // render the current interaction connector line (if applicable)
             maybeRenderDraggedLine(canvas);
         }
@@ -319,6 +334,11 @@ namespace gui::logic {
                 connectionsRegistry.erase(source);
             }
         }
+
+        // ensure draggedBlock is not referencing the deleted block
+        if (draggedBlock && draggedBlock->getSelfId() == block->getSelfId()) {
+            draggedBlock.reset();
+        }
     }
 
     SkPaint BlocksManager::connectorPaint = []() {
@@ -330,5 +350,29 @@ namespace gui::logic {
 
         return paint;
     }();
+
+    void BlocksManager::handleRightClickOnBlock(
+        const std::shared_ptr<gui::elements::base::BaseBlock>& block) {
+        // check if a port was right-clicked
+        auto maybeClickedPort = block->getPortAtCoordinates({.x = mouseX, .y = mouseY});
+
+        if (maybeClickedPort.has_value()) {
+            // remove all connections from the right-clicked port (if an entry exists, otherwise
+            // call does nothing)
+            auto erasedCount = std::erase_if(
+                connectionsRegistry, [maybeClickedPort, block](const auto& connection) {
+                    return (connection.first.port == maybeClickedPort.value() &&
+                            connection.first.block == block.get()) ||
+                           (connection.second.port == maybeClickedPort.value() &&
+                            connection.second.block == block.get());
+                });
+
+            logger->info("Right clicked on port '{}' - removed its {} connections",
+                         maybeClickedPort.value()->name,
+                         erasedCount);
+        } else {
+            logger->info("Right clicked on block '{}' - doing nothing", block->getSelfId());
+        }
+    }
 
 }  // namespace gui::logic

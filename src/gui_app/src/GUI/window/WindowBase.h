@@ -59,8 +59,10 @@ namespace gui::window {
         void handleRightClick() {
             auto maybeHoveredBlock = blocksManager->getBlockAtMousePos();
 
-            // if there is no hovered block, open the add block popup
-            if (!maybeHoveredBlock.has_value()) {
+            if (maybeHoveredBlock.has_value()) {
+                blocksManager->handleRightClickOnBlock(maybeHoveredBlock.value());
+            } else {
+                // if there is no hovered block, open the add block popup
                 if (blocksManager->hasActiveChoicesInput()) {
                     logger->info(
                         "Right clicked on empty space, but input is already active, ignoring "

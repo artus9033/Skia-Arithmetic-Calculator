@@ -111,7 +111,7 @@ namespace gui::elements::base {
         /**
          * \copydoc IDraggable::onDragStart
          */
-        void onDragStart(int x, int y) override;
+        void onDragStart() override;
 
         /**
          * \copydoc IDraggable::onDragProgress
@@ -121,14 +121,14 @@ namespace gui::elements::base {
         /**
          * \copydoc IDraggable::onDragEnd
          */
-        void onDragEnd(int x, int y) override;
+        void onDragEnd() override;
 
         /**
          * @brief Gets the coordinates of a port
          * @param port The port to get the coordinates of
          * @return The coordinates of the port
          */
-        geometry::Point2D getPortCoordinates(const Port* port) const;
+        const gui::geometry::Point2D& getPortCoordinates(const Port* port) const;
 
         /**
          * @brief Gets the port at given coordinates
@@ -155,6 +155,18 @@ namespace gui::elements::base {
          * @return The value of the port
          */
         const boost::multiprecision::cpp_dec_float_50& getPortValue(const Port* port) const;
+
+        /**
+         * @brief Gets the center x coordinate of the block
+         * @return The center x coordinate of the block
+         */
+        int getCx() const { return cx; }
+
+        /**
+         * @brief Gets the center y coordinate of the block
+         * @return The center y coordinate of the block
+         */
+        int getCy() const { return cy; }
 
         // make the hash function a friend to allow it to access non-public members
         friend struct std::hash<BaseBlock>;

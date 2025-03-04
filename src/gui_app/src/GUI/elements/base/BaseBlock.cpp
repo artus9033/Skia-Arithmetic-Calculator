@@ -33,25 +33,17 @@ namespace gui::elements::base {
     }
 
     void BaseBlock::onDragProgress(int x, int y) {
-        logger->info("Block {} has been dragged", getSelfId());
+        logger->info("Block {} drag progress to {}, {}", getSelfId(), x, y);
 
         this->cx = x;
         this->cy = y;
+
+        cacheCornerCoordinates();
     }
 
-    void BaseBlock::onDragStart(int x, int y) {
-        logger->info("Block {} has been dragged", getSelfId());
+    void BaseBlock::onDragStart() { logger->info("Block {} drag start", getSelfId()); }
 
-        this->cx = x;
-        this->cy = y;
-    }
-
-    void BaseBlock::onDragEnd(int x, int y) {
-        logger->info("Block {} has been destroyed", getSelfId());
-
-        this->cx = x;
-        this->cy = y;
-    }
+    void BaseBlock::onDragEnd() { logger->info("Block {} drag end", getSelfId()); }
 
     void BaseBlock::cacheCornerCoordinates() {
         leftX = std::min(std::max(0, cx - width / 2), windowSize.width - width);
@@ -239,18 +231,22 @@ namespace gui::elements::base {
         }
     }
 
-    gui::geometry::Point2D BaseBlock::getPortCoordinates(
+    const gui::geometry::Point2D& BaseBlock::getPortCoordinates(
         const gui::elements::base::Port* port) const {
+        // trick to be able to return a static reference for this function; also optimizes the
+        // function call
+        static const geometry::Point2D zeroPoint = {.x = 0, .y = 0};
+
         if (portCoordinates.find(port) != portCoordinates.end()) {
             return portCoordinates.at(port);
         }
 
-        return {.x = 0, .y = 0};
+        return zeroPoint;
     }
 
     std::optional<const gui::elements::base::Port*> BaseBlock::checkPort(
         const gui::elements::base::Port* port, const geometry::Point2D& point) const {
-        auto predCoordinates = getPortCoordinates(port);
+        auto& predCoordinates = getPortCoordinates(port);
 
         if (gui::geometry::isCircleHovered(
                 point.x, point.y, predCoordinates.x, predCoordinates.y, TOTAL_PORT_HITBOX_RADIUS)) {

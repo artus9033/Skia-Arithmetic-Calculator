@@ -142,6 +142,12 @@ namespace gui::logic {
          */
         void onBlockDeleted(const gui::elements::base::BaseBlock* block) override;
 
+        /**
+         * @brief Handles right click event on a block
+         * @param block The block that was right-clicked
+         */
+        void handleRightClickOnBlock(const std::shared_ptr<gui::elements::base::BaseBlock>& block);
+
        protected:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
         // current scope; so as not to use this->logger explicitly each time, the below brings it to
@@ -172,6 +178,11 @@ namespace gui::logic {
          * The mouse Y coordinate
          */
         int mouseY;
+
+        /**
+         * The offset from the block's center when dragging started
+         */
+        geometry::Size2D dragOffset;
 
         /**
          * The time of the last mouse click
