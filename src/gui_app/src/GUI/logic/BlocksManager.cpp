@@ -252,39 +252,35 @@ namespace gui::logic {
                     mouseX, mouseY, this, this, windowDelegate));
             } break;
 
-                // case gui::elements::base::BlockType::Add: {
-                //     blocks.push_back(
-                //         std::make_shared<gui::elements::impl::AddBlock>(mouseX, mouseY, this));
-                // } break;
+            case gui::elements::base::BlockType::Add: {
+                blocks.push_back(std::make_shared<gui::elements::impl::AddBlock>(
+                    mouseX, mouseY, this, this, windowDelegate));
+            } break;
 
-                // case gui::elements::base::BlockType::Subtract: {
-                //     blocks.push_back(
-                //         std::make_shared<gui::elements::impl::SubtractBlock>(mouseX, mouseY,
-                //         this));
-                // } break;
+            case gui::elements::base::BlockType::Subtract: {
+                blocks.push_back(std::make_shared<gui::elements::impl::SubtractBlock>(
+                    mouseX, mouseY, this, this, windowDelegate));
+            } break;
 
-                // case gui::elements::base::BlockType::Multiply: {
-                //     blocks.push_back(
-                //         std::make_shared<gui::elements::impl::MultiplyBlock>(mouseX, mouseY,
-                //         this));
-                // } break;
+            case gui::elements::base::BlockType::Multiply: {
+                blocks.push_back(std::make_shared<gui::elements::impl::MultiplyBlock>(
+                    mouseX, mouseY, this, this, windowDelegate));
+            } break;
 
-                // case gui::elements::base::BlockType::Divide: {
-                //     blocks.push_back(
-                //         std::make_shared<gui::elements::impl::DivideBlock>(mouseX, mouseY,
-                //         this));
-                // } break;
+            case gui::elements::base::BlockType::Divide: {
+                blocks.push_back(std::make_shared<gui::elements::impl::DivideBlock>(
+                    mouseX, mouseY, this, this, windowDelegate));
+            } break;
 
-                // case gui::elements::base::BlockType::Power: {
-                //     blocks.push_back(
-                //         std::make_shared<gui::elements::impl::PowerBlock>(mouseX, mouseY, this));
-                // } break;
+            case gui::elements::base::BlockType::Power: {
+                blocks.push_back(std::make_shared<gui::elements::impl::PowerBlock>(
+                    mouseX, mouseY, this, this, windowDelegate));
+            } break;
 
-                // case gui::elements::base::BlockType::Invert: {
-                //     blocks.push_back(
-                //         std::make_shared<gui::elements::impl::InvertBlock>(mouseX, mouseY,
-                //         this));
-                // } break;
+            case gui::elements::base::BlockType::Invert: {
+                blocks.push_back(std::make_shared<gui::elements::impl::InvertBlock>(
+                    mouseX, mouseY, this, this, windowDelegate));
+            } break;
 
             case gui::elements::base::BlockType::Monitor: {
                 blocks.push_back(std::make_shared<gui::elements::impl::MonitorBlock>(

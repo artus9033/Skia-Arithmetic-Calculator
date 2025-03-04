@@ -2,7 +2,7 @@
 
 namespace gui::elements::base {
 
-    const std::unordered_map<BlockType, std::string> BlockTypeNames = {
+    const std::unordered_map<BlockType, const std::string> BlockTypeNames = {
         {BlockType::Invert, "Invert"s},
         {BlockType::Add, "Add"s},
         {BlockType::Subtract, "Subtract"s},

@@ -151,7 +151,7 @@ namespace gui::elements::base {
         /**
          * @brief Gets the value of the port
          * @param port The port to get the value of
-         * @return The value of the port
+         * @return The value of the port or NaN if the port is not connected / not in the registry
          */
         const FloatingPoint& getPortValue(const Port* port) const;
 
@@ -265,6 +265,11 @@ namespace gui::elements::base {
          * The delegate of the window
          */
         gui::window::delegate::IWindowDelegate* windowDelegate;
+
+        /**
+         * The NaN value - for convenience of usage in blocks implementations
+         */
+        static const FloatingPoint NaN;
 
        private:
         /**

@@ -277,21 +277,19 @@ namespace gui::elements::base {
     }
 
     const FloatingPoint& BaseBlock::getPortValue(const gui::elements::base::Port* port) const {
-        // trick to be able to return a static reference for this function; also optimizes the
-        // function call
-        static const FloatingPoint staticNaN = std::numeric_limits<FloatingPoint>::quiet_NaN();
-
         auto maybeValueIt = portValues.find(port);
 
         if (maybeValueIt != portValues.end()) {
             return maybeValueIt->second;
         }
 
-        return staticNaN;
+        return NaN;
     }
 
     void BaseBlock::setPortValue(const gui::elements::base::Port* port,
                                  const FloatingPoint& value) {
         portValues[port] = value;
     }
+
+    const FloatingPoint BaseBlock::NaN = std::numeric_limits<FloatingPoint>::quiet_NaN();
 }  // namespace gui::elements::base

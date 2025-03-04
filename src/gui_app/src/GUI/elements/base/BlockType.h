@@ -13,7 +13,7 @@ namespace gui::elements::base {
 
     enum class BlockType { Constant, Subtract, Divide, Multiply, Add, Power, Invert, Monitor };
 
-    extern const std::unordered_map<BlockType, std::string> BlockTypeNames;
+    extern const std::unordered_map<BlockType, const std::string> BlockTypeNames;
 
     extern const std::vector<gui::input::InputChoice<BlockType>> BlockInputChoices;
 }  // namespace gui::elements::base
