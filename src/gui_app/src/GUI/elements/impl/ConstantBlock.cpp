@@ -27,9 +27,7 @@ namespace gui::elements::impl {
         // TODO: open editor
     }
 
-    const std::vector<gui::elements::base::Port> ConstantBlock::inputPorts = {
-        {.name = "in", .type = gui::elements::base::Port::Type::INPUT},
-    };
+    const std::vector<gui::elements::base::Port> ConstantBlock::inputPorts = {};
     const std::vector<gui::elements::base::Port> ConstantBlock::outputPorts = {
         {.name = "value", .type = gui::elements::base::Port::Type::OUTPUT},
     };

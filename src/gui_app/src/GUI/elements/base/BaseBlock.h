@@ -157,6 +157,14 @@ namespace gui::elements::base {
         const boost::multiprecision::cpp_dec_float_50& getPortValue(const Port* port) const;
 
         /**
+         * @brief Sets the value of the port
+         * @param port The port to set the value of
+         * @param value The value to set the port to
+         */
+        void setPortValue(const gui::elements::base::Port* port,
+                          const boost::multiprecision::cpp_dec_float_50& value);
+
+        /**
          * @brief Gets the center x coordinate of the block
          * @return The center x coordinate of the block
          */
@@ -167,6 +175,12 @@ namespace gui::elements::base {
          * @return The center y coordinate of the block
          */
         int getCy() const { return cy; }
+
+        /**
+         * @brief Calculates the output port values based on input port values
+         * @throws std::runtime_error if input values are missing
+         */
+        virtual void calculateOutputValues() = 0;
 
         // make the hash function a friend to allow it to access non-public members
         friend struct std::hash<BaseBlock>;

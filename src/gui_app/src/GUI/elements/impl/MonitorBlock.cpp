@@ -18,12 +18,13 @@ namespace gui::elements::impl {
           selfId(business_logic::stringifyAddressOf(this)) {}
 
     void MonitorBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) {
-        static const gui::elements::base::Port* theInputPort = &inputPorts[0];
+        const gui::elements::base::Port* theInputPort = &inputPorts[0];
+        const gui::logic::PortsConnectionSide theInputSide{.block = this, .port = theInputPort};
 
         BaseBlock::render(canvas, mouseX, mouseY, isHovered);
 
         // draw the input port value above the block (if the input is connected)
-        if (blockLifecycleManagerDelegate->isInputConnected(theInputPort)) {
+        if (blockLifecycleManagerDelegate->isInputConnected(theInputSide)) {
             auto blockValue = getPortValue(theInputPort);
 
             std::ostringstream oss;

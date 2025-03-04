@@ -289,4 +289,9 @@ namespace gui::elements::base {
 
         return staticNaN;
     }
+
+    void BaseBlock::setPortValue(const gui::elements::base::Port* port,
+                                 const boost::multiprecision::cpp_dec_float_50& value) {
+        portValues[port] = value;
+    }
 }  // namespace gui::elements::base

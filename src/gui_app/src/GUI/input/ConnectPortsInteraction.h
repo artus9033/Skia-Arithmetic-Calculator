@@ -46,15 +46,15 @@ namespace gui::input {
                 // complete the interaction
                 endSide.emplace(gui::logic::PortsConnectionSide{.block = block, .port = port});
 
-                // sanitization: the concept is to be sure that the start side is the input port
-                // and the end side is the output port
-                if (startSide.value().port->type == gui::elements::base::Port::Type::OUTPUT) {
+                // sanitization: the concept is to be sure that the start side is the output port
+                // and the end side is the input port
+                if (startSide.value().port->type == gui::elements::base::Port::Type::INPUT) {
                     std::swap(startSide, endSide);
                 }
 
                 // validate if the connection is valid
-                if (startSide.value().port->type == gui::elements::base::Port::Type::INPUT &&
-                    endSide.value().port->type == gui::elements::base::Port::Type::OUTPUT) {
+                if (startSide.value().port->type == gui::elements::base::Port::Type::OUTPUT &&
+                    endSide.value().port->type == gui::elements::base::Port::Type::INPUT) {
                     if (startSide.value().block == endSide.value().block) {
                         logger->warn("Connection is invalid: start and end blocks are the same");
 
@@ -64,6 +64,7 @@ namespace gui::input {
                             "be between an input and output port of different blocks.",
                             windowDelegate);
                     } else {
+                        // validate if the connection does not already exist
                         if (blockLifecycleManagerDelegate->hasConnectionBetween(startSide.value(),
                                                                                 endSide.value())) {
                             logger->warn("Connection is invalid: connection already exists");
@@ -72,18 +73,30 @@ namespace gui::input {
                                                                 "Such a connection already exists.",
                                                                 windowDelegate);
                         } else {
-                            logger->info(
-                                "Connection created between port '{}' (block {}) and port '{}' "
-                                "(block "
-                                "{})",
-                                startSide.value().port->name,
-                                startSide.value().block->getSelfId(),
-                                endSide.value().port->name,
-                                endSide.value().block->getSelfId());
+                            // validate if the input port is not already connected to something
+                            if (blockLifecycleManagerDelegate->isInputConnected(endSide.value())) {
+                                logger->warn(
+                                    "Connection is invalid: input port is already connected to "
+                                    "something");
 
-                            // add the connection to the connections registry
-                            blockLifecycleManagerDelegate->onPortsConnected(startSide.value(),
-                                                                            endSide.value());
+                                gui::logic::MessageBox::showWarning(
+                                    "Invalid connection",
+                                    "The chosen input port is already connected.",
+                                    windowDelegate);
+                            } else {
+                                logger->info(
+                                    "Connection created between port '{}' (block {}) and port '{}' "
+                                    "(block "
+                                    "{})",
+                                    startSide.value().port->name,
+                                    startSide.value().block->getSelfId(),
+                                    endSide.value().port->name,
+                                    endSide.value().block->getSelfId());
+
+                                // add the connection to the connections registry
+                                blockLifecycleManagerDelegate->onPortsConnected(startSide.value(),
+                                                                                endSide.value());
+                            }
                         }
                     }
                 } else {

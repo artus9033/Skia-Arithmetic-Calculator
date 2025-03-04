@@ -2,7 +2,9 @@
 
 namespace gui::logic {
     BlocksManager::BlocksManager(gui::window::delegate::IWindowDelegate* windowDelegate)
-        : lastMouseClickTime(0), windowDelegate(windowDelegate) {}
+        : gui::logic::calculations::BlocksCalculator(this),
+          lastMouseClickTime(0),
+          windowDelegate(windowDelegate) {}
 
     void BlocksManager::handleMouseDown() {
         // do not handle mouse down if we have an active choices input
@@ -142,7 +144,14 @@ namespace gui::logic {
 
             uiRendererDelegate->renderCenteredTextsRows(canvas, size, rows);
         } else {
-            // render the blocks & friends
+            // calculate values flow, then render the blocks & friends
+
+            try {
+                calculateValuesFlow();
+            } catch (const errors::GraphCycleException& e) {
+                logger->error("Graph cycle detected: {}", e.what());
+            }
+
             auto maybeHoveredBlock = getBlockAtMousePos();
 
             if (maybeHoveredBlock.has_value()) {
@@ -158,20 +167,23 @@ namespace gui::logic {
             }
 
             // render the existing port connections
-            for (const auto& [source, dest] : connectionsRegistry) {
+            for (const auto& [source, destinations] : connectionsRegistry) {
                 auto& sourceBlock = source.block;
-                auto& destBlock = dest.block;
                 auto& sourcePort = source.port;
-                auto& destPort = dest.port;
-
                 auto& sourcePortCoords = sourceBlock->getPortCoordinates(sourcePort);
-                auto& destPortCoords = destBlock->getPortCoordinates(destPort);
 
-                canvas->drawLine(sourcePortCoords.x,
-                                 sourcePortCoords.y,
-                                 destPortCoords.x,
-                                 destPortCoords.y,
-                                 connectorPaint);
+                for (const auto& dest : destinations) {
+                    auto& destBlock = dest.block;
+                    auto& destPort = dest.port;
+
+                    auto& destPortCoords = destBlock->getPortCoordinates(destPort);
+
+                    canvas->drawLine(sourcePortCoords.x,
+                                     sourcePortCoords.y,
+                                     destPortCoords.x,
+                                     destPortCoords.y,
+                                     connectorPaint);
+                }
             }
 
             // render the current interaction connector line (if applicable)
@@ -311,31 +323,37 @@ namespace gui::logic {
 
     bool BlocksManager::hasConnectionBetween(const gui::logic::PortsConnectionSide& source,
                                              const gui::logic::PortsConnectionSide& dest) const {
+        gui::logic::PortsConnectionSide variant1 = {.block = source.block, .port = source.port};
+        gui::logic::PortsConnectionSide variant2 = {.block = dest.block, .port = dest.port};
+
         return std::any_of(connectionsRegistry.begin(),
                            connectionsRegistry.end(),
-                           [source, dest](const auto& connection) {
-                               return (connection.first == source && connection.second == dest) ||
-                                      (connection.first == dest && connection.second == source);
+                           [variant1, variant2](const auto& connection) {
+                               return connection.first == variant1 &&
+                                      connection.second.contains(variant2);
                            });
     }
 
-    bool BlocksManager::isInputConnected(const gui::elements::base::Port* port) const {
+    bool BlocksManager::isInputConnected(const gui::logic::PortsConnectionSide& side) const {
         return std::any_of(
-            connectionsRegistry.begin(), connectionsRegistry.end(), [port](const auto& connection) {
-                return connection.first.port == port || connection.second.port == port;
+            connectionsRegistry.begin(), connectionsRegistry.end(), [side](const auto& connection) {
+                return connection.first == side || connection.second.contains(side);
             });
     }
 
     void BlocksManager::onPortsConnected(const gui::logic::PortsConnectionSide& source,
                                          const gui::logic::PortsConnectionSide& dest) {
-        connectionsRegistry[source] = dest;
+        connectionsRegistry[source].insert(dest);
     }
 
     void BlocksManager::onBlockDeleted(const gui::elements::base::BaseBlock* block) {
         // erase entries where the block was the key or the value
-        for (const auto& [source, dest] : connectionsRegistry) {
-            if (source.block == block || dest.block == block) {
+        for (auto& [source, destinations] : connectionsRegistry) {
+            if (source.block == block) {
                 connectionsRegistry.erase(source);
+            } else {
+                std::erase_if(destinations,
+                              [block](const auto& dest) { return dest.block == block; });
             }
         }
 
@@ -361,15 +379,21 @@ namespace gui::logic {
         auto maybeClickedPort = block->getPortAtCoordinates({.x = mouseX, .y = mouseY});
 
         if (maybeClickedPort.has_value()) {
+            gui::logic::PortsConnectionSide candidate = {.block = block.get(),
+                                                         .port = maybeClickedPort.value()};
+
             // remove all connections from the right-clicked port (if an entry exists, otherwise
             // call does nothing)
-            auto erasedCount = std::erase_if(
-                connectionsRegistry, [maybeClickedPort, block](const auto& connection) {
-                    return (connection.first.port == maybeClickedPort.value() &&
-                            connection.first.block == block.get()) ||
-                           (connection.second.port == maybeClickedPort.value() &&
-                            connection.second.block == block.get());
-                });
+            size_t erasedCount = 0;
+
+            for (auto& [source, destinations] : connectionsRegistry) {
+                if (source == candidate) {
+                    erasedCount += connectionsRegistry.erase(source);
+                } else {
+                    erasedCount += std::erase_if(
+                        destinations, [candidate](const auto& dest) { return dest == candidate; });
+                }
+            }
 
             logger->info("Right clicked on port '{}' - removed its {} connections",
                          maybeClickedPort.value()->name,
@@ -379,4 +403,14 @@ namespace gui::logic {
         }
     }
 
+    const std::vector<std::shared_ptr<gui::elements::base::BaseBlock>>& BlocksManager::getBlocks()
+        const {
+        return blocks;
+    }
+
+    const std::unordered_map<gui::logic::PortsConnectionSide,
+                             std::unordered_set<gui::logic::PortsConnectionSide>>&
+    BlocksManager::getConnectionsRegistry() const {
+        return connectionsRegistry;
+    }
 }  // namespace gui::logic

@@ -37,6 +37,10 @@ namespace gui::elements::impl {
 
         std::string getSelfId() const override { return selfId; }
 
+        void calculateOutputValues() override {
+            // do nothing
+        }
+
        protected:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
         // current scope; so as not to use this->logger explicitly each time, the below brings it to

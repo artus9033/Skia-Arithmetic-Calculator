@@ -6,6 +6,7 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <memory>
 #include <optional>
+#include <unordered_set>
 #include <vector>
 
 #include "GUI/elements/BlocksRegistry.h"
@@ -16,10 +17,13 @@
 #include "GUI/input/ConnectPortsInteraction.h"
 #include "GUI/input/InputChoiceInteraction.h"
 #include "GUI/logic/PortsConnectionSide.h"
+#include "GUI/logic/calculations/delegate/IBlocksRegistryDelegate.h"
+#include "GUI/logic/errors/GraphCycleException.h"
 #include "GUI/renderer/colors.h"
 #include "GUI/renderer/delegate/UIRendererDelegate.h"
 #include "GUI/window/delegate/IWindowDelegate.h"
 #include "MessageBox.h"
+#include "calculations/BlocksCalculator.h"
 #include "constants.h"
 #include "delegate/IBlockLifecycleManagerDelegate.h"
 #include "delegate/INewBlockChoiceDelegate.h"
@@ -40,6 +44,8 @@ namespace gui::logic {
      */
     class BlocksManager : public gui::logic::delegate::INewBlockChoiceDelegate,
                           public gui::logic::delegate::IBlockLifecycleManagerDelegate,
+                          public gui::logic::calculations::delegate::IBlocksRegistryDelegate,
+                          public gui::logic::calculations::BlocksCalculator,
                           public business_logic::Loggable<BlocksManager> {
        public:
         BlocksManager(gui::window::delegate::IWindowDelegate* windowDelegate);
@@ -140,7 +146,7 @@ namespace gui::logic {
         /**
          * \copydoc gui::logic::delegate::IBlockLifecycleManagerDelegate::isInputConnected
          */
-        bool isInputConnected(const gui::elements::base::Port* port) const override;
+        bool isInputConnected(const gui::logic::PortsConnectionSide& side) const override;
 
         /**
          * \copydoc gui::logic::delegate::IBlockLifecycleManagerDelegate::onBlockDeleted
@@ -152,6 +158,20 @@ namespace gui::logic {
          * @param block The block that was right-clicked
          */
         void handleRightClickOnBlock(const std::shared_ptr<gui::elements::base::BaseBlock>& block);
+
+        /**
+         * \copydoc gui::logic::calculations::delegate::IBlocksRegistryDelegate::getBlocks
+         */
+        const std::vector<std::shared_ptr<gui::elements::base::BaseBlock>>& getBlocks()
+            const override;
+
+        /**
+         * \copydoc
+         * gui::logic::calculations::delegate::IBlocksRegistryDelegate::getConnectionsRegistry
+         */
+        const std::unordered_map<gui::logic::PortsConnectionSide,
+                                 std::unordered_set<gui::logic::PortsConnectionSide>>&
+        getConnectionsRegistry() const override;
 
        protected:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
@@ -225,7 +245,8 @@ namespace gui::logic {
         /**
          * @brief The blocks registry
          */
-        std::unordered_map<gui::logic::PortsConnectionSide, gui::logic::PortsConnectionSide>
+        std::unordered_map<gui::logic::PortsConnectionSide,
+                           std::unordered_set<gui::logic::PortsConnectionSide>>
             connectionsRegistry;
 
         /**
