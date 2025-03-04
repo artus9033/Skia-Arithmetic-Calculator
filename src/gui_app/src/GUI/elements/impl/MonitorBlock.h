@@ -1,6 +1,9 @@
 #ifndef GUI_ELEMENTS_IMPL_MONITOR_BLOCK_H
 #define GUI_ELEMENTS_IMPL_MONITOR_BLOCK_H
 
+#include <iomanip>
+#include <sstream>
+
 #include "GUI/elements/base/BaseBlock.h"
 #include "GUI/elements/base/BlockType.h"
 #include "GUI/renderer/FontManager.h"

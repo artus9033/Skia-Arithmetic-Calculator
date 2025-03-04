@@ -35,6 +35,13 @@ namespace gui::logic::delegate {
                                           const gui::logic::PortsConnectionSide& dest) const = 0;
 
         /**
+         * @brief Checks if the input port is connected to anything
+         * @param port The input port to check
+         * @return True if the input port is connected to anything, false otherwise
+         */
+        virtual bool isInputConnected(const gui::elements::base::Port* port) const = 0;
+
+        /**
          * @brief Called when a block is deleted
          * @param block The block that was deleted
          */

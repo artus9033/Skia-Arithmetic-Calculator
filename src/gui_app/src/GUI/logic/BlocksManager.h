@@ -138,6 +138,11 @@ namespace gui::logic {
                                   const gui::logic::PortsConnectionSide& dest) const override;
 
         /**
+         * \copydoc gui::logic::delegate::IBlockLifecycleManagerDelegate::isInputConnected
+         */
+        bool isInputConnected(const gui::elements::base::Port* port) const override;
+
+        /**
          * \copydoc gui::logic::delegate::IBlockLifecycleManagerDelegate::onBlockDeleted
          */
         void onBlockDeleted(const gui::elements::base::BaseBlock* block) override;

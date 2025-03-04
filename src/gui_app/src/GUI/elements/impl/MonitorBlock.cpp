@@ -18,19 +18,27 @@ namespace gui::elements::impl {
           selfId(business_logic::stringifyAddressOf(this)) {}
 
     void MonitorBlock::render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) {
+        static const gui::elements::base::Port* theInputPort = &inputPorts[0];
+
         BaseBlock::render(canvas, mouseX, mouseY, isHovered);
 
-        // draw the input port value above the block
-        auto blockNameCstr = gui::elements::base::BlockTypeNames.at(getBlockType()).c_str();
-        auto blockNameWidth = gui::renderer::FontManager::captionFont.measureText(
-            blockNameCstr, strlen(blockNameCstr), SkTextEncoding::kUTF8);
+        // draw the input port value above the block (if the input is connected)
+        if (blockLifecycleManagerDelegate->isInputConnected(theInputPort)) {
+            auto blockValue = getPortValue(theInputPort);
 
-        // draw the block name
-        canvas->drawString(blockNameCstr,
-                           leftX + width / 2 - blockNameWidth / 2,
-                           centerY + gui::renderer::FontManager::captionFont.getSize() / 4,
-                           gui::renderer::FontManager::captionFont,
-                           gui::renderer::FontManager::textFontFillPaint);
+            std::ostringstream oss;
+            oss << std::scientific << std::setprecision(10) << blockValue;
+            auto blockValueStr = oss.str();
+            auto blockValueCstr = blockValueStr.c_str();
+            auto blockValueWidth = gui::renderer::FontManager::captionFont.measureText(
+                blockValueCstr, strlen(blockValueCstr), SkTextEncoding::kUTF8);
+
+            canvas->drawString(blockValueCstr,
+                               leftX + width / 2 - blockValueWidth / 2,
+                               topY - gui::renderer::FontManager::captionFont.getSize(),
+                               gui::renderer::FontManager::captionFont,
+                               gui::renderer::FontManager::textFontFillPaint);
+        }
     }
 
     const std::vector<gui::elements::base::Port> MonitorBlock::inputPorts = {

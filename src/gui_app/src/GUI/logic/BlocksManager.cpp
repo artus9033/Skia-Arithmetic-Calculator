@@ -311,15 +311,19 @@ namespace gui::logic {
 
     bool BlocksManager::hasConnectionBetween(const gui::logic::PortsConnectionSide& source,
                                              const gui::logic::PortsConnectionSide& dest) const {
-        auto maybeConnectionIt = connectionsRegistry.find(source);
+        return std::any_of(connectionsRegistry.begin(),
+                           connectionsRegistry.end(),
+                           [source, dest](const auto& connection) {
+                               return (connection.first == source && connection.second == dest) ||
+                                      (connection.first == dest && connection.second == source);
+                           });
+    }
 
-        if (maybeConnectionIt != connectionsRegistry.end()) {
-            if (maybeConnectionIt->second == dest) {
-                return true;
-            }
-        }
-
-        return false;
+    bool BlocksManager::isInputConnected(const gui::elements::base::Port* port) const {
+        return std::any_of(
+            connectionsRegistry.begin(), connectionsRegistry.end(), [port](const auto& connection) {
+                return connection.first.port == port || connection.second.port == port;
+            });
     }
 
     void BlocksManager::onPortsConnected(const gui::logic::PortsConnectionSide& source,
