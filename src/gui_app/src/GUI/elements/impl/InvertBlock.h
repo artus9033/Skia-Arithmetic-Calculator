@@ -7,6 +7,9 @@
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
+    /**
+     * @brief A block that inverts its input value (1/x)
+     */
     class InvertBlock : public business_logic::Loggable<InvertBlock>,
                         public gui::elements::base::BaseBlock {
        public:

@@ -14,8 +14,13 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 
+/**
+ * @brief The business logic module
+ */
 namespace business_logic {
     /**
+     * @brief Class that provides a logger for the given class; automatically deduces the logger.
+     *
      * Class that provides a logger for the given class; automatically deduces the logger name
      * (tag) from the given class's name. This name is demangled if GNU libstdc++ is available,
      * otherwise a possibly-mangled fallback is used.

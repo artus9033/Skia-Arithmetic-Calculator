@@ -41,14 +41,15 @@ run-tests:
     @echo "== Running tests ({{build-type}}) =="
     ./build/bin/run_tests
 
+sourceFiles := shell('find ./src/ -name "*.cpp" -or -name "*.h" |xargs echo')
+
 # run clang-tidy
 clang-tidy:
     # generate build/compile_commands.json
     cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
     # -p to use build/compile_commands.json
-    clang-tidy -format-style=file -header-filter=. -p build src/**/*.cpp
+    clang-tidy -format-style=file -header-filter=. -p build {{sourceFiles}}
 
-sourceFiles := shell('find ./src/ -name "*.cpp" -or -name "*.h" |xargs echo')
 # check clang-format
 check-clang-format:
     # Check if all files are formatted correctly

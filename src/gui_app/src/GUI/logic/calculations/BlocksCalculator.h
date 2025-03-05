@@ -11,7 +11,9 @@
 #include "logging/Loggable.h"
 
 namespace gui::logic::calculations {
-
+    /**
+     * @brief The blocks calculator logic, computes the flowing values
+     */
     class BlocksCalculator : public business_logic::Loggable<BlocksCalculator> {
        public:
         BlocksCalculator(

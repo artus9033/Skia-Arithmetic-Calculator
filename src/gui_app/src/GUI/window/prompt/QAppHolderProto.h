@@ -4,6 +4,11 @@
 #include <QApplication>
 
 namespace gui::window::prompt {
+    /**
+     * @brief An internal helper class for ensuring a QApplication is created
+     *
+     * This class ensures that a QApplication is created, which is required for e.g. Qt dialogs.
+     */
     class QAppHolderProto {
        public:
         static void ensureQApplication();

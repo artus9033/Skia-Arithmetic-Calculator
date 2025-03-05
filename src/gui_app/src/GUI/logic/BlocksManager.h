@@ -50,15 +50,11 @@ namespace gui::logic {
 
         /**
          * @brief Handles the mouse down event
-         * @param x X coordinate of the mouse
-         * @param y Y coordinate of the mouse
          */
         void handleMouseDown();
 
         /**
          * @brief Handles the mouse up event
-         * @param x X coordinate of the mouse
-         * @param y Y coordinate of the mouse
          */
         void handleMouseUp();
 
@@ -83,6 +79,8 @@ namespace gui::logic {
         /**
          * @brief Renders the blocks on the canvas
          * @param canvas SkCanvas to draw on
+         * @param size The size of the canvas
+         * @param uiRendererDelegate The renderer delegate to render the blocks
          */
         void render(SkCanvas* canvas,
                     const geometry::Size2D& size,
@@ -164,7 +162,7 @@ namespace gui::logic {
             const override;
 
         /**
-         * \copydoc
+         * \copydoc \
          * gui::logic::calculations::delegate::IBlocksRegistryDelegate::getConnectionsRegistry
          */
         const std::unordered_map<gui::logic::PortsConnectionSide,

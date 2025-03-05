@@ -1,5 +1,13 @@
 #include "BaseBlock.h"
 
+/**
+ * @brief The elements module
+ */
+namespace gui::elements {}
+
+/**
+ * @brief The base classes and structs for elements
+ */
 namespace gui::elements::base {
 
     BaseBlock::BaseBlock(

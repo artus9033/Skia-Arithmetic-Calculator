@@ -13,11 +13,27 @@ namespace gui::elements::base {
 }  // namespace gui::elements::base
 
 namespace gui::logic {
+    /**
+     * @brief A side of a connection between two ports
+     */
     struct PortsConnectionSide {
+        /**
+         * @brief The block
+         */
         gui::elements::base::BaseBlock* block;
+
+        /**
+         * @brief The port
+         */
         const gui::elements::base::Port* port;
 
-        // the equality operator is required for std unordered containers
+        /**
+         * @brief Equality operator
+         *
+         * The equality operator is required for std unordered containers.
+         * @param other The other side
+         * @return True if the sides are equal, false otherwise
+         */
         bool operator==(const PortsConnectionSide& other) const {
             return block == other.block && port == other.port;
         }
@@ -26,8 +42,10 @@ namespace gui::logic {
     using PortsConnection = std::pair<PortsConnectionSide, PortsConnectionSide>;
 }  // namespace gui::logic
 
-// the hash function is required for std unordered containers
 namespace std {
+    /**
+     * @brief The hash function is required for std unordered containers
+     */
     template <>
     struct hash<gui::logic::PortsConnectionSide> {
         std::size_t operator()(const gui::logic::PortsConnectionSide& p) const {

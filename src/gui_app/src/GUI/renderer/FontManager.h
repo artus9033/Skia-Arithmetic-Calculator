@@ -26,6 +26,10 @@ namespace gui::renderer {
         namespace colors = gui::renderer::colors;
     }
 
+    /**
+     * @brief Utility class that holds static font instances and handles scaling them on window
+     * resizes
+     */
     class FontManager {
        public:
         /**

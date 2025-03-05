@@ -280,7 +280,7 @@ namespace gui::window {
         }
 
         /**
-         * @brief Focus the window
+         * \copydoc WindowBase::focusWindow
          */
         void focusWindow() override { glfwFocusWindow(glfwWindow); }
     };

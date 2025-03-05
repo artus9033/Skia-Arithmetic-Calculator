@@ -57,6 +57,11 @@ namespace gui::elements::base {
         namespace components = gui::renderer::components;
     }  // namespace
 
+    /**
+     * @brief The base class for all blocks, containing common functionality and members
+     *
+     * Any block subclassing this class can be dragged around to change its position.
+     */
     class BaseBlock : public IDraggable {
        public:
         /**
@@ -68,6 +73,7 @@ namespace gui::elements::base {
          * @param newBlockChoiceDelegate The delegate that is notified when a new block is chosen to
          * be added to the canvas
          * @param blockLifecycleManagerDelegate The delegate that manages the lifecycles of blocks
+         * @param windowDelegate The delegate of the window
          * @param logger The logger for the block
          */
         BaseBlock(
@@ -306,8 +312,8 @@ namespace gui::elements::base {
 
         /**
          * @brief Checks if a point is inside the hitbox of a port
-         * @param portsCollection The collection of ports to check
-         * @param point The point to check
+         * @param port The port that hitbox of is to be checked
+         * @param point The point to check whether it is inside the hitbox of the port
          * @return An optional carrying the Port if it is hit or `std::nullopt` otherwise
          */
         std::optional<const Port*> checkPort(const Port* port,
@@ -315,8 +321,10 @@ namespace gui::elements::base {
     };
 }  // namespace gui::elements::base
 
-// the hash function is required for std unordered containers
 namespace std {
+    /**
+     * @brief The hash function is required for std unordered containers
+     */
     template <>
     struct hash<gui::elements::base::BaseBlock> {
         std::size_t operator()(const gui::elements::base::BaseBlock& p) const {

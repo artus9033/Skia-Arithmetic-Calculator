@@ -7,6 +7,9 @@
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
+    /**
+     * @brief A block that raises the first input value to the power of the second input value
+     */
     class PowerBlock : public business_logic::Loggable<PowerBlock>,
                        public gui::elements::base::BaseBlock {
        public:

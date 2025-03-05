@@ -3,6 +3,9 @@
 
 #include <skia/include/core/SkCanvas.h>
 
+/**
+ * @brief The 2D geometry utility module
+ */
 namespace gui::geometry {
     /**
      * @brief Check if a point is within a circle

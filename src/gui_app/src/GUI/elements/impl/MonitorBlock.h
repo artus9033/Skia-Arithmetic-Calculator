@@ -13,7 +13,9 @@
 
 namespace gui::elements::impl {
     /**
-     * A monitor block that displays the value of its input port
+     * @brief A monitor block that displays the value of its input port
+     *
+     * When hovered, the displayed value will present all stored fraction digits of the input port.
      */
     class MonitorBlock : public business_logic::Loggable<MonitorBlock>,
                          public gui::elements::base::BaseBlock {
@@ -72,21 +74,21 @@ namespace gui::elements::impl {
         static constexpr int MONITOR_BLOCK_HEIGHT = 120;
 
         /**
-         * \copydoc BaseBlock::getInputPorts
+         * \copydoc gui::elements::base::BaseBlock::getInputPorts
          */
         const std::vector<gui::elements::base::Port>& getInputPorts() const override {
             return inputPorts;
         }
 
         /**
-         * \copydoc BaseBlock::getOutputPorts
+         * \copydoc gui::elements::base::BaseBlock::getOutputPorts
          */
         const std::vector<gui::elements::base::Port>& getOutputPorts() const override {
             return outputPorts;
         }
 
         /**
-         * \copydoc BaseBlock::getBlockType
+         * \copydoc gui::elements::base::BaseBlock::getBlockType
          */
         gui::elements::base::BlockType getBlockType() const override {
             return gui::elements::base::BlockType::Monitor;

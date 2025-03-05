@@ -9,11 +9,14 @@
 #include "typenames.h"
 #include "utils/misc.h"
 
+/**
+ * @brief The concrete elements specialized implementations
+ */
 namespace gui::elements::impl {
     /**
-     * A constant block that holds a constant value (scalar)
+     * @brief A constant block that holds a constant value (scalar)
      *
-     * Can be double-clicked to edit the value and dragged around to change its position.
+     * Can be double-clicked to edit the value.
      */
     class ConstantBlock : public business_logic::Loggable<ConstantBlock>,
                           public gui::elements::base::BaseBlock,
@@ -38,7 +41,7 @@ namespace gui::elements::impl {
         void render(SkCanvas* canvas, int mouseX, int mouseY, bool isHovered) override;
 
         /**
-         * \copydoc IDoubleClickable::onDoubleClick
+         * \copydoc gui::elements::base::IDoubleClickable::onDoubleClick
          */
         void onDoubleClick(int x, int y) override;
 
@@ -70,21 +73,21 @@ namespace gui::elements::impl {
         static constexpr int CONSTANT_BLOCK_HEIGHT = 120;
 
         /**
-         * \copydoc BaseBlock::getInputPorts
+         * \copydoc gui::elements::base::BaseBlock::getInputPorts
          */
         const std::vector<gui::elements::base::Port>& getInputPorts() const override {
             return inputPorts;
         }
 
         /**
-         * \copydoc BaseBlock::getOutputPorts
+         * \copydoc gui::elements::base::BaseBlock::getOutputPorts
          */
         const std::vector<gui::elements::base::Port>& getOutputPorts() const override {
             return outputPorts;
         }
 
         /**
-         * \copydoc BaseBlock::getBlockType
+         * \copydoc gui::elements::base::BaseBlock::getBlockType
          */
         gui::elements::base::BlockType getBlockType() const override {
             return gui::elements::base::BlockType::Constant;

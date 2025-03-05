@@ -10,6 +10,11 @@
 #include "spdlog/spdlog.h"
 
 namespace gui::window {
+    /**
+     * @brief The abstract base class for implementing a window
+     *
+     * @see gui::window::delegate::IWindowDelegate
+     */
     class WindowBase : public delegate::IWindowDelegate {
        public:
         WindowBase(std::shared_ptr<spdlog::logger> logger)

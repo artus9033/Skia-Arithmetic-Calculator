@@ -2,10 +2,10 @@
 #define GUI_GEOMETRY_SIZE2D_H
 
 namespace gui::geometry {
+    /**
+     * @brief A basic struct representing a 2D size
+     */
     struct Size2D {
-        /**
-         * A basic struct representing a sizing
-         */
        public:
         /**
          * The width

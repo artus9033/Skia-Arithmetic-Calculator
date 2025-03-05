@@ -10,7 +10,13 @@
 #include "GUI/renderer/components/UITextsRow.h"
 
 namespace gui::renderer::delegate {
-
+    /**
+     * @brief The delegate for the UI renderer
+     *
+     * The delegate is used to render the UI elements.
+     *
+     * @see gui::renderer::IRenderer
+     */
     class UIRendererDelegate {
        public:
         virtual ~UIRendererDelegate() = default;

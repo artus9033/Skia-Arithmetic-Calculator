@@ -7,6 +7,9 @@
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
+    /**
+     * @brief A block that subtracts the second input value from the first input value
+     */
     class SubtractBlock : public business_logic::Loggable<SubtractBlock>,
                           public gui::elements::base::BaseBlock {
        public:

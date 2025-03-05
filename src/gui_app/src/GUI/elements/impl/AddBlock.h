@@ -7,6 +7,9 @@
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
+    /**
+     * @brief A block that adds two input values together and outputs their sum
+     */
     class AddBlock : public business_logic::Loggable<AddBlock>,
                      public gui::elements::base::BaseBlock {
        public:

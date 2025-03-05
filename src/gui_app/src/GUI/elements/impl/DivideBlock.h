@@ -7,6 +7,9 @@
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
+    /**
+     * @brief A block that divides the first input value by the second input value
+     */
     class DivideBlock : public business_logic::Loggable<DivideBlock>,
                         public gui::elements::base::BaseBlock {
        public:

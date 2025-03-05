@@ -7,6 +7,9 @@
 #include "GUI/logic/PortsConnectionSide.h"
 
 namespace gui::logic::calculations::delegate {
+    /**
+     * @brief The delegate for the blocks registry, allowing to get connections and blocks
+     */
 
     class IBlocksRegistryDelegate {
        public:

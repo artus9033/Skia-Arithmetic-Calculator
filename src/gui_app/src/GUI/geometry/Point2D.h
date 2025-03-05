@@ -3,7 +3,7 @@
 
 namespace gui::geometry {
     /**
-     * A basic struct representing a 2D point
+     * @brief A basic struct representing a 2D point
      */
     struct Point2D {
        public:

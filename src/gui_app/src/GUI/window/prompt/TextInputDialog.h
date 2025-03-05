@@ -11,6 +11,11 @@
 #include "typenames.h"
 
 namespace gui::window::prompt {
+    /**
+     * @brief Utility class for prompting the user for input
+     *
+     * @see gui::window::prompt::QAppHolderProto
+     */
     class TextInputDialog : public QAppHolderProto {
        public:
         TextInputDialog() = delete;

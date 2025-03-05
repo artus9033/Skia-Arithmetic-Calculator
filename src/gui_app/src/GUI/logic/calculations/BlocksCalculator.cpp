@@ -1,7 +1,9 @@
 #include "BlocksCalculator.h"
 
 namespace gui::logic::calculations {
-
+    /**
+     * @brief The blocks calculator logic, computes the flowing values
+     */
     BlocksCalculator::BlocksCalculator(
         gui::logic::calculations::delegate::IBlocksRegistryDelegate* blocksRegistryDelegate)
         : blocksRegistryDelegate(blocksRegistryDelegate) {}

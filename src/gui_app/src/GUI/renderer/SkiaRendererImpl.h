@@ -83,7 +83,7 @@ namespace gui::renderer {
                                  double yScale) override;
 
         /**
-         * \copydoc UIRendererDelegate::renderCenteredTextsRows
+         * \copydoc gui::renderer::delegate::UIRendererDelegate::renderCenteredTextsRows
          */
         void renderCenteredTextsRows(SkCanvas* canvas,
                                      const geometry::Size2D& size,

@@ -19,8 +19,9 @@ namespace gui::logic::delegate {
         virtual ~IBlockLifecycleManagerDelegate() = default;
 
         /**
-         * @brief Called when a block is created
-         * @param block The block that was created
+         * @brief Invoked when a connection is made between two ports + blocks (sides)
+         * @param source The source side of the connection
+         * @param dest The destination side of the connection
          */
         virtual void onPortsConnected(const gui::logic::PortsConnectionSide& source,
                                       const gui::logic::PortsConnectionSide& dest) = 0;

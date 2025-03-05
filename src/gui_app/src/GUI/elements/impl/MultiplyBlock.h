@@ -7,6 +7,9 @@
 #include "utils/misc.h"
 
 namespace gui::elements::impl {
+    /**
+     * @brief A block that multiplies two input values together and outputs their product
+     */
     class MultiplyBlock : public business_logic::Loggable<MultiplyBlock>,
                           public gui::elements::base::BaseBlock {
        public:

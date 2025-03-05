@@ -1,14 +1,11 @@
-# Flow Arithmetic Calculator {#mainpage}
+# Flow Arithmetic Calculator
 
-Welcome to the documentation of Flow Arithmetic Calculator.
+## Modules index
 
-## Modules
-
-The project is divided into two main modules:
+The project is divided into the following main modules:
 
 - Business Logic (@ref business_logic)
-- GUI Application (@ref gui_app)
+- GUI Application (@ref gui)
+- Unit tests
 
-## Getting Started
-
-See the [README.md](./README.md) file for build instructions and project setup.
+\include{doc} README.md

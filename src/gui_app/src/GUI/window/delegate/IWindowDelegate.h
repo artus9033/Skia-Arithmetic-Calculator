@@ -4,6 +4,11 @@
 #include "GUI/geometry/Size2D.h"
 
 namespace gui::window::delegate {
+    /**
+     * @brief The delegate for the window
+     *
+     * The delegate is used for basic window operations.
+     */
     class IWindowDelegate {
        public:
         virtual ~IWindowDelegate() = default;
@@ -22,6 +27,8 @@ namespace gui::window::delegate {
 
         /**
          * @brief Focus the window
+         *
+         * Helpful e.g. when closing a Qt dialog.
          */
         virtual void focusWindow() = 0;
     };
