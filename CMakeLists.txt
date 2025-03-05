@@ -44,10 +44,9 @@ include(CTest)
 include(third_party/CMakeLists.txt)
 
 # propagate third party dependencies to project components
-link_libraries(${Boost_LIBRARIES} spdlog)
-include_directories(${Boost_INCLUDE_DIRS})
+link_libraries(${Boost_LIBRARIES})
+include_directories(SYSTEM INTERFACE ${Boost_INCLUDE_DIRS} ${spdlog_SOURCE_DIR}/include)
 
-# project components
 add_subdirectory(src/business_logic)
 add_subdirectory(src/gui_app)
 

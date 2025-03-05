@@ -36,18 +36,19 @@ namespace business_logic {
 
         Loggable() {
             // get the name of the given class; may be mangled
+            // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
             name = typeid(Clazz).name();
 
             // if gnu libstdc++ available, demangle it
 #ifdef __GNUC__
             int status = 0;
-            name = abi::__cxa_demangle(name, NULL, NULL, &status);
+            name = abi::__cxa_demangle(name, nullptr, nullptr, &status);
 #endif
 
             // extract just the class name to get rid of the namespace & possible template arguments
             // using regex; e.g. 'gui::window::GLFWWindowImpl<gui::renderer::SkiaRendererImpl>' ->
             // 'GLFWWindowImpl'
-            std::regex regex(R"([^:<>]+(?=<|$))");
+            const std::regex regex(R"([^:<>]+(?=<|$))");
             std::cmatch match;
             if (std::regex_search(name, match, regex)) {
                 name = match[0].str().c_str();

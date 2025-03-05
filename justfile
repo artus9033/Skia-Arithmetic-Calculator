@@ -41,7 +41,7 @@ run-tests:
     @echo "== Running tests ({{build-type}}) =="
     ./build/bin/run_tests
 
-sourceFiles := shell('find ./src/ -name "*.cpp" -or -name "*.h" |xargs echo')
+sourceFiles := shell('find ./src -name "*.cpp" -or -name "*.h" | xargs echo')
 
 # run clang-tidy
 clang-tidy:

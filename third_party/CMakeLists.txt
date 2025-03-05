@@ -148,8 +148,8 @@ else()
 endif()
 
 get_filename_component(SKIA_CLONE_PARENT_DIR "${SKIA_CLONE_PATH}/.." ABSOLUTE)
-target_include_directories(skia INTERFACE ${SKIA_CLONE_PARENT_DIR}) # allow includes in style of skia/include/core/SkCanvas.h
-target_include_directories(skia INTERFACE ${SKIA_CLONE_PATH}) # allow includes in style of include/core/SkCanvas.h
+target_include_directories(skia SYSTEM INTERFACE ${SKIA_CLONE_PARENT_DIR}) # allow includes in style of skia/include/core/SkCanvas.h
+target_include_directories(skia SYSTEM INTERFACE ${SKIA_CLONE_PATH}) # allow includes in style of include/core/SkCanvas.h
 
 if (APPLE)
     execute_process(

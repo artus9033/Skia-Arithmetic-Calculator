@@ -2,6 +2,7 @@
 #define GUI_LOGIC_ERRORS_GRAPH_CYCLE_EXCEPTION_H
 
 #include <stdexcept>
+#include <unordered_set>
 
 #include "GUI/logic/PortsConnectionSide.h"
 

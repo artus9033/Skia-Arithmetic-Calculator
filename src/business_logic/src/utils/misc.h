@@ -1,6 +1,7 @@
 #ifndef MISC_H
 #define MISC_H
 
+#include <cstdint>
 #include <format>
 #include <string>
 
@@ -13,6 +14,7 @@ namespace business_logic {
      */
     template <typename T>
     inline std::string stringifyAddressOf(const T* value) {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
         return std::format("0x{:x}", reinterpret_cast<std::intptr_t>(value));
     }
 }  // namespace business_logic

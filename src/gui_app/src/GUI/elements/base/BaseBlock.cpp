@@ -245,7 +245,8 @@ namespace gui::elements::base {
         }
     }
 
-    std::optional<std::string> BaseBlock::getValueToRenderAboveBlock(bool isHovered) {
+    std::optional<std::string> BaseBlock::getValueToRenderAboveBlock(
+        [[maybe_unused]] bool isHovered) {
         auto& outputPorts = getOutputPorts();
 
         // if more or less than 1 output port is present, do not render the value above the block
