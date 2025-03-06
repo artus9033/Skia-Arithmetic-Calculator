@@ -1,18 +1,11 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef GUI_CONSTANTS_H
+#define GUI_CONSTANTS_H
 
-#include <skia/include/core/SkColor.h>
+namespace gui::constants {
+    constexpr int MENU_HEADLINE_FONT_SIZE_BASE = 17;
+    constexpr int MENU_CAPTION_FONT_SIZE_BASE = 10;
+    constexpr int CAPTION_FONT_SIZE_BASE = 7;
+    constexpr int MENU_CHOICE_FONT_SIZE_BASE = 14;
+}  // namespace gui::constants
 
-namespace constants {
-    extern const int BLOCK_BORDER_RADIUS;
-
-    extern const int BLOCK_BORDER_WIDTH;
-
-    extern const int BLOCK_TEXT_SIZE;
-
-    extern const double DOUBLE_CLICK_TIME_THRESHOLD_SECONDS;
-
-    extern const int defaultValueDisplayPrecision;
-}  // namespace constants
-
-#endif  // CONSTANTS_H
+#endif  // GUI_CONSTANTS_H

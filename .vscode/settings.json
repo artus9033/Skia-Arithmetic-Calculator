@@ -79,7 +79,8 @@
     "atomic": "cpp",
     "exception": "cpp",
     "thread": "cpp",
-    "*.hpp11": "cpp"
+    "*.hpp11": "cpp",
+    "utility": "cpp"
   },
   "C_Cpp.default.cppStandard": "c++20"
 }

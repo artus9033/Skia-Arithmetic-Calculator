@@ -1,6 +1,6 @@
 file(GLOB_RECURSE IMPL_SOURCE_FILES 
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/**/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 set(CMAKE_AUTOMOC ON)
@@ -27,7 +27,7 @@ add_executable(gui_app
     ${IMPL_SOURCE_FILES}
 )
 
-target_include_directories(gui_app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src SYSTEM INTERFACE ${MAGIC_ENUM_INCLUDE_DIR})
+target_include_directories(gui_app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/src)
 
 target_link_libraries(gui_app
     PRIVATE

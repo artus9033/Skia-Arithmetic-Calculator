@@ -174,4 +174,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(magic_enum)
 
 # set var with include dir for magic_enum
-set(MAGIC_ENUM_INCLUDE_DIR ${FETCHCONTENT_BASE_DIR}/magic_enum-src/include)
+# set(MAGIC_ENUM_INCLUDE_DIR ${FETCHCONTENT_BASE_DIR}/magic_enum-src/include)
+include_directories(SYSTEM INTERFACE ${FETCHCONTENT_BASE_DIR}/magic_enum-src/include)

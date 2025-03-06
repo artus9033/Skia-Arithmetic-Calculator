@@ -12,7 +12,6 @@ add_executable(run_tests ${TEST_SOURCES})
 # set include directories
 target_include_directories(run_tests
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/src/*/include # include all include directories of project components
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${Boost_INCLUDE_DIRS}
 )

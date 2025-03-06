@@ -1,10 +1,10 @@
 file(GLOB_RECURSE IMPL_SOURCE_FILES 
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/**/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 add_library(business_logic STATIC
     ${IMPL_SOURCE_FILES}
 )
 
-target_include_directories(business_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(business_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
