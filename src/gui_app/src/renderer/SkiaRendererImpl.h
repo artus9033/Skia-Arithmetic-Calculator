@@ -58,10 +58,6 @@ namespace gui::renderer {
          * @param blocksManager Blocks manager
          */
         explicit SkiaRendererImpl(gui::window::WindowBase<SkCanvas>* window,
-                                  int winWidth,
-                                  int winHeight,
-                                  int fbWidth,
-                                  int fbHeight,
                                   std::shared_ptr<business_logic::BlocksManager> blocksManager);
 
         /**

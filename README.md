@@ -79,7 +79,9 @@ The available commands are:
 
 The general syntax is `just build-type="{Debug,Release}" command1 [? ...commands]`
 
-**For an initial setup**, run: `just configure build-all`
+**For an initial setup**, run: `just configure build-all`.
+
+**The basic build-and-run command** you will likely be interested in is: `just build-type=Release build-gui run-gui`.
 
 ## Building
 

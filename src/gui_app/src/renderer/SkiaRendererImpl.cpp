@@ -2,10 +2,6 @@
 
 namespace gui::renderer {
     SkiaRendererImpl::SkiaRendererImpl(gui::window::WindowBase<SkCanvas>* window,
-                                       int winWidth,
-                                       int winHeight,
-                                       int fbWidth,
-                                       int fbHeight,
                                        std::shared_ptr<business_logic::BlocksManager> blocksManager)
         : gui::renderer::delegate::UIRendererDelegate<SkCanvas>(),
           business_logic::Loggable<SkiaRendererImpl>(),
