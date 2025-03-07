@@ -8,7 +8,7 @@
 
 namespace business_logic::elements::blocks {
     /**
-     * @brief A block that divides the first input value by the second input valu
+     * @brief A block that divides the first input value by the second input value
      */
 
     class DivideBlock : public business_logic::Loggable<DivideBlock>,

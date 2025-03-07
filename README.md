@@ -152,6 +152,14 @@ cmake --build . --target run_tests
 ctest -C Release --output-on-failure
 ```
 
+## Project tooling, code style & static analysis
+
+The project uses the following tools for code style:
+
+- `clang-format` for formatting the code (configured in [`.clang-format`](.clang-format))
+- `clang-tidy` for static analysis (configured in [`.clang-tidy`](.clang-tidy))
+- `cspell` for spell checking (configured in [`cspell.json`](cspell.json))
+
 ## Documentation
 
 Documentation is generated using Doxygen from source code comments. After building the `docs` target, open `build/docs/html/index.html` in your web browser.

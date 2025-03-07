@@ -14,6 +14,9 @@ jobs:
       - name: Environment basic setup
         uses: ./.github/actions/basic-setup
 
+      - name: Check spelling
+        run: just check-spelling
+
       - name: Install tools
         run: |
           sudo apt update

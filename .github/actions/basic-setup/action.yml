@@ -38,3 +38,6 @@ runs:
       shell: bash
       run: |
         brew install --formula boost@1.87 doxygen graphviz harfbuzz qt@6.8.2
+
+    - name: Install CSpell
+      run: npm install -g cspell

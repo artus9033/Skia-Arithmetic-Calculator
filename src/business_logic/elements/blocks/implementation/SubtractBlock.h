@@ -8,7 +8,7 @@
 
 namespace business_logic::elements::blocks {
     /**
-     * @brief A block that subtracts the second input value from the first input valu
+     * @brief A block that subtracts the second input value from the first input value
      */
 
     class SubtractBlock : public business_logic::Loggable<SubtractBlock>,

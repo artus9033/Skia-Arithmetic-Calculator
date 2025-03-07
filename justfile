@@ -31,6 +31,11 @@ build-docs:
     @echo "== Building docs =="
     cmake --build build --target docs -- -j12
 
+# check spelling of src/** with CSpell
+check-spelling:
+    @echo "== Checking spelling =="
+    cspell "src/**"
+
 # run the gui_app
 run-gui:
     @echo "== Running gui_app ({{build-type}}) =="
