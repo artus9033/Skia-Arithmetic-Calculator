@@ -76,6 +76,9 @@ The available commands are:
 - `just build-docs` - Build the documentation
 - `just run-gui` - Run the GUI application
 - `just run-tests` - Run the tests
+- `just clang-tidy` - Run clang-tidy
+- `just clang-format` - Run clang-format
+- `just cspell` - Run CSpell
 
 The general syntax is `just build-type="{Debug,Release}" command1 [? ...commands]`
 
