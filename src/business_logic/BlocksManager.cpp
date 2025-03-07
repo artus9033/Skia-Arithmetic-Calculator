@@ -5,7 +5,11 @@ namespace business_logic {
     BlocksManager::BlocksManager(delegate::IWindowDelegate* windowDelegate)
         : calculations::BlocksCalculator(this),
           doubleClickCtLastMouseClickTime(0),
-          windowDelegate(windowDelegate) {}
+          windowDelegate(windowDelegate),
+          draggedBlock(nullptr),
+          mouseX(0),
+          mouseY(0),
+          dragOffset({.width = 0, .height = 0}) {}
 
     void BlocksManager::handleMouseDown() {
         // do not handle mouse down if we have an active choices input
@@ -22,18 +26,18 @@ namespace business_logic {
             // double click
 
             if (maybeClickedBlock) {
-                auto clickedBlock = maybeClickedBlock.value();
+                const auto& clickedBlock = maybeClickedBlock.value();
 
-                auto doubleClickableBlock =
+                auto* doubleClickableBlock =
                     dynamic_cast<business_logic::elements::interactions::IDoubleClickable*>(
                         clickedBlock.get());
 
                 // check if the block is IDoubleClickable
-                if (doubleClickableBlock) {
-                    doubleClickableBlock->onDoubleClick(mouseX, mouseY);
-                } else {
+                if (doubleClickableBlock == nullptr) {
                     logger->info("Double clicked block {} is not IDoubleClickable",
                                  clickedBlock->getSelfId());
+                } else {
+                    doubleClickableBlock->onDoubleClick(mouseX, mouseY);
                 }
             } else {
                 logger->info("Double clicked outside any block");

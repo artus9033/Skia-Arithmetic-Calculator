@@ -35,7 +35,7 @@ namespace business_logic::constants {
 
     constexpr int MAX_INPUT_CHOICES_PER_ROW = 3;
     constexpr int DEFAULT_VALUE_DISPLAY_PRECISION = 10;
-    constexpr double DOUBLE_CLICK_TIME_THRESHOLD_SECONDS = 0.2;
+    constexpr time_t DOUBLE_CLICK_TIME_THRESHOLD_SECONDS = 0.2;
 
 }  // namespace business_logic::constants
 

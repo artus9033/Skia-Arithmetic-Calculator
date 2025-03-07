@@ -13,6 +13,7 @@ add_executable(run_tests ${TEST_SOURCES})
 target_include_directories(run_tests
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+    SYSTEM INTERFACE
         ${Boost_INCLUDE_DIRS}
 )
 
@@ -27,6 +28,13 @@ target_link_libraries(run_tests
         GTest::gtest
         GTest::gtest_main
         ${Boost_LIBRARIES}
+)
+# treat the linked libraries' headers as system interface for clang-tidy not to check them
+target_include_directories(
+    gui_app SYSTEM INTERFACE
+        $<TARGET_PROPERTY:GTest::gtest,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:GTest::gtest_main,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:${Boost_LIBRARIES},INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 # configure output directory
