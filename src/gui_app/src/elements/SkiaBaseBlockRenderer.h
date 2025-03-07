@@ -11,6 +11,9 @@
 #include "renderer/FontManager.h"
 #include "renderer/colors.h"
 
+/**
+ * @brief The GUI counterpart carrying implementations integrating with business_logic::elements
+ */
 namespace gui::elements {
 
     // using an empty namespace to avoid polluting the outer scope of business_logic::elements::base

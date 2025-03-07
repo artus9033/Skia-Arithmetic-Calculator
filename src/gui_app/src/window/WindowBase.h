@@ -10,6 +10,9 @@
 #include "input/InputChoiceInteraction.h"
 #include "spdlog/spdlog.h"
 
+/**
+ * @brief The GUI window abstraction & implementation
+ */
 namespace gui::window {
     /**
      * @brief The abstract base class for implementing a window

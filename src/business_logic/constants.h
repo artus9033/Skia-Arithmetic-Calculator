@@ -1,8 +1,14 @@
 #ifndef BUSINESS_LOGIC_CONSTANTS_H
 #define BUSINESS_LOGIC_CONSTANTS_H
 
+/**
+ * @brief General logic constants
+ */
 namespace business_logic::constants {
-    // Port-related constants
+    // Port-related constants; note: most of these constants could have been moved to the GUI
+    // module, however most of them are dependencies of TOTAL_PORT_HITBOX_RADIUS, which is needed in
+    // the business_logic module; therefore, for coherence, all of them were decided upon to stay in
+    // this file
     constexpr int PORT_CIRCLE_RADIUS = 10;
     static_assert(PORT_CIRCLE_RADIUS > 0, "PORT_CIRCLE_RADIUS must be greater than 0");
     static_assert(PORT_CIRCLE_RADIUS % 2 == 0, "PORT_CIRCLE_RADIUS must be divisible by 2");

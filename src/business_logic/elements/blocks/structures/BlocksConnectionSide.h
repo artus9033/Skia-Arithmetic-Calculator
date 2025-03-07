@@ -8,6 +8,10 @@ namespace business_logic::elements::blocks {
     class BaseBlock;
 }
 
+/**
+ * @brief Abstract structures that constitute for the calculator GUI and are logical models of the
+ * rendered entities
+ */
 namespace business_logic::elements::structures {
     // forward declaration
     struct Port;

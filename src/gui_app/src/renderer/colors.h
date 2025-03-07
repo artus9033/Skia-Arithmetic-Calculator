@@ -3,6 +3,9 @@
 
 #include <skia/include/core/SkColor.h>
 
+/**
+ * @brief Color constants used for rendering entities
+ */
 namespace gui::renderer::colors {
 
     // purple-blue

@@ -3,6 +3,9 @@
 
 #include <QApplication>
 
+/**
+ * @brief GUI user prompt utilities
+ */
 namespace gui::window::prompt {
     /**
      * @brief An internal helper class for ensuring a QApplication is created

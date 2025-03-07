@@ -10,6 +10,9 @@
 #include "errors/GraphCycleException.h"
 #include "logging/Loggable.h"
 
+/**
+ * @brief Utilities regarding calculation of values for the calculator itself
+ */
 namespace business_logic::calculations {
     /**
      * @brief The blocks calculator logic, computes the flowing values

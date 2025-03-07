@@ -7,6 +7,10 @@
 #include "business_logic/components/UITextsRow.h"
 #include "business_logic/geometry/Size2D.h"
 
+/**
+ * @brief Renderer delegates for re-use by other components to be able to anonymously invoke
+ * functionalities of the main renderer implementation
+ */
 namespace gui::renderer::delegate {
     // using an empty namespace to avoid polluting the outer scope of business_logic
     namespace {

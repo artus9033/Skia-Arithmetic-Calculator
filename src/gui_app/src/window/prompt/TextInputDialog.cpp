@@ -2,8 +2,8 @@
 
 namespace gui::window::prompt {
     std::optional<std::string> TextInputDialog::promptForTextInput(
-        std::string title,
-        std::string prompt,
+        const std::string title&,
+        const std::string prompt&,
         const std::string& defaultValue,
         business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
@@ -29,8 +29,8 @@ namespace gui::window::prompt {
     }
 
     std::optional<FloatingPoint> TextInputDialog::promptForFloatingPointInput(
-        std::string title,
-        std::string prompt,
+        const std::string title&,
+        const std::string prompt&,
         const std::optional<FloatingPoint>& defaultValue,
         business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
@@ -44,7 +44,7 @@ namespace gui::window::prompt {
 
         auto strValue = input.value();
         // replace , with .
-        std::replace(strValue.begin(), strValue.end(), ',', '.');
+        std::ranges::replace(strValue, ',', '.');
 
         try {
             return FloatingPoint(strValue);

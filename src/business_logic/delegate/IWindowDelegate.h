@@ -4,6 +4,10 @@
 #include "geometry/Size2D.h"
 #include "typenames.h"
 
+/**
+ * @brief Delegates exposed by the business_logic module, used for integrating with a GUI / renderer
+ * implementation
+ */
 namespace business_logic::delegate {
     /**
      * @brief The delegate for the window

@@ -3,6 +3,7 @@
 
 #include <QInputDialog>
 #include <QString>
+#include <algorithm>
 #include <optional>
 #include <string>
 
@@ -21,14 +22,14 @@ namespace gui::window::prompt {
         TextInputDialog() = delete;
 
         static std::optional<std::string> promptForTextInput(
-            std::string title,
-            std::string prompt,
+            const std::string title&,
+            const std::string prompt&,
             const std::string& defaultValue,
             business_logic::delegate::IWindowDelegate* windowDelegate);
 
         static std::optional<FloatingPoint> promptForFloatingPointInput(
-            std::string title,
-            std::string prompt,
+            const std::string title&,
+            const std::string prompt&,
             const std::optional<FloatingPoint>& defaultValue,
             business_logic::delegate::IWindowDelegate* windowDelegate);
     };

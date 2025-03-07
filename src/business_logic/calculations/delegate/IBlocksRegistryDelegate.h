@@ -6,6 +6,10 @@
 
 #include "elements/blocks/structures/BlocksConnectionSide.h"
 
+/**
+ * @brief Calculations delegates, used for other classes to access an exposed subset of
+ * functionalities from the business_logic::calculations module classes
+ */
 namespace business_logic::calculations::delegate {
     /**
      * @brief The delegate for the blocks registry, allowing to get connections and blocks

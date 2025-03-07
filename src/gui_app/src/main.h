@@ -8,4 +8,9 @@
 #include "renderer/SkiaRendererImpl.h"
 #include "window/GLFWWindowImpl.h"
 
+/**
+ * @brief The actual GUI / renderer implementation counterpart
+ */
+namespace gui {}
+
 #endif  // MAIN_H

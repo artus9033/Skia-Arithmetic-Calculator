@@ -1,6 +1,9 @@
 #ifndef BUSINESS_LOGIC_ELEMENTS_INTERACTIONS_IDRAGGABLE_H
 #define BUSINESS_LOGIC_ELEMENTS_INTERACTIONS_IDRAGGABLE_H
 
+/**
+ * @brief Interaction primitives for elements
+ */
 namespace business_logic::elements::interactions {
 
     /**

@@ -9,6 +9,9 @@
 #include "elements/blocks/structures/Port.h"
 #include "logging/Loggable.h"
 
+/**
+ * @brief Input primitives, either for GUI (models of components) or interaction with elements
+ */
 namespace business_logic::input {
     /**
      * @brief Connect ports via dragging interaction DTO

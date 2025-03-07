@@ -21,6 +21,7 @@ namespace business_logic::elements::blocks {
           selfId(business_logic::stringifyAddressOf(this)) {}
 
     void PowerBlock::calculateOutputValues() {
+        // NOLINTNEXTLINE
         this->portValues[&outputPorts[0]] = boost::multiprecision::pow(
             this->getPortValue(&inputPorts[0]), this->getPortValue(&inputPorts[1]));
     }

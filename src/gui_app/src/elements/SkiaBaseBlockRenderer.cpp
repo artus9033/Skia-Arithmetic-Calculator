@@ -102,13 +102,15 @@ namespace gui::elements {
                 business_logic::constants::PORT_CIRCLE_MARGIN_HALF * (outputPorts.size() - 1);
 
         // draw the block
+        // NOLINTNEXTLINE(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
         canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY),
                          isHovered ? blockOutlineHoveredPaint : blockOutlinePaint);
+        // NOLINTNEXTLINE(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
         canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY), blockFillPaint);
 
-        auto& captionFont =
+        const auto& captionFont =
             gui::renderer::FontManager::getFontForVariant(components::UIText::Variant::Caption);
-        auto captionFontSize = captionFont.getSize();
+        const auto captionFontSize = captionFont.getSize();
 
         auto blockNameCstr = magic_enum::enum_name(block->getBlockType()).data();
         auto blockNameWidth =

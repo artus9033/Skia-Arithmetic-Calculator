@@ -6,6 +6,9 @@
 
 #include "elements/blocks/structures/BlocksConnectionSide.h"
 
+/**
+ * @brief Logic exception classes
+ */
 namespace business_logic::errors {
     /**
      * @brief Exception thrown when a graph cycle is detected

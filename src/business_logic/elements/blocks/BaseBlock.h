@@ -18,6 +18,11 @@
 #include "structures/Port.h"
 #include "typenames.h"
 
+/**
+ * @brief The elements (i.e., renderable entities constituting for the calculator) module
+ */
+namespace business_logic::elements {}
+
 namespace business_logic::elements::blocks {
     /**
      * @brief The base class for all blocks, containing common functionality and members

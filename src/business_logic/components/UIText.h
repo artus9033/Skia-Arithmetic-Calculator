@@ -3,6 +3,9 @@
 
 #include <string>
 
+/**
+ * @brief UI primitives and components to be rendered as part of the UI
+ */
 namespace business_logic::components {
     /**
      * @brief The UI renderable text primitive

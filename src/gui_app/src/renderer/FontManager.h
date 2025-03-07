@@ -17,6 +17,9 @@
 #include <skia/include/core/SkFontMgr.h>
 #endif
 
+/**
+ * @brief The GUI renderer and renderer-supporting implementation module
+ */
 namespace gui::renderer {
     // using an empty namespace to avoid polluting the outer scope of business_logic::elements::base
     namespace {
