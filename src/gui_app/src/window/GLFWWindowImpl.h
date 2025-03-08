@@ -31,7 +31,7 @@ namespace gui::window {
          */
         explicit GLFWWindowImpl(int width, int height, const char* title)
             : business_logic::Loggable<GLFWWindowImpl<RendererImpl, Canvas>>(),
-              window::WindowBase<Canvas>(logger) {
+              window::WindowBase<Canvas>(width, height, logger) {
             initGLFW();
 
             initializeGLFWWindow(width, height, title);
@@ -43,9 +43,7 @@ namespace gui::window {
          * @brief Constructs a new GLFWWindowImpl that takes the full size of the primary monitor
          * @param title GLFWWindowImpl title
          */
-        explicit GLFWWindowImpl(const char* title)
-            : business_logic::Loggable<GLFWWindowImpl<RendererImpl, Canvas>>(),
-              window::WindowBase<Canvas>(logger) {
+        static GLFWWindowImpl<RendererImpl, Canvas> MakeFullscreen(const char* title) {
             initGLFW();
 
             // Get primary monitor
@@ -60,10 +58,8 @@ namespace gui::window {
                 throw std::runtime_error("Failed to get primary monitor's video mode");
             }
 
-            initializeGLFWWindow(
+            return GLFWWindowImpl<RendererImpl, Canvas>(
                 std::round(videoMode->width * 0.6), std::round(videoMode->height * 0.6), title);
-
-            postInitialize();
         };
 
         GLFWWindowImpl(const GLFWWindowImpl&) = delete;
@@ -127,16 +123,16 @@ namespace gui::window {
         /**
          * @brief Initializes GLFW
          */
-        void initGLFW() {
+        static void initGLFW() {
             if (!initializedGLFW) {
-                logger->info("Initializing GLFW");
+                fprintf(stdout, "Initializing GLFW\n");
 
                 if (glfwInit()) {
                     glfwSetErrorCallback([](int error, const char* description) {
                         fprintf(stderr, "GLFW Error %d: %s\n", error, description);
                     });
 
-                    logger->info("Initialized GLFW");
+                    fprintf(stdout, "Initialized GLFW\n");
 
                     initializedGLFW = true;
                 } else {
@@ -236,8 +232,7 @@ namespace gui::window {
             int fbWidth, fbHeight;
             glfwGetFramebufferSize(glfwWindow, &fbWidth, &fbHeight);
 
-            renderer = std::make_unique<RendererImpl>(
-                this, width, height, fbWidth, fbHeight, this->blocksManager);
+            renderer = std::make_unique<RendererImpl>(this, this->blocksManager);
 
             handleWindowResized(glfwWindow, width, height);
         }

@@ -24,11 +24,20 @@ namespace gui::window {
     template <typename Canvas>
     class WindowBase : public business_logic::delegate::IWindowDelegate {
        public:
-        WindowBase(std::shared_ptr<spdlog::logger> logger)
+        WindowBase(int width, int height, std::shared_ptr<spdlog::logger> logger)
             : blocksManager(std::make_shared<gui::elements::SkiaBlocksManagerRenderer>(this)),
-              logger(logger) {}
+              logger(logger),
+              winSize({.width = width, .height = height}) {}
 
         virtual ~WindowBase() = default;
+
+        // delete copy semantics
+        WindowBase(const WindowBase&) = delete;
+        WindowBase& operator=(const WindowBase&) = delete;
+
+        // enable move semantics
+        WindowBase(WindowBase&&) noexcept = default;
+        WindowBase& operator=(WindowBase&&) noexcept = default;
 
         /**
          * @brief Runs the main window loop

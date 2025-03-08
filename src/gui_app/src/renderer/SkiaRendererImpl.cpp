@@ -23,6 +23,9 @@ namespace gui::renderer {
 
     void SkiaRendererImpl::reinitializeSurface() {
         auto windowSize = window->getWindowSize();
+
+        if (windowSize.width == 0 && windowSize.height == 0) return;
+
         logger->info("Reinitializing Skia surface with width {} and height {}",
                      windowSize.width,
                      windowSize.height);
