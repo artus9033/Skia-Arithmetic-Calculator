@@ -35,11 +35,8 @@ jobs:
       - name: Configure build
         run: just configure
 
-      - name: Test results
-        run: ls build/_deps/skia/out/Release
+      - name: Build
+        run: just build-all
 
-      # - name: Build
-      #   run: just build-all
-
-      # - name: Run unit tests
-      #   run: just run-tests
+      - name: Run unit tests
+        run: just run-tests

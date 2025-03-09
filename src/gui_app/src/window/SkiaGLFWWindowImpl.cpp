@@ -1,9 +1,6 @@
 #include "SkiaGLFWWindowImpl.h"
 
 namespace gui::window {
-    // explicitly define the static members of Window specialization for SkiaRendererImpl
-    template <>
-    bool GLFWWindowImpl<gui::renderer::SkiaRendererImpl, SkCanvas>::initializedGLFW = false;
-
+    // explicitly define the GLFWWindowImpl specialization for SkiaRendererImpl
     template class GLFWWindowImpl<gui::renderer::SkiaRendererImpl, SkCanvas>;
 }  // namespace gui::window

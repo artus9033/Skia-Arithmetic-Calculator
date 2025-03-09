@@ -27,14 +27,12 @@ target_link_libraries(run_tests
         business_logic
         GTest::gtest
         GTest::gtest_main
-        ${Boost_LIBRARIES}
 )
 # treat the linked libraries' headers as system interface for clang-tidy not to check them
 target_include_directories(
     gui_app SYSTEM INTERFACE
         $<TARGET_PROPERTY:GTest::gtest,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:GTest::gtest_main,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:${Boost_LIBRARIES},INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 # configure output directory

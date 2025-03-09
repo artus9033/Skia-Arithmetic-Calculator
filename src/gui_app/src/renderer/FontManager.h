@@ -11,10 +11,15 @@
 #include "colors.h"
 #include "constants.h"
 
-#ifdef __APPLE__
+#ifdef APPLE
 #include <skia/include/ports/SkFontMgr_mac_ct.h>
+#elif defined(__linux__)
+// linux - use fontconfig
+#include "include/ports/SkFontMgr_fontconfig.h"
+#include "include/ports/SkFontScanner_FreeType.h"
 #else
-#include <skia/include/core/SkFontMgr.h>
+// windows
+#include "include/ports/SkTypeface_win.h"
 #endif
 
 /**

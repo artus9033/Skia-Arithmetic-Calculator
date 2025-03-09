@@ -50,19 +50,20 @@ target_include_directories(
 
 # if linux
 if(UNIX AND NOT APPLE)
-    find_package(Freetype REQUIRED)
-    find_package(XCB REQUIRED)
-    target_link_libraries(gui_app PUBLIC Freetype::Freetype XCB::XCB)
-    # treat the linked libraries' headers as system interface for clang-tidy not to check them
-    target_include_directories(
-        gui_app SYSTEM INTERFACE
-            $<TARGET_PROPERTY:Freetype::Freetype,INTERFACE_INCLUDE_DIRECTORIES>
-            $<TARGET_PROPERTY:XCB::XCB,INTERFACE_INCLUDE_DIRECTORIES>
-    )
+find_package(Freetype REQUIRED)
+find_package(XCB REQUIRED)
+target_link_libraries(gui_app PUBLIC Freetype::Freetype XCB::XCB fontconfig)
+# treat the linked libraries' headers as system interface for clang-tidy not to check them
+target_include_directories(
+    gui_app SYSTEM INTERFACE
+        $<TARGET_PROPERTY:Freetype::Freetype,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:XCB::XCB,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:fontconfig,INTERFACE_INCLUDE_DIRECTORIES>
+)
 endif()
 
 # ensure static linkage on Windows
-if(WIN32)
+if (WIN32)
     target_link_options(gui_app PRIVATE
         -static
         -static-libgcc
@@ -76,7 +77,7 @@ set_target_properties(gui_app PROPERTIES
 )
 
 # link required Skia peer dependencies for macOS
-if(APPLE)
+if (APPLE)
     target_link_libraries(gui_app PRIVATE
         "-framework Cocoa"
         "-framework OpenGL"

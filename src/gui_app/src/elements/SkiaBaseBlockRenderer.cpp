@@ -108,7 +108,7 @@ namespace gui::elements {
         // NOLINTNEXTLINE(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
         canvas->drawRect(SkRect::MakeLTRB(leftX, topY, rightX, bottomY), blockFillPaint);
 
-        const auto& captionFont =
+        const auto captionFont =
             gui::renderer::FontManager::getFontForVariant(components::UIText::Variant::Caption);
         const auto captionFontSize = captionFont.getSize();
 

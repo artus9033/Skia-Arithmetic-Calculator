@@ -22,14 +22,14 @@ namespace gui::window::prompt {
         TextInputDialog() = delete;
 
         static std::optional<std::string> promptForTextInput(
-            const std::string title&,
-            const std::string prompt&,
+            const std::string& title,
+            const std::string& prompt,
             const std::string& defaultValue,
             business_logic::delegate::IWindowDelegate* windowDelegate);
 
         static std::optional<FloatingPoint> promptForFloatingPointInput(
-            const std::string title&,
-            const std::string prompt&,
+            const std::string& title,
+            const std::string& prompt,
             const std::optional<FloatingPoint>& defaultValue,
             business_logic::delegate::IWindowDelegate* windowDelegate);
     };

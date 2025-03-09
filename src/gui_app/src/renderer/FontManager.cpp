@@ -24,10 +24,14 @@ namespace gui::renderer {
         return paint;
     }();
 
-#ifdef __APPLE__
+#if APPLE
     sk_sp<SkFontMgr> FontManager::fontMgr = SkFontMgr_New_CoreText(nullptr);
+#elif WIN32
+    sk_sp<SkFontMgr> FontManager::fontMgr = SkFontMgr_New_DirectWrite();
 #else
-    sk_sp<SkFontMgr> FontManager::fontMgr = SkFontMgr_New_Default();
+    // linux - use fontconfig
+    sk_sp<SkFontMgr> FontManager::fontMgr =
+        SkFontMgr_New_FontConfig(nullptr, SkFontScanner_Make_FreeType());
 #endif
 
     sk_sp<SkTypeface> FontManager::typeface =
@@ -35,6 +39,7 @@ namespace gui::renderer {
 
     SkFont FontManager::menuHeadlineFont = [] {
         SkFont font;
+        font.setSubpixel(true);
         font.setSize(gui::constants::MENU_HEADLINE_FONT_SIZE_BASE);
         font.setTypeface(FontManager::typeface);
         font.setEmbolden(true);
@@ -44,6 +49,7 @@ namespace gui::renderer {
 
     SkFont FontManager::menuCaptionFont = [] {
         SkFont font;
+        font.setSubpixel(true);
         font.setSize(gui::constants::MENU_CAPTION_FONT_SIZE_BASE);
         font.setTypeface(FontManager::typeface);
 
@@ -52,6 +58,7 @@ namespace gui::renderer {
 
     SkFont FontManager::captionFont = [] {
         SkFont font;
+        font.setSubpixel(true);
         font.setSize(gui::constants::CAPTION_FONT_SIZE_BASE);
         font.setTypeface(FontManager::typeface);
 
@@ -60,6 +67,7 @@ namespace gui::renderer {
 
     SkFont FontManager::menuChoiceFont = [] {
         SkFont font;
+        font.setSubpixel(true);
         font.setSize(gui::constants::MENU_CHOICE_FONT_SIZE_BASE);
         font.setTypeface(FontManager::typeface);
 
@@ -82,6 +90,7 @@ namespace gui::renderer {
             case business_logic::components::UIText::Variant::MenuCaption:
                 return gui::renderer::FontManager::menuCaptionFont;
 
+            default:
             case business_logic::components::UIText::Variant::Caption:
                 return gui::renderer::FontManager::captionFont;
 

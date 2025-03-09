@@ -2,8 +2,8 @@
 
 namespace gui::window::prompt {
     std::optional<std::string> TextInputDialog::promptForTextInput(
-        const std::string title&,
-        const std::string prompt&,
+        const std::string& title,
+        const std::string& prompt,
         const std::string& defaultValue,
         business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
@@ -18,19 +18,19 @@ namespace gui::window::prompt {
                                              defaultValueQstr,
                                              &ok);
 
+        // restore focus to the window
+        windowDelegate->focusWindow();
+
         if (ok && !text.isEmpty()) {
             return text.toStdString();
         } else {
             return std::nullopt;
         }
-
-        // restore focus to the window
-        windowDelegate->focusWindow();
     }
 
     std::optional<FloatingPoint> TextInputDialog::promptForFloatingPointInput(
-        const std::string title&,
-        const std::string prompt&,
+        const std::string& title,
+        const std::string& prompt,
         const std::optional<FloatingPoint>& defaultValue,
         business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();

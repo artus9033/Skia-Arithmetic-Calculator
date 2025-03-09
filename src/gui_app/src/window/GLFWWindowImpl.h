@@ -116,7 +116,7 @@ namespace gui::window {
         using business_logic::Loggable<GLFWWindowImpl<RendererImpl, Canvas>>::logger;
 
         GLFWwindow* glfwWindow;
-        static bool initializedGLFW;
+        inline static bool initializedGLFW;
 
         std::unique_ptr<RendererImpl> renderer;
 

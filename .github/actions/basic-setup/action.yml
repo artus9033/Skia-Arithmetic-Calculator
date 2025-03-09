@@ -8,6 +8,11 @@ runs:
     - name: Install Just
       uses: extractions/setup-just@v2
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: 6.*
+
     - name: Install ninja
       uses: seanmiddleditch/gha-setup-ninja@master
 
@@ -19,7 +24,6 @@ runs:
       if: ${{ matrix.os == 'windows-latest' }}
       shell: pwsh
       run: |
-        winget install --accept-source-agreements --accept-package-agreements --id Boost.Boost --version 1.87
         winget install --accept-source-agreements --accept-package-agreements --id DimitriVanHeesch.Doxygen
         winget install --accept-source-agreements --accept-package-agreements --id Graphviz.Graphviz
 
@@ -29,15 +33,22 @@ runs:
       run: |
         sudo add-apt-repository universe
         sudo apt update
-        sudo apt install -y libboost1.83-all-dev doxygen xorg-dev \
-            graphviz libharfbuzz-dev libfreetype6-dev libxcb1-dev libxcb-util-dev \
-            libglx-dev libgl1-mesa-dev libxcb-xkb-dev qt6-base-dev
+        sudo apt install -y xorg-dev \
+          graphviz libharfbuzz-dev libfreetype6-dev libxcb1-dev libxcb-util-dev \
+          libglx-dev libgl1-mesa-dev libxcb-xkb-dev qt6-base-dev \
+          libfontconfig1-dev libfreetype6-dev libx11-dev libxext-dev \
+          libxfixes-dev libxi-dev libxrender-dev libxcb1-dev libx11-xcb-dev libxcb-glx0-dev \
+          libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev libxcb-sync0-dev \
+          libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev \
+          libxkbcommon-dev libxkbfile-dev libjpeg-dev libwebp-dev libtiff-dev libpng-dev
+        sudo apt install apt install -y make cmake gcc g++ build-essential vim git wget curl python-is-python ninja-build
 
     - name: Install dependencies (MacOS only)
       if: ${{ matrix.os == 'macos-latest' }}
       shell: bash
       run: |
-        brew install --formula boost@1.87 doxygen graphviz harfbuzz qt@6.8.2
+        brew install --formula doxygen graphviz harfbuzz qt@6.8.2
 
     - name: Install CSpell
+      shell: bash
       run: npm install -g cspell

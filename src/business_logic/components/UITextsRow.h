@@ -2,6 +2,7 @@
 #define UITEXTSROW_H
 
 #include <vector>
+#include <iterator>
 
 #include "UIText.h"
 

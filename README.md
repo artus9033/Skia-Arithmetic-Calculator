@@ -1,6 +1,6 @@
 # Flow Arithmetic Calculator
 
-A modern C++ application project for visual Simulink- / Unreal Engine Blueprint-like flow-based arithmetic calculations with a graphical interface built using GLFW, Skia and Boost Multiprecision.
+A modern C++ application project for visual Simulink- / Unreal Engine Blueprint-like flow-based arithmetic calculations with a graphical interface built using GLFW, Skia and Boost (ranges & multiprecision).
 
 Contains documentation generation with Doxygen, unit tests with Google Test and a Justfile for simplified build operations.
 
@@ -26,19 +26,29 @@ Business logic is implemented as a static library, and the GUI is implemented as
 ## Prerequisites
 
 - CMake 3.20 or higher
-- C++20 compatible compiler
+- clang & clang++
 - Git
 - Python 3.x (required by Skia build scripts)
 - Boost installed
 - Doxygen installed
-- harfbuzz installed
 - Qt6 installed
+- `clang` and `clang++` installed (**especially Windows**: `winget install -e --id LLVM.LLVM`)
+- `lldb` (if debugging)
+
+Platform-specific requirements:
+
+- harfbuzz installed (MacOS only)
+- X11, XCB & XKB development libraries installed (Linux only)
+- fontconfig installed (Linux only) - required for font loading
+- (**Windows only**) configured the path to Qt installation's `cmake` directory in [`config-windows.cmake`](./config-windows.cmake) that can be copied over from [`config-windows.cmake.example`](./config-windows.cmake.example)
 
 The project automatically downloads and builds all other dependencies:
 
 - GLFW
 - Skia
 - Google Test
+
+For font rendering
 
 ## Quickstart
 
@@ -57,7 +67,7 @@ The project carries the following preconfigured launch scenarios:
 - Tests (Debug)
 - Tests (Release)
 
-Debug scenarios attach a debugger - `lldb` on MacOS (since GDB is not supported by Apple Silicon chips) and `gdb` on other platforms.
+Debug scenarios attach a debugger - `lldb`.
 
 ## Simplified scripts - Just
 
