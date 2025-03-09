@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <boost/range/adaptor/reversed.hpp>
+#include <chrono>
 #include <magic_enum/magic_enum.hpp>
 #include <memory>
 #include <optional>
@@ -197,7 +198,7 @@ namespace business_logic {
         /**
          * The time of the last mouse click, used for tracking double-clicks
          */
-        time_t doubleClickCtLastMouseClickTime;
+        std::chrono::steady_clock::time_point doubleClickCtLastMouseClickTime;
 
         /**
          * The window delegate

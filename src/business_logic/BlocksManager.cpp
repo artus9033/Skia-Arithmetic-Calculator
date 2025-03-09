@@ -4,12 +4,12 @@ namespace business_logic {
 
     BlocksManager::BlocksManager(delegate::IWindowDelegate* windowDelegate)
         : calculations::BlocksCalculator(this),
-          doubleClickCtLastMouseClickTime(0),
-          windowDelegate(windowDelegate),
           draggedBlock(nullptr),
           mouseX(0),
           mouseY(0),
-          dragOffset({.width = 0, .height = 0}) {}
+          dragOffset({.width = 0, .height = 0}),
+          doubleClickCtLastMouseClickTime(),
+          windowDelegate(windowDelegate) {}
 
     void BlocksManager::handleMouseDown() {
         // do not handle mouse down if we have an active choices input
@@ -21,8 +21,8 @@ namespace business_logic {
         // check for double-click
         auto maybeClickedBlock = getBlockAtMousePos();
 
-        if (time(nullptr) - doubleClickCtLastMouseClickTime <
-            constants::DOUBLE_CLICK_TIME_THRESHOLD_SECONDS) {
+        if (std::chrono::steady_clock::now() - doubleClickCtLastMouseClickTime <=
+            constants::DOUBLE_CLICK_TIME_THRESHOLD_MS) {
             // double click
 
             if (maybeClickedBlock) {
@@ -44,7 +44,7 @@ namespace business_logic {
             }
 
             // the next double click event should start counting now
-            doubleClickCtLastMouseClickTime = 0;
+            doubleClickCtLastMouseClickTime = std::chrono::steady_clock::time_point();
         } else {
             // single click
 
@@ -63,7 +63,7 @@ namespace business_logic {
                         clickedBlock.get(), maybeClickedPort.value(), windowDelegate, this);
 
                     // this event should not count as a possible double-click interaction part
-                    doubleClickCtLastMouseClickTime = 0;
+                    doubleClickCtLastMouseClickTime = std::chrono::steady_clock::time_point();
                 } else {
                     logger->info("Clicked block {} for dragging", clickedBlock->getSelfId());
                     draggedBlock = clickedBlock.get();
@@ -74,13 +74,13 @@ namespace business_logic {
                     draggedBlock->onDragStart();
 
                     // update the last mouse click time for double-click
-                    doubleClickCtLastMouseClickTime = time(nullptr);
+                    doubleClickCtLastMouseClickTime = std::chrono::steady_clock::now();
                 }
             } else {
                 logger->info("Clicked outside any block");
 
                 // update the last mouse click time for double-click
-                doubleClickCtLastMouseClickTime = time(nullptr);
+                doubleClickCtLastMouseClickTime = std::chrono::steady_clock::now();
             }
         }
     }

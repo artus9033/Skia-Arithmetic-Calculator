@@ -1,6 +1,8 @@
 #ifndef BUSINESS_LOGIC_CONSTANTS_H
 #define BUSINESS_LOGIC_CONSTANTS_H
 
+#include <chrono>
+
 /**
  * @brief General logic constants
  */
@@ -35,7 +37,11 @@ namespace business_logic::constants {
 
     constexpr int MAX_INPUT_CHOICES_PER_ROW = 3;
     constexpr int DEFAULT_VALUE_DISPLAY_PRECISION = 10;
-    constexpr time_t DOUBLE_CLICK_TIME_THRESHOLD_SECONDS = 0.2;
+    /**
+     * The upper boundary threshold up to which (inclusive) a second click interaction must follow
+     * a preceding one for the whole action to be counted as a double click
+     */
+    constexpr std::chrono::milliseconds DOUBLE_CLICK_TIME_THRESHOLD_MS(200);
 
 }  // namespace business_logic::constants
 
