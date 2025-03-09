@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: docker-dev
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/build # do not mount the host's build directory
+    working_dir: /app
+    command: sleep infinity

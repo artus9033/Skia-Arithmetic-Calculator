@@ -39,7 +39,7 @@ Platform-specific requirements:
 - harfbuzz installed (MacOS only)
 - X11, XCB & XKB development libraries installed (Linux only)
 - fontconfig installed (Linux only) - required for font loading
-- (**Windows only**) configured the path to Qt installation's `cmake` directory in [`config-windows.cmake`](./config-windows.cmake) that can be copied over from [`config-windows.cmake.example`](./config-windows.cmake.example)
+- (**Windows only**) configured the path to Qt installation's `cmake` directory in [`config-windows.cmake`](/config-windows.cmake) that can be copied over from [`config-windows.cmake.example`](/config-windows.cmake.example)
 
 The project automatically downloads and builds all other dependencies:
 
@@ -88,12 +88,20 @@ The available commands are:
 - `just clang-tidy` - Run clang-tidy
 - `just clang-format` - Run clang-format
 - `just cspell` - Run CSpell
+- `dev-docker-up` - Run the development container
+- `dev-docker-down` - Stop the development container
 
 The general syntax is `just build-type="{Debug,Release}" command1 [? ...commands]`
 
 **For an initial setup**, run: `just configure build-all`.
 
 **The basic build-and-run command** you will likely be interested in is: `just build-type=Release build-gui run-gui`.
+
+## Development container
+
+For simplicity, the repository includes a Docker development container image file in [`docker-dev/Dockerfile`](/docker-dev/Dockerfile) and a [`docker-compose.yml`](/docker-compose.yml) compose config that can be used to bootstrap the container with the current directory (root of this repository mounted) without the `build` directory. This effectively means that for that container, the `build` directory will be separately stored inside the container disk, allowing for the host to also have its own build tree.
+
+Justfile provides scripts `dev-docker-up` (start container) and `dev-docker-down` (stop container) for a quick usage of this container.
 
 ## Building
 

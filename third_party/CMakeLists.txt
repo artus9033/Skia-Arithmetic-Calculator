@@ -116,8 +116,10 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
 
     if(APPLE)
         list(APPEND SKIA_BUILD_ARGS "target_os=\"mac\"")
-    else()
+    elseif(UNIX)
         list(APPEND SKIA_BUILD_ARGS "target_os=\"linux\"")
+    else()
+        list(APPEND SKIA_BUILD_ARGS "target_os=\"win\"")
     endif()
 
     if (UNIX)
