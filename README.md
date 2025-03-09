@@ -29,7 +29,6 @@ Business logic is implemented as a static library, and the GUI is implemented as
 - clang & clang++
 - Git
 - Python 3.x (required by Skia build scripts)
-- Boost installed
 - Doxygen installed
 - Qt6 installed
 - `clang` and `clang++` installed (**especially Windows**: `winget install -e --id LLVM.LLVM`)

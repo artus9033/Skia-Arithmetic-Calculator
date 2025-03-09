@@ -6,20 +6,39 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 # Windows specific configuration
 if (WIN32)
     # make it discover packages installed with winget
-    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};C:/Program Files/Boost;C:/Program Files/Doxygen;C:/Program Files (x86)/Boost;C:/Program Files (x86)/Doxygen")
+    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};C:/Program Files/Doxygen;C:/Program Files (x86)/Boost;C:/Program Files (x86)/Doxygen")
 endif()
 
-# Linux specific configuration
-if (LINUX AND NOT APPLE)
-    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};/usr/lib/x86_64-linux-gnu;/usr/lib/x86_64-linux-gnu/cmake/XCB;/usr/lib/x86_64-linux-gnu/XCB")
+# Ensure python3 is on the PATH - otherwise Skia will fail to configure
+find_program(PYTHON_EXECUTABLE python3)
+
+if(NOT PYTHON_EXECUTABLE)
+    message(FATAL_ERROR "python3 is not in the PATH! Without it, Skia will fail to configure. Please make sure it's installed and available, or if you have python, make sure to symlink an alias for it named python3.")
+else()
+    message(STATUS "python3 found at: ${PYTHON_EXECUTABLE}")
 endif()
 
-# Boost
 if(POLICY CMP0167)
   cmake_policy(SET CMP0167 NEW)
 endif()
 
-find_package(Boost 1.83...1.87 REQUIRED)
+# Show progress when GIT_PROGRESS is TRUE
+Set(FETCHCONTENT_QUIET FALSE)
+
+# Boost
+message("Fetching Boost, this may take a while...")
+FetchContent_Declare(
+    Boost
+    GIT_REPOSITORY https://github.com/boostorg/boost.git
+    GIT_TAG boost-1.83.0
+    GIT_PROGRESS TRUE
+)
+
+FetchContent_GetProperties(Boost)
+if(NOT Boost_POPULATED)
+  # Fetch the content using previously declared details
+  FetchContent_Populate(Boost)
+endif()
 
 # GLFW
 message("Fetching GLFW, this may take a while...")
@@ -27,6 +46,7 @@ FetchContent_Declare(
     glfw
     GIT_REPOSITORY https://github.com/glfw/glfw.git
     GIT_TAG 3.3.8
+    GIT_PROGRESS TRUE
 )
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -39,6 +59,7 @@ FetchContent_Declare(
     spd
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
     GIT_TAG v1.15.1
+    GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(spd)
 
@@ -48,6 +69,7 @@ FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG v1.16.0
+    GIT_PROGRESS TRUE
 )
 set(gtest_force_shared_crt OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
@@ -88,26 +110,23 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
         "is_component_build=false"
         "skia_use_gl=true"
         "skia_enable_gpu=true"
-        "skia_enable_tools=false"
-        "skia_use_system_expat=false"
-        "skia_use_system_libjpeg_turbo=false"
-        "skia_use_system_libpng=false"
-        "skia_use_system_libwebp=false"
-        "skia_use_system_zlib=false"
-        "skia_use_icu=true"
-        "skia_use_system_icu=false"
+        "cc=\"clang\"" # force use clang on every platform
+        "cxx=\"clang++\"" # force use clang++ on every platform
     )
 
-    if(WIN32)
-        list(APPEND SKIA_BUILD_ARGS "target_os=\"windows\"" "cc=\"clang\"" "cxx=\"clang++\"")
-    elseif(APPLE)
+    if(APPLE)
         list(APPEND SKIA_BUILD_ARGS "target_os=\"mac\"")
     else()
         list(APPEND SKIA_BUILD_ARGS "target_os=\"linux\"")
     endif()
 
-    if (APPLE)
+    if (UNIX)
+        list(APPEND SKIA_BUILD_ARGS "skia_enable_tools=false skia_use_system_expat=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_icu=true skia_use_system_icu=false")
         list(APPEND SKIA_BUILD_ARGS "skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false")
+
+        if(NOT APPLE)
+            list(APPEND SKIA_BUILD_ARGS "skia_enable_fontmgr_fontconfig=true skia_use_fontconfig=true")
+        endif()
     endif()
 
     string(JOIN " " SKIA_BUILD_ARGS_STR ${SKIA_BUILD_ARGS})
@@ -116,20 +135,54 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
     execute_process(
         COMMAND python tools/git-sync-deps
         WORKING_DIRECTORY ${SKIA_CLONE_PATH}
+        ERROR_VARIABLE cmdError
+        OUTPUT_VARIABLE cmdOutput
+        RESULT_VARIABLE cmdResult
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_STRIP_TRAILING_WHITESPACE
     )
 
+    message(STATUS "${cmdOutput}")
+    if(result)
+        message(WARNING "Command failed - exit code: ${cmdResult}")
+        message(WARNING "Error: ${cmdError}")
+    endif()
+
     message("\nConfiguring Skia build with gn, this may take a while...")
+    message("GN flags: ${SKIA_BUILD_ARGS_STR}")
     execute_process(
         COMMAND bin/gn gen out/Release --args=${SKIA_BUILD_ARGS_STR}
         WORKING_DIRECTORY ${SKIA_CLONE_PATH}
+        ERROR_VARIABLE cmdError
+        OUTPUT_VARIABLE cmdOutput
+        RESULT_VARIABLE cmdResult
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_STRIP_TRAILING_WHITESPACE
     )
+
+    message(STATUS "${cmdOutput}")
+    if(result)
+        message(WARNING "Command failed - exit code: ${cmdResult}")
+        message(WARNING "Error: ${cmdError}")
+    endif()
 
     # build Skia
     message("\nBuilding Skia with ninja, this may take a while...")
     execute_process(
         COMMAND ninja -C out/Release
         WORKING_DIRECTORY ${SKIA_CLONE_PATH}
+        ERROR_VARIABLE cmdError
+        OUTPUT_VARIABLE cmdOutput
+        RESULT_VARIABLE cmdResult
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_STRIP_TRAILING_WHITESPACE
     )
+
+    message(STATUS "${cmdOutput}")
+    if(result)
+        message(WARNING "Command failed - exit code: ${cmdResult}")
+        message(WARNING "Error: ${cmdError}")
+    endif()
 else()
     message("Skia already built to ${SKIA_SHARED_LIB}")
 endif()
@@ -143,7 +196,7 @@ if(WIN32)
     )
 else()
     set_target_properties(skia PROPERTIES
-        IMPORTED_LOCATION ${SKIA_CLONE_PATH}/out/Release/libskia.a
+        IMPORTED_LOCATION ${SKIA_SHARED_LIB}
     )
 endif()
 
@@ -160,9 +213,6 @@ if (APPLE)
 
     set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${QT_PREFIX}")
 endif()
-
-# Qt
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
 # magic_enum
 message("Fetching magic_enum, this may take a while...")

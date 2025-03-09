@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.20)
-project(FlowArithmeticCalculator VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -28,10 +27,17 @@ if(UNIX)
     set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
     # Debug flags for non-MSVC compilers
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
     # Release flags for non-MSVC compilers (max optimization)
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+endif()
+
+# include the config file, if it exists
+if (WIN32 AND EXISTS config-windows.cmake)
+    message(STATUS "Including Windows-specific configuration file: config-windows.cmake")
+
+    include(config-windows.cmake)
 endif()
 
 # define SPDLOG_ACTIVE_LEVEL based on the active variant for main.cpp to set it
@@ -45,11 +51,6 @@ endif()
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_DOCS "Build documentation" ON)
 
-# enforce static linking
-set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-set(BUILD_SHARED_LIBS OFF)
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-
 # FetchContent for dependency management
 include(FetchContent)
 # CTest for testing
@@ -59,7 +60,6 @@ include(CTest)
 include(third_party/CMakeLists.txt)
 
 # propagate third party dependencies to project components
-link_libraries(${Boost_LIBRARIES})
 include_directories(SYSTEM INTERFACE ${Boost_INCLUDE_DIRS} ${spdlog_SOURCE_DIR}/include)
 
 add_subdirectory(src/business_logic)
