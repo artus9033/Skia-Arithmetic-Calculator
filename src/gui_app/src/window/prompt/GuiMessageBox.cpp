@@ -1,9 +1,9 @@
-#include "MessageBox.h"
+#include "GuiMessageBox.h"
 
 namespace gui::window::prompt {
-    void MessageBox::showWarning(const std::string& title,
-                                 const std::string& message,
-                                 business_logic::delegate::IWindowDelegate* windowDelegate) {
+    void GuiMessageBox::showWarning(const std::string& title,
+                                    const std::string& message,
+                                    business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
 
         QMessageBox::warning(
@@ -13,9 +13,10 @@ namespace gui::window::prompt {
         windowDelegate->focusWindow();
     }
 
-    bool MessageBox::promptConfirmation(const std::string& title,
-                                        const std::string& message,
-                                        business_logic::delegate::IWindowDelegate* windowDelegate) {
+    bool GuiMessageBox::promptConfirmation(
+        const std::string& title,
+        const std::string& message,
+        business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
 
         bool retVal = QMessageBox::question(nullptr,

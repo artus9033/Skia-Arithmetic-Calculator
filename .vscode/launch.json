@@ -3,82 +3,38 @@
   "configurations": [
     {
       "name": "GUI App (Debug)",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/build/bin/gui_app",
       "args": [],
-      "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for lldb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
       "preLaunchTask": "Build GUI Debug"
     },
     {
       "name": "GUI App (Release)",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/build/bin/gui_app",
       "args": [],
-      "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for lldb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
       "preLaunchTask": "Build GUI Release"
     },
     {
       "name": "Tests (Debug)",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/build/bin/run_tests",
       "args": [],
-      "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for lldb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
       "preLaunchTask": "Build Tests Debug"
     },
     {
       "name": "Tests (Release)",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/build/bin/run_tests",
       "args": [],
-      "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for lldb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
       "preLaunchTask": "Build Tests Release"
     }
   ]

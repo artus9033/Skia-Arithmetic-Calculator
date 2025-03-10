@@ -14,6 +14,15 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 
+#ifdef _WIN32
+#include <dbghelp.h>
+#include <windows.h>
+
+#include <iostream>
+
+#pragma comment(lib, "dbghelp.lib")
+#endif
+
 /**
  * @brief The business logic module
  */
@@ -29,20 +38,23 @@ namespace business_logic {
     template <typename Clazz>
     class Loggable {
        public:
-        /**
-         * The name of this logger
-         */
-        const char* name;
-
         Loggable() {
             // get the name of the given class; may be mangled
             // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-            name = typeid(Clazz).name();
+            auto name = typeid(Clazz).name();
 
             // if gnu libstdc++ available, demangle it
 #ifdef __GNUC__
             int status = 0;
             name = abi::__cxa_demangle(name, nullptr, nullptr, &status);
+#endif
+
+            std::string classNameStr(name);
+#ifdef _WIN32
+            char undecoratedName[1024];
+            UnDecorateSymbolName(name, undecoratedName, sizeof(undecoratedName), UNDNAME_COMPLETE);
+
+            classNameStr = std::string(undecoratedName);
 #endif
 
             // extract just the class name to get rid of the namespace & possible template arguments
@@ -52,14 +64,16 @@ namespace business_logic {
             const std::regex regex(R"([^:<>]+(?=<|$))");
             std::cmatch match;
             if (std::regex_search(name, match, regex)) {
-                name = match[0].str().c_str();
+                classNameStr = match[0].str();
             }
 
             logger = spdlog::get(name);
             if (!logger) {
-                logger = spdlog::stdout_color_mt(name);
+                logger = spdlog::stdout_color_mt(classNameStr.c_str());
             }
         }
+
+        virtual ~Loggable() = default;
 
        protected:
         std::shared_ptr<spdlog::logger> logger;

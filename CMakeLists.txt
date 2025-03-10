@@ -5,10 +5,43 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_PARALLEL_LEVEL 12 CACHE STRING "Number of parallel build jobs" FORCE)
-set(CMAKE_C_COMPILER "clang")
-set(CMAKE_CXX_COMPILER "clang++")
+if (UNIX)
+    # linux and Mac - use clang
+    set(CMAKE_C_COMPILER "clang")
+    set(CMAKE_CXX_COMPILER "clang++")
+
+    # enable all warnings and treat them as errors
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+
+    # Debug flags for non-MSVC compilers
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    
+    # Release flags for non-MSVC compilers (max optimization)
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+else()
+    # windows - use clang-cl
+    set(CMAKE_C_COMPILER "clang-cl")
+    set(CMAKE_CXX_COMPILER "clang-cl")
+
+    # force static runtime linking
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MTd")
+
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -MT")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MTd")
+
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+    # if windows, disable -Wmicrosoft-include
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmicrosoft-include")
+endif()
+
+add_definitions(-DSPDLOG_NO_EXCEPTIONS)
 
 project(FlowArithmeticCalculator VERSION 1.0.0 LANGUAGES CXX)
+
+# third_party dependencies - include as-is in this file
+include(third_party/CMakeLists.txt)
 
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
     # resolve warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake >= 3.24:
@@ -21,25 +54,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.31")
     # explicitly configure behaviour of add_custom_command() with invalid arguments
     cmake_policy(SET CMP0175 NEW)
 endif()
-
-if(UNIX)
-    # enable all warnings and treat them as errors
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-
-    # Debug flags for non-MSVC compilers
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
-
-    # Release flags for non-MSVC compilers (max optimization)
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-endif()
-
-# include the config file, if it exists
-if (WIN32 AND EXISTS config-windows.cmake)
-    message(STATUS "Including Windows-specific configuration file: config-windows.cmake")
-
-    include(config-windows.cmake)
-endif()
-
+    
 # define SPDLOG_ACTIVE_LEVEL based on the active variant for main.cpp to set it
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DSET_LOG_ACTIVE_LEVEL=spdlog::level::debug)
@@ -55,12 +70,6 @@ option(BUILD_DOCS "Build documentation" ON)
 include(FetchContent)
 # CTest for testing
 include(CTest)
-
-# third_party dependencies - include as-is in this file
-include(third_party/CMakeLists.txt)
-
-# propagate third party dependencies to project components
-include_directories(SYSTEM INTERFACE ${Boost_INCLUDE_DIRS} ${spdlog_SOURCE_DIR}/include)
 
 add_subdirectory(src/business_logic)
 add_subdirectory(src/gui_app)
