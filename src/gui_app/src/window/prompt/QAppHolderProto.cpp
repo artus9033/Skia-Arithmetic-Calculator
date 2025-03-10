@@ -2,8 +2,8 @@
 
 namespace gui::window::prompt {
     void QAppHolderProto::ensureQApplication() {
-        static int argc = 1;
-        static char* argv[] = {const_cast<char*>("")};
-        static QApplication app(argc, argv);
+        if (QApplication::instance() == nullptr) {
+            throw std::runtime_error("QApplication instance has not been set!");
+        }
     }
 }  // namespace gui::window::prompt

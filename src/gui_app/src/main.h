@@ -3,6 +3,7 @@
 
 #include <skia/include/core/SkCanvas.h>
 
+#include <QApplication>
 #include <stdexcept>
 
 #include "renderer/SkiaRendererImpl.h"
