@@ -24,7 +24,7 @@ namespace gui::renderer {
         return paint;
     }();
 
-#if APPLE
+#if __APPLE__
     sk_sp<SkFontMgr> FontManager::fontMgr = SkFontMgr_New_CoreText(nullptr);
 #elif WIN32
     sk_sp<SkFontMgr> FontManager::fontMgr = SkFontMgr_New_DirectWrite();

@@ -11,7 +11,7 @@
 #include "colors.h"
 #include "constants.h"
 
-#ifdef APPLE
+#ifdef __APPLE__
 #include <skia/include/ports/SkFontMgr_mac_ct.h>
 #elif defined(__linux__)
 // linux - use fontconfig

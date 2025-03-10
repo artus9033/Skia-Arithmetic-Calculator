@@ -40,6 +40,10 @@ if(NOT Boost_POPULATED)
   FetchContent_Populate(Boost)
 endif()
 
+if(UNIX)
+    find_package(Boost 1.83.0 REQUIRED)
+endif()
+
 # GLFW
 message("Fetching GLFW, this may take a while...")
 FetchContent_Declare(
