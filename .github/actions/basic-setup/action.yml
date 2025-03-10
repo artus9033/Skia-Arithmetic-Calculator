@@ -33,7 +33,7 @@ runs:
       run: |
         sudo add-apt-repository universe
         sudo apt update
-        sudo apt install -y xorg-dev \
+        sudo apt install -y xorg-dev libboost1.83-dev \
           graphviz libharfbuzz-dev libfreetype6-dev libxcb1-dev libxcb-util-dev \
           libglx-dev libgl1-mesa-dev libxcb-xkb-dev qt6-base-dev \
           libfontconfig1-dev libfreetype6-dev libx11-dev libxext-dev \
@@ -47,7 +47,7 @@ runs:
       if: ${{ matrix.os == 'macos-latest' }}
       shell: bash
       run: |
-        brew install --formula doxygen graphviz harfbuzz qt@6.8.2
+        brew install --formula boost doxygen graphviz harfbuzz qt@6.8.2
 
     - name: Install CSpell
       shell: bash

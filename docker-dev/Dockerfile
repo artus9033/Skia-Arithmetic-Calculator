@@ -20,7 +20,7 @@ RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula sele
 RUN apt install -y fontconfig fonts-dejavu fonts-freefont-ttf ttf-mscorefonts-installer
 
 # install dependencies of Skia and Qt
-RUN apt install -y doxygen xorg-dev \
+RUN apt install -y doxygen xorg-dev libboost1.83-dev \
     graphviz libharfbuzz-dev libfreetype6-dev libxcb1-dev libxcb-util-dev \
     libglx-dev libgl1-mesa-dev libxcb-xkb-dev qt6-base-dev \
     libfontconfig1-dev libfreetype6-dev libx11-dev libxext-dev \
