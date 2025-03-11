@@ -3,10 +3,7 @@
  * @brief Unit tests for the calculator component
  */
 
-#include <calculator.h>
 #include <gtest/gtest.h>
-
-using namespace business_logic;
 
 // TEST(CalculatorTest, DummyAddition) {
 //     cpp_dec_float_100 a("123.456");
