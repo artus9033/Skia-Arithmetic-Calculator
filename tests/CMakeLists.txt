@@ -13,8 +13,6 @@ add_executable(run_tests ${TEST_SOURCES})
 target_include_directories(run_tests
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-    SYSTEM INTERFACE
-        ${Boost_INCLUDE_DIRS}
 )
 
 # discover tests

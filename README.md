@@ -1,6 +1,6 @@
 # Flow Arithmetic Calculator
 
-A modern C++ application project for visual Simulink- / Unreal Engine Blueprint-like flow-based arithmetic calculations with a graphical interface built using GLFW, Skia and Boost (ranges & multiprecision).
+A modern C++ application project for visual Simulink- / Unreal Engine Blueprint-like flow-based arithmetic calculations with a graphical interface built using GLFW, Skia and Boost Multiprecision.
 
 Contains documentation generation with Doxygen, unit tests with Google Test and a Justfile for simplified build operations.
 
@@ -38,7 +38,6 @@ Business logic is implemented as a static library, and the GUI is implemented as
 - CMake 3.20 or higher
 - clang & clang++
 - Git
-- Boost (1.83.0+) installed - only on Mac & Linux
 - Python 3.x (required by Skia build scripts)
 - Doxygen installed
 - Qt6 installed

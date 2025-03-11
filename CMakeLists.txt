@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_PARALLEL_LEVEL 12 CACHE STRING "Number of parallel build jobs" FORCE)
-if (UNIX)
+if(UNIX)
     # linux and Mac - use clang
     set(CMAKE_C_COMPILER "clang")
     set(CMAKE_CXX_COMPILER "clang++")
@@ -40,20 +40,20 @@ add_definitions(-DSPDLOG_NO_EXCEPTIONS)
 
 project(FlowArithmeticCalculator VERSION 1.0.0 LANGUAGES CXX)
 
-# third_party dependencies - include as-is in this file
-include(third_party/CMakeLists.txt)
-
-if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
     # resolve warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake >= 3.24:
     # set policy to mark extracted files at extraction time instead of using timestamps from the archive
     cmake_policy(SET CMP0135 NEW)
 endif()
 
-if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.31")
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.31")
     # resolve warning about CMP0175 in CMake >= 3.31:
     # explicitly configure behaviour of add_custom_command() with invalid arguments
     cmake_policy(SET CMP0175 NEW)
 endif()
+
+# third_party dependencies - include as-is in this file
+include(third_party/CMakeLists.txt)
 
 # define SPDLOG_ACTIVE_LEVEL based on the active variant for main.cpp to set it
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

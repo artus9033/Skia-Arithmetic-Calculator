@@ -145,17 +145,15 @@ namespace business_logic {
     BlocksManager::getBlockAt(int x, int y) {
         // find the block that is being hovered over; reverse order to render newer blocks on top
         // (as if they had the highest z-index)
-        auto blocksReversed = boost::adaptors::reverse(blocks);
-
         auto maybeHoveredBlockIt =
-            std::find_if(blocksReversed.begin(), blocksReversed.end(), [x, y](const auto& block) {
+            std::find_if(blocks.rbegin(), blocks.rend(), [x, y](const auto& block) {
                 return block->isHovered(x, y);
             });
 
         std::optional<std::shared_ptr<business_logic::elements::blocks::BaseBlock>>
             maybeHoveredBlock = std::nullopt;
 
-        if (maybeHoveredBlockIt != blocksReversed.end()) {
+        if (maybeHoveredBlockIt != blocks.rend()) {
             maybeHoveredBlock = *maybeHoveredBlockIt;
         }
 

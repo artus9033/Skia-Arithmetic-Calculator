@@ -2,7 +2,6 @@
 #define BUSINESS_LOGIC_LOGIC_BLOCKS_MANAGER_H
 
 #include <algorithm>
-#include <boost/range/adaptor/reversed.hpp>
 #include <chrono>
 #include <magic_enum/magic_enum.hpp>
 #include <memory>

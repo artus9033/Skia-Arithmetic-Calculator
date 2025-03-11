@@ -6,7 +6,7 @@ set(BUILD_SHARED_LIBS OFF BOOL "Build shared libraries")
 # Windows specific configuration
 if(WIN32)
     # make it discover packages installed with winget
-    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};C:/Program Files/Doxygen;C:/Program Files (x86)/Boost;C:/Program Files (x86)/Doxygen")
+    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};C:/Program Files/Doxygen;C:/Program Files (x86)/Doxygen")
 endif()
 
 # ensure python3 is on the PATH - otherwise Skia will fail to configure
@@ -22,44 +22,16 @@ if(POLICY CMP0167)
   cmake_policy(SET CMP0167 NEW)
 endif()
 
-# allow FetchContent_Populate on purpose not to include the project, just clone it
-if(POLICY CMP0169)
-    cmake_policy(SET CMP0169 OLD)
-endif()
-
 # show progress when GIT_PROGRESS is TRUE
 Set(FETCHCONTENT_QUIET FALSE)
 
-# Boost
-message("Fetching Boost, this may take a while...")
+# boost_multiprecision
+message("Fetching boost_multiprecision, this may take a while...")
 FetchContent_Declare(
-    Boost
-    GIT_REPOSITORY https://github.com/boostorg/boost.git
-    GIT_TAG boost-1.83.0
-    GIT_PROGRESS TRUE
+    boost_multiprecision
+    URL https://github.com/boostorg/multiprecision/archive/refs/tags/Boost_1_86_0.zip
 )
-# FetchContent_MakeAvailable(Boost)
-FetchContent_GetProperties(Boost)
-if(NOT Boost_POPULATED)
-  # fetch the content using previously declared details
-  FetchContent_Populate(Boost)
-endif()
-
-set(Boost_INCLUDE_DIRS)
-
-# for all subdirectories of FETCHCONTENT_BASE_DIR/boost-src/libs/ append all folders' paths + /include/ to Boost_INCLUDE_DIRS
-file(GLOB BOOST_PACKAGES ${FETCHCONTENT_BASE_DIR}/boost-src/libs/*)
-
-# iterate lib dirs and add their include dir + possibly their subpackages if present
-foreach(DIR ${BOOST_PACKAGES})
-   set(INCLUDE_DIR "${DIR}/include")
-
-   list(APPEND Boost_INCLUDE_DIRS ${INCLUDE_DIR})
-
-   file(GLOB SUBPACKAGES ${DIR}/*/include)
-
-   list(APPEND Boost_INCLUDE_DIRS ${SUBPACKAGES})
-endforeach()
+FetchContent_MakeAvailable(boost_multiprecision)
 
 # GLFW
 message("Fetching GLFW, this may take a while...")

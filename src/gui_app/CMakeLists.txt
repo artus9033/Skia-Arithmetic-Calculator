@@ -47,7 +47,7 @@ target_include_directories(
         $<TARGET_PROPERTY:Qt6::Widgets,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
-target_include_directories(gui_app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/src SYSTEM INTERFACE ${Boost_INCLUDE_DIRS} ${spdlog_SOURCE_DIR}/include)
+target_include_directories(gui_app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/src SYSTEM INTERFACE ${spdlog_SOURCE_DIR}/include)
 
 target_link_libraries(gui_app
     PRIVATE
