@@ -16,7 +16,6 @@ namespace business_logic::elements::blocks {
      *
      * When hovered, the displayed value will present all stored fraction digits of the input port.
      */
-
     class MonitorBlock : public business_logic::Loggable<MonitorBlock>,
                          public business_logic::elements::blocks::BaseBlock {
        public:

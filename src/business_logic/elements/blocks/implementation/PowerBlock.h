@@ -8,8 +8,8 @@
 
 namespace business_logic::elements::blocks {
     /**
-     * @brief A block that raises the first input value to the power of the second input value */
-
+     * @brief A block that raises the first input value to the power of the second input value
+     */
     class PowerBlock : public business_logic::Loggable<PowerBlock>,
                        public business_logic::elements::blocks::BaseBlock {
        public:

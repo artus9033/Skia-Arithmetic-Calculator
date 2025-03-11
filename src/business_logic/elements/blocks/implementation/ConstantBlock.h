@@ -16,7 +16,6 @@ namespace business_logic::elements::blocks {
      *
      * Can be double-clicked to edit the value
      */
-
     class ConstantBlock : public business_logic::Loggable<ConstantBlock>,
                           public business_logic::elements::blocks::BaseBlock,
                           public business_logic::elements::interactions::IDoubleClickable {
