@@ -69,7 +69,7 @@ clang-tidy:
 check-clang-format:
     # Check if all files are formatted correctly
     # Fail if any files need formatting
-    if ! clang-format --dry-run --Werror --verbose {{sourceFiles}}; then echo "Some files are not formatted correctly. Please run clang-format." exit 1; fi; echo "All files are properly formatted."
+    if ! clang-format --dry-run --Werror --verbose {{sourceFiles}}; then echo "Some files are not formatted correctly. Please run clang-format."; exit 1; fi; echo "All files are properly formatted."
 
 # run the development container
 dev-docker-up:
