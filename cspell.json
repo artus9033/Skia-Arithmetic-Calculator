@@ -39,7 +39,10 @@
         "UITEXTSROW",
         "LTRB",
         "Centered",
-        "dialogs"
+        "dialogs",
+        "fontconfig",
+        "windeployqt",
+        "UNDNAME"
 	]
   }
   
