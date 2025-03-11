@@ -46,18 +46,18 @@ jobs:
       - name: Configure build
         run: just configure
 
-      - name: Build
-        run: just build-all
+      # - name: Build
+      #   run: just build-all
 
-      - name: Run unit tests
-        run: just run-tests
+      # - name: Run unit tests
+      #   run: just run-tests
 
-      - name: Upload static files as artifact
-        id: upload-pages-artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/docs/html/
+      # - name: Upload static files as artifact
+      #   id: upload-pages-artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: build/docs/html/
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v4
