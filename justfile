@@ -6,9 +6,12 @@ build-type := "Release"
 help:
     just --list
 
+export CC := "clang"
+export CXX := "clang++"
+
 # build configuration command
 configure:
-    cmake --fresh -B build -S . -D CMAKE_BUILD_TYPE={{build-type}}
+    cmake -G Ninja -B build -S . -D CMAKE_BUILD_TYPE={{build-type}}
 
 # core build commands
 build-all:
@@ -57,7 +60,7 @@ sourceFiles := if os_family() == 'unix' {
 [unix]
 clang-tidy:
     # generate build/compile_commands.json
-    cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    cmake -G Ninja -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
     # -p to use build/compile_commands.json
     clang-tidy -format-style=file -header-filter=. -p build {{sourceFiles}}
 

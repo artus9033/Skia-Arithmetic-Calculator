@@ -9,7 +9,7 @@
 #include "WindowBase.h"
 #include "logging/Loggable.h"
 #include "utils/misc.h"
-#include "window/prompt/MessageBox.h"
+#include "window/prompt/GuiMessageBox.h"
 #include "window/prompt/TextInputDialog.h"
 
 namespace gui::window {
@@ -281,7 +281,7 @@ namespace gui::window {
          * \copydoc business_logic::delegate::IWindowDelegate::showWarning
          */
         void showWarning(const std::string& title, const std::string& message) override {
-            gui::window::prompt::MessageBox::showWarning(title, message, this);
+            gui::window::prompt::GuiMessageBox::showWarning(title, message, this);
         }
 
         /**
@@ -299,7 +299,7 @@ namespace gui::window {
          * \copydoc business_logic::delegate::IWindowDelegate::promptConfirmation
          */
         bool promptConfirmation(const std::string& title, const std::string& message) override {
-            return gui::window::prompt::MessageBox::promptConfirmation(title, message, this);
+            return gui::window::prompt::GuiMessageBox::promptConfirmation(title, message, this);
         }
     };
 }  // namespace gui::window

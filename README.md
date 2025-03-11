@@ -28,6 +28,7 @@ Business logic is implemented as a static library, and the GUI is implemented as
 - CMake 3.20 or higher
 - clang & clang++
 - Git
+- Boost (1.83.0+) installed - only on Mac & Linux
 - Python 3.x (required by Skia build scripts)
 - Doxygen installed
 - Qt6 installed

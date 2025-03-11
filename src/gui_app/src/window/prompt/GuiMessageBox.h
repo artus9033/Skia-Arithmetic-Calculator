@@ -12,7 +12,7 @@ namespace gui::window::prompt {
      *
      * @see gui::window::prompt::QAppHolderProto
      */
-    class MessageBox : public QAppHolderProto {
+    class GuiMessageBox : public QAppHolderProto {
        public:
         static void showWarning(const std::string& title,
                                 const std::string& message,
