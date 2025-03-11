@@ -1,10 +1,10 @@
 #ifndef IBLOCKS_REGISTRY_DELEGATE_H
 #define IBLOCKS_REGISTRY_DELEGATE_H
 
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <memory>
 
 #include "elements/blocks/structures/BlocksConnectionSide.h"
 

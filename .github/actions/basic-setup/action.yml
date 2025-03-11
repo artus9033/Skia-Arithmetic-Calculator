@@ -41,7 +41,7 @@ runs:
           libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev libxcb-sync0-dev \
           libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev \
           libxkbcommon-dev libxkbfile-dev libjpeg-dev libwebp-dev libtiff-dev libpng-dev
-        sudo apt install apt install -y make cmake gcc g++ build-essential vim git wget curl python-is-python ninja-build
+        sudo apt install -y make cmake gcc g++ build-essential vim git wget curl python-is-python3 ninja-build
 
     - name: Install dependencies (MacOS only)
       if: ${{ matrix.os == 'macos-latest' }}

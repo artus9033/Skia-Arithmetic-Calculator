@@ -1,8 +1,8 @@
 #ifndef UITEXTSROW_H
 #define UITEXTSROW_H
 
-#include <vector>
 #include <iterator>
+#include <vector>
 
 #include "UIText.h"
 

@@ -3,7 +3,7 @@ FROM ubuntu:24.04
 RUN apt update
 RUN apt install -y curl wget
 
-# install build tools; python-is-python is for aliasing python to python3
+# install build tools; python-is-python3 is for aliasing python to python3
 RUN apt install -y make cmake gcc g++ build-essential vim git python-is-python3 ninja-build clang clang-format clang-tidy lldb
 
 # install rust
