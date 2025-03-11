@@ -11,6 +11,12 @@
 #       - name: Checkout code
 #         uses: actions/checkout@v3
 
+# - name: Set up Cache for Skia built dependency
+#   uses: actions/cache@v3
+#   with:
+#     path: build/_deps/skia
+#     key: skia-${{ hashFiles('third_party/CMakeLists.txt') }}
+
 #       - name: Environment basic setup
 #         uses: ./.github/actions/basic-setup
 

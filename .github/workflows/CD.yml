@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: build/_deps/skia
-          key: ${{ hashFiles('third_party/CMakeLists.txt') }}
+          key: skia-${{ hashFiles('third_party/CMakeLists.txt') }}
 
       - name: Environment basic setup
         uses: ./.github/actions/basic-setup
