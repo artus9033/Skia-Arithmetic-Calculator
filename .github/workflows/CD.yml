@@ -28,20 +28,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Environment basic setup
-        uses: ./.github/actions/basic-setup
-
-      - name: Generate Skia cache key based on third_party/CMakeLists.txt hash
-        id: generate-cache-key
-        run: |
-          FILE_HASH=$(sha256sum third_party/CMakeLists.txt | cut -d ' ' -f 1)
-          echo "SKIA_CACHE_KEY=skia-dep-${FILE_HASH}" >> $GITHUB_ENV
-
       - name: Set up Cache for Skia built dependency
         uses: actions/cache@v3
         with:
           path: build/_deps/skia
-          key: ${{ env.SKIA_CACHE_KEY }}
+          key: ${{ hashFiles('third_party/CMakeLists.txt') }}
+
+      - name: Environment basic setup
+        uses: ./.github/actions/basic-setup
 
       - name: Configure build
         run: just configure
