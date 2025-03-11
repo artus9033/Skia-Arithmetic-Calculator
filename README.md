@@ -195,6 +195,8 @@ The project uses the following tools for code style:
 
 Documentation is generated using Doxygen from source code comments. After building the `docs` target, open `build/docs/html/index.html` in your web browser.
 
+Doxygen-style comments are used for generating the documentation.
+
 ## Project components
 
 ### Business logic library
@@ -205,6 +207,20 @@ The core functionality is implemented as a static library in `src/business_logic
 
 The GUI application in `src/gui_app/` implements the user interface using GLFW and Skia. It depends on the business logic library.
 
-### Documentation style
+## CI / CD pipelines
 
-Doxygen-style comments are used for generating the documentation.
+The project contains a GitHub Actions [workflow](/.github/workflows/ci-cd.yml) that builds and tests the project on every push to the repository.
+
+### CI
+
+The continuous integration job checks the spelling with CSpell, Runs cppcheck on the files, runs clang-format ~~and clang-tidy~~. The runner used is `ubuntu-latest`.
+
+### CD
+
+The first continuous deployment job (`Build artifacts (CD)`) builds the project and runs the tests, only if the push occurred to the `main` branch. The job is a matrix, which runs on `ubuntu-latest`, `macos-latest`, and `windows-latest` runners.
+
+Built application binary for each platform is uploaded as an artifact. If a push occurs with a tag, a release is created for that tag.
+
+Documentations is also built by this job and stored as an artifact for GH Pages in the next job.
+
+The last job (`Deploy to GitHub Pages (CD)`) deploys the documentation built in the previous job to [Github Pages](https://artus9033.github.io/Skia-Arithmetic-Calculator/).

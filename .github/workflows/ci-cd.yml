@@ -1,0 +1,115 @@
+name: CI & CD pipeline
+
+on:
+  push:
+
+jobs:
+  ci-checks:
+    runs-on: ubuntu-latest
+
+    name: CI checks
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Environment basic setup
+        uses: ./.github/actions/basic-setup
+        with:
+          cache-skia: "false" # this would cache the empty "touched" skia dir
+
+      - name: Check spelling
+        run: just check-spelling
+
+      - name: Install tools
+        run: |
+          sudo apt update
+          sudo apt install -y clang-format clang-tidy cppcheck
+
+      - name: Trick CMake into thinking Skia is already built
+        run: |
+          mkdir -p build/_deps/skia/out/Release
+          touch build/_deps/skia/out/Release/libskia.a
+
+      - name: Run static code analysis with cppcheck
+        run: cppcheck --enable=all --inconclusive --quiet --max-configs=10000 src
+
+      - name: Check clang-format
+        run: just check-clang-format
+
+      # - name: Run clang-tidy
+      #   run: just clang-tidy
+
+  cd-build-artifacts:
+    needs: ci-checks
+    if: github.ref == 'refs/heads/main'
+
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    name: Build artifacts (CD)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Environment basic setup
+        uses: ./.github/actions/basic-setup
+        with:
+          cache-skia: "true"
+
+      - name: Configure build
+        run: just configure
+
+      - name: Build
+        run: just build-all
+
+      - name: Run unit tests
+        run: just run-tests
+
+      - name: Upload gui_app as artifact
+        id: upload-gui-app-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui_app-${{ matrix.os }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          path: build/bin/gui_app*
+
+      - name: Upload static files as artifact
+        if: matrix.os == 'ubuntu-latest'
+        id: upload-pages-artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/docs/html/
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/bin/gui_app*
+
+  cd-deploy-pages:
+    needs: cd-build-artifacts
+    if: github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    name: Deploy to GitHub Pages (CD)
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        if: matrix.os == 'ubuntu-latest'
+        id: deployment
+        uses: actions/deploy-pages@v3

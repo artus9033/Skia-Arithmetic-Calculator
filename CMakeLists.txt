@@ -32,8 +32,8 @@ else()
 
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-    # if windows, disable -Wmicrosoft-include
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmicrosoft-include")
+    # if windows, disable -Wmicrosoft-include and enable exceptions explicitly
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmicrosoft-include /EHsc")
 endif()
 
 add_definitions(-DSPDLOG_NO_EXCEPTIONS)

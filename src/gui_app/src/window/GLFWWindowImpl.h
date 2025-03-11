@@ -250,8 +250,8 @@ namespace gui::window {
                 int fbWidth, fbHeight;
                 glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
 
-                self->winSize = business_logic::geometry::Size2D(winWidth, winHeight);
-                self->framebufferSize = business_logic::geometry::Size2D(fbWidth, fbHeight);
+                self->winSize = {.width = winWidth, .height = winHeight};
+                self->framebufferSize = {.width = fbWidth, .height = fbHeight};
 
                 double xScale = static_cast<double>(fbWidth) / winWidth;
                 double yScale = static_cast<double>(fbHeight) / winHeight;
