@@ -28,3 +28,12 @@ add_custom_target(docs
     VERBATIM
     DEPENDS ${SOURCE_FILES}
 )
+
+# build LaTeX to PDF
+add_custom_target(docs_pdf
+    COMMAND make
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/latex
+    COMMENT "Generating PDF documentation"
+    VERBATIM
+    DEPENDS docs
+)

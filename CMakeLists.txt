@@ -54,7 +54,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.31")
     # explicitly configure behaviour of add_custom_command() with invalid arguments
     cmake_policy(SET CMP0175 NEW)
 endif()
-    
+
 # define SPDLOG_ACTIVE_LEVEL based on the active variant for main.cpp to set it
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DSET_LOG_ACTIVE_LEVEL=spdlog::level::debug)

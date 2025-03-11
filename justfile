@@ -29,10 +29,15 @@ build-tests:
     @echo "== Building tests ({{build-type}}) =="
     cmake --build build --target run_tests --config {{build-type}}
 
-# build the docs with Doxygen
+# build the HTML docs with Doxygen
 build-docs:
     @echo "== Building docs =="
     cmake --build build --target docs
+
+# build the PDF docs with Doxygen
+build-docs-pdf:
+    @echo "== Building docs =="
+    cmake --build build --target docs_pdf
 
 # check spelling of src/** with CSpell
 check-spelling:

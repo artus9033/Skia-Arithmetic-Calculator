@@ -163,10 +163,12 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
         list(APPEND SKIA_BUILD_ARGS "cc=\"clang\" cxx=\"clang++\"")
 
         # compilation flags - mix of system vs bundled libraries
-        list(APPEND SKIA_BUILD_ARGS "skia_enable_tools=false skia_use_system_expat=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_icu=true skia_use_system_icu=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_harfbuzz=false")
+        list(APPEND SKIA_BUILD_ARGS "skia_enable_tools=false skia_use_system_expat=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_icu=true skia_use_system_icu=false skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_harfbuzz=false")
 
-        if(NOT APPLE)
-            list(APPEND SKIA_BUILD_ARGS "skia_enable_fontmgr_fontconfig=true skia_use_fontconfig=true")
+        if(APPLE)
+            list(APPEND SKIA_BUILD_ARGS "skia_use_freetype=false")
+        else()
+            list(APPEND SKIA_BUILD_ARGS "skia_use_freetype=true skia_enable_fontmgr_fontconfig=true skia_use_fontconfig=true")
         endif()
     else()
         # windows

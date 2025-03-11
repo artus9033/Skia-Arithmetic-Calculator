@@ -9,18 +9,28 @@ Business logic is implemented as a static library, and the GUI is implemented as
 ## Project structure
 
 ```bash
-├── CMakeLists.txt # Root CMake configuration
-├── docs/ # Documentation
-│ ├── Doxyfile.in # Doxygen configuration template
-│ └── mainpage.md # Documentation main page
-├── include/ # Public headers
-│ ├── business_logic/ # Core logic headers
-│ └── gui_app/ # GUI application headers
-├── src/ # Source files
-│ ├── business_logic/ # Core logic implementation
-│ └── gui_app/ # GUI application implementation
-├── tests/ # Test files
-└── third_party/ # External dependencies
++-- build/ # Build directory
++-- docker-dev/ # Docker development container files
++-- docs/ # Documentation
+|   +-- Doxyfile.in # Doxygen configuration template
+|   `-- mainpage.md # Documentation main page
++-- include/ # Public headers
+|   +-- business_logic/ # Core logic headers
+|   `-- gui_app/ # GUI application headers
++-- src/ # Source files
+|   +-- business_logic/ # Core logic implementation
+|   `-- gui_app/ # GUI application implementation
++-- tests/ # Test files
+`-- third_party/ # External dependencies
++-- CMakeLists.txt # Root CMake configuration
++-- config-windows.cmake # Windows-specific configuration
++-- Justfile # Justfile for simplified build operations
++-- README.md # This file
++-- cspell.json # CSpell configuration
++-- docker-compose.yml # Docker compose configuration
++-- .clang-format # Clang format configuration
++-- .clang-tidy # Clang tidy configuration
++-- .gitignore # Git ignore file
 ```
 
 ## Prerequisites
@@ -83,7 +93,8 @@ The available commands are:
 - `just build-all` - Build everything
 - `just build-gui` - Build the GUI application
 - `just build-tests` - Build the tests
-- `just build-docs` - Build the documentation
+- `just build-docs` - Build the HTML documentation ([`build/docs/html/index.html`](build/docs/html/index.html))
+- `just build-docs-pdf` - Build the PDF documentation ([`build/docs/latex/refman.pdf`](/build/docs/latex/refman.pdf))
 - `just run-gui` - Run the GUI application
 - `just run-tests` - Run the tests
 - `just clang-tidy` - Run clang-tidy
