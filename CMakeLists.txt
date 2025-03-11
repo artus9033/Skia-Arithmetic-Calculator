@@ -11,13 +11,13 @@ if (UNIX)
     set(CMAKE_CXX_COMPILER "clang++")
 
     # enable all warnings and treat them as errors
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
     # Debug flags for non-MSVC compilers
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
     
     # Release flags for non-MSVC compilers (max optimization)
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 else()
     # windows - use clang-cl
     set(CMAKE_C_COMPILER "clang-cl")

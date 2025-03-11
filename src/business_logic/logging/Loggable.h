@@ -67,13 +67,11 @@ namespace business_logic {
                 classNameStr = match[0].str();
             }
 
-            logger = spdlog::get(name);
+            logger = spdlog::get(classNameStr);
             if (!logger) {
-                logger = spdlog::stdout_color_mt(classNameStr.c_str());
+                logger = spdlog::stdout_color_st(classNameStr);
             }
         }
-
-        virtual ~Loggable() = default;
 
        protected:
         std::shared_ptr<spdlog::logger> logger;

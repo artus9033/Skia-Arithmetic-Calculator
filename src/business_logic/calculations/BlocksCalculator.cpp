@@ -3,7 +3,8 @@
 namespace business_logic::calculations {
     BlocksCalculator::BlocksCalculator(
         business_logic::calculations::delegate::IBlocksRegistryDelegate* blocksRegistryDelegate)
-        : blocksRegistryDelegate(blocksRegistryDelegate) {}
+        : business_logic::Loggable<BlocksCalculator>(),
+          blocksRegistryDelegate(blocksRegistryDelegate) {}
 
     void BlocksCalculator::calculateValuesFlow() {
         auto blocks = blocksRegistryDelegate->getBlocks();

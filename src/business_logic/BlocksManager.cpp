@@ -4,6 +4,7 @@ namespace business_logic {
 
     BlocksManager::BlocksManager(delegate::IWindowDelegate* windowDelegate)
         : calculations::BlocksCalculator(this),
+          business_logic::Loggable<BlocksManager>(),
           draggedBlock(nullptr),
           mouseX(0),
           mouseY(0),

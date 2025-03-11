@@ -8,7 +8,8 @@ namespace business_logic::elements::blocks {
         business_logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
         business_logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
         business_logic::delegate::IWindowDelegate* windowDelegate)
-        : BaseBlock(cx,
+        : business_logic::Loggable<InvertBlock>(),
+          BaseBlock(cx,
                     cy,
                     INVERT_BLOCK_WIDTH,
                     INVERT_BLOCK_HEIGHT,

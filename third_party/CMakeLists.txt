@@ -174,7 +174,7 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
         # windows
 
         # use clang-cl
-        list(APPEND SKIA_BUILD_ARGS "clang_win=\"C:\\Program Files\\LLVM\" cc=\"clang-cl\" cxx=\"clang-cl\" is_trivial_abi=false")
+        list(APPEND SKIA_BUILD_ARGS "clang_win=\"C:\\Program Files\\LLVM\" cc=\"clang-cl\" cxx=\"clang-cl\"")
 
         # compilation flags - use bundled libraries (not system ones)
         list(APPEND SKIA_BUILD_ARGS "skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_libjpeg_turbo_decode=true skia_use_libjpeg_turbo_encode=true skia_use_system_zlib=false skia_use_zlib=true skia_use_icu=true skia_use_client_icu=false skia_use_libgrapheme=false skia_use_icu4x=false skia_use_system_icu=false skia_use_harfbuzz=true skia_use_system_harfbuzz=false skia_use_expat=false")

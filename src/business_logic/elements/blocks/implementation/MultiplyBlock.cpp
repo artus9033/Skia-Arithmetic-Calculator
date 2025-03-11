@@ -8,7 +8,8 @@ namespace business_logic::elements::blocks {
         business_logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
         business_logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
         business_logic::delegate::IWindowDelegate* windowDelegate)
-        : BaseBlock(cx,
+        : business_logic::Loggable<MultiplyBlock>(),
+          BaseBlock(cx,
                     cy,
                     MULTIPLY_BLOCK_WIDTH,
                     MULTIPLY_BLOCK_HEIGHT,
