@@ -27,13 +27,10 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -MT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MTd")
 
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -MT")
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MTd")
-
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
     # if windows, disable -Wmicrosoft-include and enable exceptions explicitly
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmicrosoft-include /EHsc")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmicrosoft-include -EHsc")
 endif()
 
 add_definitions(-DSPDLOG_NO_EXCEPTIONS)

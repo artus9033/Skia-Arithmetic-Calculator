@@ -13,15 +13,15 @@ Business logic is implemented as a static library, and the GUI is implemented as
 +-- docker-dev/ # Docker development container files
 +-- docs/ # Documentation
 |   +-- Doxyfile.in # Doxygen configuration template
-|   `-- mainpage.md # Documentation main page
+|   +-- mainpage.md # Documentation main page
 +-- include/ # Public headers
 |   +-- business_logic/ # Core logic headers
-|   `-- gui_app/ # GUI application headers
+|   +-- gui_app/ # GUI application headers
 +-- src/ # Source files
 |   +-- business_logic/ # Core logic implementation
-|   `-- gui_app/ # GUI application implementation
+|   +-- gui_app/ # GUI application implementation
 +-- tests/ # Test files
-`-- third_party/ # External dependencies
++-- third_party/ # External dependencies
 +-- CMakeLists.txt # Root CMake configuration
 +-- config-windows.cmake # Windows-specific configuration
 +-- Justfile # Justfile for simplified build operations

@@ -17,12 +17,6 @@ if (APPLE)
     set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${QT_PREFIX}")
 endif()
 
-if(WIN32)
-    # force static runtime linking
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -MT")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MTd")
-endif()
-
 add_executable(gui_app
     ${IMPL_SOURCE_FILES}
 )
@@ -104,12 +98,6 @@ endif()
 if (WIN32)
     target_link_libraries(gui_app PRIVATE
         OpenGL32.lib
-    )
-    # Copy `glfw3.dll` after build
-    add_custom_command(TARGET gui_app POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_BINARY_DIR}/_deps/glfw-build/src/glfw3.dll"
-        "${CMAKE_BINARY_DIR}/bin/glfw3.dll"
     )
 
     if(Qt6_FOUND AND WIN32 AND TARGET Qt6::qmake AND NOT TARGET Qt6::windeployqt)
