@@ -1,7 +1,8 @@
 include(FetchContent)
 
 # set static build for all dependencies
-set(BUILD_SHARED_LIBS OFF BOOL "Build shared libraries")
+set(GLFW_BUILD_STATIC ON)
+set(BUILD_SHARED_LIBS OFF)
 
 # Windows specific configuration
 if(WIN32)
