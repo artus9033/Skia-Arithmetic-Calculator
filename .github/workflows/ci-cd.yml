@@ -110,6 +110,5 @@ jobs:
 
     steps:
       - name: Deploy to GitHub Pages
-        if: matrix.os == 'ubuntu-latest'
         id: deployment
         uses: actions/deploy-pages@v3
