@@ -28,6 +28,8 @@ namespace gui::elements {
      */
     class SkiaBaseBlockRenderer {
        public:
+        virtual ~SkiaBaseBlockRenderer() = default;
+
         /**
          * @brief Renders a block on an SkCanvas
          *
@@ -39,11 +41,11 @@ namespace gui::elements {
          *
          * @see business_logic::elements::blocks::BaseBlock::render
          */
-        void render(business_logic::elements::blocks::BaseBlock* block,
-                    SkCanvas* canvas,
-                    int mouseX,
-                    int mouseY,
-                    bool isHovered);
+        static void render(business_logic::elements::blocks::BaseBlock* block,
+                           SkCanvas* canvas,
+                           int mouseX,
+                           int mouseY,
+                           bool isHovered);
 
         /**
          * @brief Renders the value above the block
@@ -55,10 +57,10 @@ namespace gui::elements {
          *
          * @see business_logic::elements::blocks::BaseBlock::renderValueAboveBlock
          */
-        void renderValueAboveBlock(business_logic::elements::blocks::BaseBlock* block,
-                                   SkCanvas* canvas,
-                                   bool isHovered,
-                                   const std::string& blockValue);
+        static void renderValueAboveBlock(const business_logic::elements::blocks::BaseBlock* block,
+                                          SkCanvas* canvas,
+                                          bool isHovered,
+                                          const std::string& blockValue);
     };
 }  // namespace gui::elements
 

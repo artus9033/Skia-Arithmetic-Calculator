@@ -18,7 +18,9 @@ namespace business_logic::components {
          * @brief Constructor
          * @param texts The texts to display in the row
          */
-        UITextsRow(const std::vector<UIText>& texts);
+        explicit UITextsRow(const std::vector<UIText>& texts);
+
+        virtual ~UITextsRow() = default;
 
         /**
          * @brief Gets the texts in this row

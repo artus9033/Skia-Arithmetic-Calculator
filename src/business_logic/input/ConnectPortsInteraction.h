@@ -16,7 +16,7 @@ namespace business_logic::input {
     /**
      * @brief Connect ports via dragging interaction DTO
      */
-    class ConnectPortsInteraction : public business_logic::Loggable<ConnectPortsInteraction> {
+    class ConnectPortsInteraction final : public business_logic::Loggable<ConnectPortsInteraction> {
        public:
         /**
          * @brief Returns whether the interaction has started (i.e., is pending and a dragging line
@@ -127,14 +127,16 @@ namespace business_logic::input {
         /**
          * @brief Gets an immutable reference to the start side
          */
-        const business_logic::elements::structures::BlocksConnectionSide& getStartSide() const {
+        [[maybe_unused]] const business_logic::elements::structures::BlocksConnectionSide&
+        getStartSide() const {
             return startSide.value();
         }
 
         /**
          * @brief Gets an immutable reference to the end side
          */
-        const business_logic::elements::structures::BlocksConnectionSide& getEndSide() const {
+        [[maybe_unused]] const business_logic::elements::structures::BlocksConnectionSide&
+        getEndSide() const {
             return endSide.value();
         }
 

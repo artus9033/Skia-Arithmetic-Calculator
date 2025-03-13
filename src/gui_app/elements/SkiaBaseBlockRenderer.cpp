@@ -147,12 +147,13 @@ namespace gui::elements {
                 auto cstr = inputPorts[i].name.c_str();
 
                 // measure the text
-                SkScalar width = captionFont.measureText(cstr, strlen(cstr), SkTextEncoding::kUTF8);
+                SkScalar captionWidth =
+                    captionFont.measureText(cstr, strlen(cstr), SkTextEncoding::kUTF8);
 
                 // render port name to the left of the port
                 canvas->drawString(cstr,
                                    inputCx - business_logic::constants::TOTAL_PORT_RADIUS_HALF -
-                                       captionFontSize - width,
+                                       captionFontSize - captionWidth,
                                    inputCy + business_logic::constants::TOTAL_PORT_RADIUS_HALF -
                                        captionFontSize / 4,
                                    captionFont,
@@ -212,7 +213,7 @@ namespace gui::elements {
     }
 
     void SkiaBaseBlockRenderer::renderValueAboveBlock(
-        business_logic::elements::blocks::BaseBlock* block,
+        const business_logic::elements::blocks::BaseBlock* block,
         SkCanvas* canvas,
         [[maybe_unused]] bool isHovered,
         const std::string& blockValue) {

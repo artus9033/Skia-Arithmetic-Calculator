@@ -76,7 +76,7 @@ namespace gui::window {
         /**
          * @brief Destructor that cleans up the GLFW window and terminates GLFW
          */
-        ~GLFWWindowImpl() {
+        ~GLFWWindowImpl() override {
             logger->info("GLFWWindowImpl {} has been destroyed",
                          business_logic::stringifyAddressOf(this));
 

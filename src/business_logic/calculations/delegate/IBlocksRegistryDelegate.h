@@ -19,6 +19,8 @@ namespace business_logic::calculations::delegate {
 
     class IBlocksRegistryDelegate {
        public:
+        virtual ~IBlocksRegistryDelegate() = default;
+
         /**
          * @brief Gets the blocks
          * @return The blocks

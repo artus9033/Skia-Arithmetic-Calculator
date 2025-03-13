@@ -8,7 +8,7 @@ namespace gui::elements {
         if (connectPortsInteraction.isStarted()) {
             auto startSide = connectPortsInteraction.getStartSide();
 
-            auto startSideBlockPtr = startSide.block;
+            const auto* startSideBlockPtr = startSide.block;
             auto startSidePortPtr = startSide.port;
 
             if (startSideBlockPtr && startSidePortPtr) {
@@ -58,9 +58,9 @@ namespace gui::elements {
                 components::UITextsRow(
                     {components::UIText("", components::UIText::Variant::MenuCaption)})};
 
-            for (const auto& row : inputChoicesUiTextsRows) {
-                rows.push_back(row);
-            }
+            std::copy(inputChoicesUiTextsRows.begin(),
+                      inputChoicesUiTextsRows.end(),
+                      std::back_inserter(rows));
 
             uiRendererDelegate->renderCenteredTextsRows(canvas, size, rows);
         } else {
@@ -70,7 +70,7 @@ namespace gui::elements {
             // this ensures that the values are not carried over from the previous calculation
             // for ports that may have become disconnected
             for (auto& block : blocks) {
-                for (auto& port : block->getInputPorts()) {
+                for (const auto& port : block->getInputPorts()) {
                     block->setPortValue(&port, std::numeric_limits<FloatingPoint>::quiet_NaN());
                 }
             }

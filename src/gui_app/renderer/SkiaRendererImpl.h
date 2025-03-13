@@ -13,6 +13,7 @@
 #include <skia/include/gpu/ganesh/gl/GrGLDirectContext.h>
 #include <skia/include/gpu/ganesh/gl/GrGLInterface.h>
 
+#include <algorithm>
 #include <numeric>
 #include <optional>
 #include <stdexcept>
@@ -57,13 +58,13 @@ namespace gui::renderer {
          * @param fbHeight Framebuffer height
          * @param blocksManager Blocks manager
          */
-        explicit SkiaRendererImpl(gui::window::WindowBase<SkCanvas>* window,
-                                  std::shared_ptr<business_logic::BlocksManager> blocksManager);
+        SkiaRendererImpl(gui::window::WindowBase<SkCanvas>* window,
+                         std::shared_ptr<business_logic::BlocksManager> blocksManager);
 
         /**
          * @brief Destructor
          */
-        ~SkiaRendererImpl();
+        ~SkiaRendererImpl() override;
 
         /**
          * @brief Renders the current frame

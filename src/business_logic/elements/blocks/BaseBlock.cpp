@@ -26,8 +26,9 @@ namespace business_logic::elements::blocks {
         cacheCornerCoordinates();
     }
 
-    BaseBlock::~BaseBlock() { blockLifecycleManagerDelegate->onBlockDeleted(this); }
+    BaseBlock::~BaseBlock() noexcept { blockLifecycleManagerDelegate->onBlockDeleted(this); }
 
+    // cppcheck-suppress unusedFunction
     void BaseBlock::updateWidthHeight(int newWidth, int newHeight) {
         width = newWidth;
         height = newHeight;
@@ -122,12 +123,14 @@ namespace business_logic::elements::blocks {
     std::optional<const business_logic::elements::structures::Port*>
     BaseBlock::getPortAtCoordinates(const geometry::Point2D& point) const {
         for (const auto& port : getInputPorts()) {
+            // cppcheck-suppress useStlAlgorithm
             if (auto maybePort = checkPort(&port, point)) {
                 return maybePort;
             }
         }
 
         for (const auto& port : getOutputPorts()) {
+            // cppcheck-suppress useStlAlgorithm
             if (auto maybePort = checkPort(&port, point)) {
                 return maybePort;
             }

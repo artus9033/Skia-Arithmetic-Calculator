@@ -60,7 +60,7 @@ namespace business_logic::elements::blocks {
          */
         void updateWidthHeight(int newWidth, int newHeight);
 
-        virtual ~BaseBlock();
+        virtual ~BaseBlock() noexcept override;
 
         /**
          * @brief Checks if the block is hovered over by the mouse
@@ -207,7 +207,9 @@ namespace business_logic::elements::blocks {
          * @brief Gets the height of the block
          * @return The height of the block
          */
-        int getHeight() const { return height; }
+        int getHeight() const {  // cppcheck-suppress unusedFunction
+            return height;
+        }
 
         /**
          * @brief Gets the cache of coordinates of the ports of the block; updated after rendering

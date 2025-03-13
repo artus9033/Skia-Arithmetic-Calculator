@@ -19,8 +19,10 @@ namespace business_logic::calculations {
      */
     class BlocksCalculator : public business_logic::Loggable<BlocksCalculator> {
        public:
-        BlocksCalculator(business_logic::calculations::delegate::IBlocksRegistryDelegate*
-                             blocksRegistryDelegate);
+        explicit BlocksCalculator(business_logic::calculations::delegate::IBlocksRegistryDelegate*
+                                      blocksRegistryDelegate);
+
+        virtual ~BlocksCalculator() noexcept = default;
 
         /**
          * @brief Calculates the values flowing through the graph

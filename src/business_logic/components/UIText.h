@@ -24,6 +24,8 @@ namespace business_logic::components {
          */
         UIText(const std::string& text, const Variant& variant);
 
+        virtual ~UIText() = default;
+
         /**
          * @brief Gets the text
          * @return The text

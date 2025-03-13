@@ -10,8 +10,8 @@ namespace business_logic::elements::blocks {
     /**
      * @brief A block that adds two input values together and outputs their sum
      */
-    class AddBlock : public business_logic::Loggable<AddBlock>,
-                     public business_logic::elements::blocks::BaseBlock {
+    class AddBlock final : public business_logic::Loggable<AddBlock>,
+                           public business_logic::elements::blocks::BaseBlock {
        public:
         AddBlock(
             int cx,

@@ -85,11 +85,15 @@ namespace gui::renderer {
         auto rowsHeights = std::vector<SkScalar>(rows.size());
         std::transform(
             rows.begin(), rows.end(), rowsHeights.begin(), [](const components::UITextsRow& row) {
-                SkScalar maxHeight = 0.0f;
-                for (const auto& text : row.getUiTexts()) {
-                    maxHeight = std::max(
-                        maxHeight, FontManager::getFontForVariant(text.getVariant()).getSize());
-                }
+                SkScalar maxHeight = std::accumulate(
+                    row.getUiTexts().begin(),
+                    row.getUiTexts().end(),
+                    0.0f,
+                    [](SkScalar currentMax, const auto& text) {
+                        return std::max(
+                            currentMax,
+                            FontManager::getFontForVariant(text.getVariant()).getSize());
+                    });
 
                 return maxHeight *
                        (1 + CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT);  // apply a margin

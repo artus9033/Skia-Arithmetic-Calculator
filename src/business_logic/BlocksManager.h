@@ -42,7 +42,9 @@ namespace business_logic {
                           public business_logic::calculations::BlocksCalculator,
                           public business_logic::Loggable<BlocksManager> {
        public:
-        BlocksManager(business_logic::delegate::IWindowDelegate* windowDelegate);
+        explicit BlocksManager(business_logic::delegate::IWindowDelegate* windowDelegate);
+
+        virtual ~BlocksManager() noexcept override = default;
 
         /**
          * @brief Handles the mouse down event

@@ -8,7 +8,7 @@ namespace business_logic::input {
      * @brief Input choice DTO
      */
     template <typename T>
-    class InputChoice {
+    class InputChoice final {
        public:
         /**
          * @brief The display name of the input choice

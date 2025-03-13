@@ -10,8 +10,8 @@ namespace business_logic::elements::blocks {
     /**
      * @brief A block that multiplies two input values together and outputs their product
      */
-    class MultiplyBlock : public business_logic::Loggable<MultiplyBlock>,
-                          public business_logic::elements::blocks::BaseBlock {
+    class MultiplyBlock final : public business_logic::Loggable<MultiplyBlock>,
+                                public business_logic::elements::blocks::BaseBlock {
        public:
         MultiplyBlock(
             int cx,

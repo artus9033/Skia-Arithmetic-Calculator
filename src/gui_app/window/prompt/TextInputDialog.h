@@ -9,15 +9,15 @@
 
 #include "delegate/IWindowDelegate.h"
 #include "typenames.h"
-#include "window/prompt/QAppHolderProto.h"
+#include "window/prompt/QAppSingletonProto.h"
 
 namespace gui::window::prompt {
     /**
      * @brief Utility class for prompting the user for input
      *
-     * @see gui::window::prompt::QAppHolderProto
+     * @see gui::window::prompt::QAppSingletonProto
      */
-    class TextInputDialog : public QAppHolderProto {
+    class TextInputDialog final : public QAppSingletonProto {
        public:
         TextInputDialog() = delete;
 

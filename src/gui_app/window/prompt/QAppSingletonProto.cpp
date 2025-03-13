@@ -1,7 +1,7 @@
-#include "QAppHolderProto.h"
+#include "QAppSingletonProto.h"
 
 namespace gui::window::prompt {
-    void QAppHolderProto::ensureQApplication() {
+    void QAppSingletonProto::ensureQApplication() {
         if (QApplication::instance() == nullptr) {
             throw std::runtime_error("QApplication instance has not been set!");
         }

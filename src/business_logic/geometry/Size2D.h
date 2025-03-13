@@ -5,7 +5,7 @@ namespace business_logic::geometry {
     /**
      * @brief A basic struct representing a 2D size
      */
-    struct Size2D {
+    struct Size2D final {
        public:
         /**
          * The width

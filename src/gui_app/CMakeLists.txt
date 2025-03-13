@@ -32,16 +32,9 @@ endif()
 
 # Qt
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
-target_link_libraries(gui_app PUBLIC Qt6::Core Qt6::Gui Qt6::Widgets)
-# treat the linked libraries' headers as system interface for clang-tidy not to check them
-target_include_directories(
-    gui_app SYSTEM INTERFACE
-        $<TARGET_PROPERTY:Qt6::Core,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:Qt6::Gui,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:Qt6::Widgets,INTERFACE_INCLUDE_DIRECTORIES>
-)
+target_link_libraries(gui_app PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
 
-target_include_directories(gui_app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/src SYSTEM INTERFACE ${spdlog_SOURCE_DIR}/include)
+target_include_directories(gui_app PUBLIC ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR} PRIVATE ${spdlog_SOURCE_DIR}/include)
 
 target_link_libraries(gui_app
     PRIVATE
@@ -49,25 +42,12 @@ target_link_libraries(gui_app
         glfw
         skia
 )
-# treat the linked libraries' headers as system interface for clang-tidy not to check them
-target_include_directories(
-    gui_app SYSTEM INTERFACE
-        $<TARGET_PROPERTY:glfw,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:skia,INTERFACE_INCLUDE_DIRECTORIES>
-)
 
 # if linux
 if(UNIX AND NOT APPLE)
-find_package(Freetype REQUIRED)
-find_package(XCB REQUIRED)
-target_link_libraries(gui_app PUBLIC Freetype::Freetype XCB::XCB fontconfig)
-# treat the linked libraries' headers as system interface for clang-tidy not to check them
-target_include_directories(
-    gui_app SYSTEM INTERFACE
-        $<TARGET_PROPERTY:Freetype::Freetype,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:XCB::XCB,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:fontconfig,INTERFACE_INCLUDE_DIRECTORIES>
-)
+    find_package(Freetype REQUIRED)
+    find_package(XCB REQUIRED)
+    target_link_libraries(gui_app PRIVATE Freetype::Freetype XCB::XCB fontconfig)
 endif()
 
 # set output directory
@@ -84,17 +64,9 @@ if (APPLE)
         "-framework CoreVideo"
         "-framework QuartzCore"
     )
-    # treat the linked libraries' headers as system interface for clang-tidy not to check them
-    target_include_directories(
-        gui_app SYSTEM INTERFACE
-            $<TARGET_PROPERTY:Cocoa,INTERFACE_INCLUDE_DIRECTORIES>
-            $<TARGET_PROPERTY:OpenGL,INTERFACE_INCLUDE_DIRECTORIES>
-            $<TARGET_PROPERTY:IOKit,INTERFACE_INCLUDE_DIRECTORIES>
-            $<TARGET_PROPERTY:CoreVideo,INTERFACE_INCLUDE_DIRECTORIES>
-            $<TARGET_PROPERTY:QuartzCore,INTERFACE_INCLUDE_DIRECTORIES>
-    )
 endif()
 
+# deploy Qt DLLs on Windows
 if (WIN32)
     target_link_libraries(gui_app PRIVATE
         OpenGL32.lib

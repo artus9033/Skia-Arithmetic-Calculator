@@ -22,7 +22,8 @@ namespace gui::elements {
      */
     class SkiaBlocksManagerRenderer : public business_logic::BlocksManager {
        public:
-        SkiaBlocksManagerRenderer(business_logic::delegate::IWindowDelegate* windowDelegate)
+        explicit SkiaBlocksManagerRenderer(
+            business_logic::delegate::IWindowDelegate* windowDelegate)
             : business_logic::BlocksManager(windowDelegate) {}
 
         /**

@@ -26,12 +26,6 @@ target_link_libraries(run_tests
         GTest::gtest
         GTest::gtest_main
 )
-# treat the linked libraries' headers as system interface for clang-tidy not to check them
-target_include_directories(
-    gui_app SYSTEM INTERFACE
-        $<TARGET_PROPERTY:GTest::gtest,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:GTest::gtest_main,INTERFACE_INCLUDE_DIRECTORIES>
-)
 
 # configure output directory
 set_target_properties(run_tests PROPERTIES

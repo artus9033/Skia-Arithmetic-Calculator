@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 3.20)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# for clang-tidy and cppcheck
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_BUILD_PARALLEL_LEVEL 12 CACHE STRING "Number of parallel build jobs" FORCE)
 if(UNIX)
     # linux and Mac - use clang
@@ -79,4 +82,11 @@ endif()
 # configure Doxygen (if enabled)
 if(BUILD_DOCS)
     add_subdirectory(docs)
+endif()
+
+# configure cppcheck (if available)
+find_program(CPPCHECK NAMES cppcheck)
+if (CPPCHECK)
+    set(CPPCHECK_PROJECT_ARG --project=${CMAKE_BINARY_DIR}/compile_commands.json)
+    add_custom_target(run-cppcheck ${CPPCHECK} --enable=all --inconclusive --suppress=missingIncludeSystem --suppress=unmatchedSuppression --library=zlib ${CPPCHECK_PROJECT_ARG})
 endif()

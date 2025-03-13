@@ -15,10 +15,12 @@ namespace business_logic::errors {
      */
     class GraphCycleException : public std::runtime_error {
        public:
-        GraphCycleException(
+        explicit GraphCycleException(
             const std::unordered_set<business_logic::elements::structures::BlocksConnectionSide>&
                 cyclePath)
             : std::runtime_error("Graph cycle detected"), cyclePath(cyclePath) {}
+
+        virtual ~GraphCycleException() noexcept override = default;
 
         /**
          * @brief Gets the cycle path

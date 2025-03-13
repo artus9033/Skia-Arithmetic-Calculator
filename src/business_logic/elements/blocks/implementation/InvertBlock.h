@@ -10,8 +10,8 @@ namespace business_logic::elements::blocks {
     /**
      * @brief A block that inverts its input value (1/x)
      */
-    class InvertBlock : public business_logic::Loggable<InvertBlock>,
-                        public business_logic::elements::blocks::BaseBlock {
+    class InvertBlock final : public business_logic::Loggable<InvertBlock>,
+                              public business_logic::elements::blocks::BaseBlock {
        public:
         InvertBlock(
             int cx,

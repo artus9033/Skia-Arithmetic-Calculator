@@ -15,11 +15,11 @@
 #include <skia/include/ports/SkFontMgr_mac_ct.h>
 #elif defined(__linux__)
 // linux - use fontconfig
-#include "include/ports/SkFontMgr_fontconfig.h"
-#include "include/ports/SkFontScanner_FreeType.h"
+#include <skia/include/ports/SkFontMgr_fontconfig.h>
+#include <skia/include/ports/SkFontScanner_FreeType.h>
 #else
 // windows
-#include "include/ports/SkTypeface_win.h"
+#include <skia/include/ports/SkTypeface_win.h>
 #endif
 
 /**

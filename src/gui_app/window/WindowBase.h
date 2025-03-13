@@ -1,6 +1,7 @@
 #ifndef GUI_WINDOW_WINDOW_BASE_H
 #define GUI_WINDOW_WINDOW_BASE_H
 
+#include <algorithm>
 #include <memory>
 
 #include "business_logic/BlocksManager.h"
@@ -27,9 +28,10 @@ namespace gui::window {
         WindowBase(int width, int height, std::shared_ptr<spdlog::logger> logger)
             : blocksManager(std::make_shared<gui::elements::SkiaBlocksManagerRenderer>(this)),
               logger(logger),
-              winSize({.width = width, .height = height}) {}
+              winSize({.width = width, .height = height}),
+              framebufferSize({.width = width, .height = height}) {}
 
-        virtual ~WindowBase() = default;
+        virtual ~WindowBase() override = default;
 
         // delete copy semantics
         WindowBase(const WindowBase&) = delete;
@@ -96,14 +98,19 @@ namespace gui::window {
                         business_logic::elements::blocks::BlockType>>
                         choices = {};
 
-                    for (const auto& choice :
-                         magic_enum::enum_values<business_logic::elements::blocks::BlockType>()) {
-                        choices.push_back(business_logic::input::InputChoice<
-                                          business_logic::elements::blocks::BlockType>{
-                            .displayName = std::string(magic_enum::enum_name(choice)),
-                            .value = choice,
+                    std::transform(
+                        magic_enum::enum_values<business_logic::elements::blocks::BlockType>()
+                            .begin(),
+                        magic_enum::enum_values<business_logic::elements::blocks::BlockType>()
+                            .end(),
+                        std::back_inserter(choices),
+                        [](const auto& choice) {
+                            return business_logic::input::InputChoice<
+                                business_logic::elements::blocks::BlockType>{
+                                .displayName = std::string(magic_enum::enum_name(choice)),
+                                .value = choice,
+                            };
                         });
-                    }
 
                     this->blocksManager->setActiveChoicesInput({
                         .choices = choices,
@@ -125,12 +132,12 @@ namespace gui::window {
         /**
          * \copydoc business_logic::delegate::IWindowDelegate::getWindowSize
          */
-        business_logic::geometry::Size2D getWindowSize() { return winSize; }
+        business_logic::geometry::Size2D getWindowSize() override { return winSize; }
 
         /**
          * \copydoc business_logic::delegate::IWindowDelegate::getFramebufferSize
          */
-        business_logic::geometry::Size2D getFramebufferSize() { return framebufferSize; }
+        business_logic::geometry::Size2D getFramebufferSize() override { return framebufferSize; }
 
        protected:
         /**

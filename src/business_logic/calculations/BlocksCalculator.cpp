@@ -65,12 +65,12 @@ namespace business_logic::calculations {
             std::unordered_set<business_logic::elements::structures::BlocksConnectionSide> cycle = {
                 {.block = side.block, .port = nullptr}};
 
-            for (const auto& side : visited) {
-                cycle.insert(side);
+            for (const auto& visitedSide : visited) {
+                cycle.insert(visitedSide);
             }
 
-            for (const auto& side : recursionStack) {
-                cycle.insert(side);
+            for (const auto& visitedSide : recursionStack) {
+                cycle.insert(visitedSide);
             }
 
             return cycle;
@@ -94,12 +94,12 @@ namespace business_logic::calculations {
                     if (maybeCycle.has_value()) {
                         auto cycle = maybeCycle.value();
 
-                        for (const auto& side : visited) {
-                            cycle.insert(side);
+                        for (const auto& visitedSide : visited) {
+                            cycle.insert(visitedSide);
                         }
 
-                        for (const auto& side : recursionStack) {
-                            cycle.insert(side);
+                        for (const auto& visitedSide : recursionStack) {
+                            cycle.insert(visitedSide);
                         }
 
                         cycle.insert(dest);
