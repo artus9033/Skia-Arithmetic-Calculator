@@ -73,8 +73,7 @@ clang-tidy:
 [unix]
 cppcheck:
     cppcheck --enable=all --inconclusive --suppress=missingIncludeSystem \
-        --suppress=unmatchedSuppression --library=zlib --library=OpenGL \
-        --library=Boost -I src/ -I src/business_logic -I src/gui_app \
+        --suppress=unmatchedSuppression --library=zlib -I src/ -I src/business_logic -I src/gui_app \
         -I build/_deps/spd-src/include --suppress='*:build/_deps/*' \
         --config-exclude=build/_deps --check-level=exhaustive --inline-suppr --force src/
 

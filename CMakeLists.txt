@@ -83,3 +83,30 @@ endif()
 if(BUILD_DOCS)
     add_subdirectory(docs)
 endif()
+
+# install pre-commit & pre-push hooks
+if(NOT GIT_FOUND)
+  find_package(Git QUIET)
+endif()
+
+if(GIT_FOUND AND EXISTS ${PROJECT_SOURCE_DIR}/.git)
+    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/.git/hooks/pre-commit)
+        message(STATUS "Installing pre-commit hook")
+
+        configure_file(
+            ${CMAKE_SOURCE_DIR}/pre-commit.in
+            ${PROJECT_SOURCE_DIR}/.git/hooks/pre-commit
+            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        )
+    endif()
+
+    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/.git/hooks/pre-push)
+        message(STATUS "Installing pre-push hook")
+
+        configure_file(
+            ${CMAKE_SOURCE_DIR}/pre-push.in
+            ${PROJECT_SOURCE_DIR}/.git/hooks/pre-push
+            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        )
+    endif()
+endif()

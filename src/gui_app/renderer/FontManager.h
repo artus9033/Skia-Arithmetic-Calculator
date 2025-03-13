@@ -70,7 +70,7 @@ namespace gui::renderer {
         /**
          * @brief Recalculates the font sizes
          *
-         * This method adapts the font sizes by muliplying them by the a scale factor.
+         * This method adapts the font sizes by multiplying them by the a scale factor.
          *
          * The scale factor is calculated according to the following formula:
          *

@@ -225,3 +225,14 @@ Built application binary for each platform is uploaded as an artifact. If a push
 Documentations is also built by this job and stored as an artifact for GH Pages in the next job.
 
 The last job (`Deploy to GitHub Pages (CD)`) deploys the documentation built in the previous job to [Github Pages](https://artus9033.github.io/Skia-Arithmetic-Calculator/).
+
+## GIT Hooks
+
+CMake will install the following git hooks:
+
+- `pre-commit` (source: `pre-commit.in`) - runs `just` commands:
+  - `check-clang-format` - linting
+  - `check-spelling` - spellcheck
+- `pre-push` (source: `pre-push.in`) - runs `just` commands:
+  - `configure build-tests run-tests` (unit tests)
+  - `cppcheck` (static code analysis)

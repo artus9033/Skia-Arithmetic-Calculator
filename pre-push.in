@@ -1,0 +1,2 @@
+just configure build-tests run-tests
+just cppcheck
