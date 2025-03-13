@@ -49,15 +49,18 @@ run-gui:
     @echo "== Running gui_app ({{build-type}}) =="
     ./build/bin/gui_app
 
-# run the tests
+[windows]
 run-tests:
     @echo "== Running tests ({{build-type}}) =="
 
-    @if [[ "$OS" == "Windows_NT" ]]; then \
-        ./build/bin/run_tests || exit /b %ERRORLEVEL%; \
-    else \
-        ./build/bin/run_tests || exit $?; \
-    fi
+    ./build/bin/run_tests || exit /b %ERRORLEVEL%;
+
+# run the tests
+[unix]
+run-tests:
+    @echo "== Running tests ({{build-type}}) =="
+
+    ./build/bin/run_tests || exit $?;
 
 # below: source files for clang-tidy and clang-format; disabled feature on windows
 sourceFiles := if os_family() == 'unix' {
