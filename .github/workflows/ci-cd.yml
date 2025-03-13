@@ -32,7 +32,7 @@ jobs:
           touch build/_deps/skia/out/Release/libskia.a
 
       - name: Run static code analysis with cppcheck
-        run: cppcheck --enable=all --inconclusive --quiet --max-configs=10000 src
+        run: just cppcheck
 
       - name: Check clang-format
         run: just check-clang-format

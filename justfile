@@ -65,9 +65,18 @@ sourceFiles := if os_family() == 'unix' {
 [unix]
 clang-tidy:
     # generate build/compile_commands.json
-    cmake -G Ninja -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    just configure
     # -p to use build/compile_commands.json
     clang-tidy -format-style=file -header-filter=. -p build {{sourceFiles}}
+
+# run cppcheck
+[unix]
+cppcheck:
+    cppcheck --enable=all --inconclusive --suppress=missingIncludeSystem \
+        --suppress=unmatchedSuppression --library=zlib --library=OpenGL \
+        --library=Boost -I src/ -I src/business_logic -I src/gui_app \
+        -I build/_deps/spd-src/include --suppress='*:build/_deps/*' \
+        --config-exclude=build/_deps --check-level=exhaustive --inline-suppr --force src/
 
 # check clang-format
 [unix]

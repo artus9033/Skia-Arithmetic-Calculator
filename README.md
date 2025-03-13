@@ -98,6 +98,7 @@ The available commands are:
 - `just run-tests` - Run the tests
 - `just clang-tidy` - Run clang-tidy
 - `just clang-format` - Run clang-format
+- `just cppcheck` - Run cppcheck
 - `just cspell` - Run CSpell
 - `dev-docker-up` - Run the development container
 - `dev-docker-down` - Stop the development container
