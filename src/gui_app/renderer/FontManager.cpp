@@ -74,11 +74,16 @@ namespace gui::renderer {
         return font;
     }();
 
-    void FontManager::recalculateFontSizes(float xScale) {
-        menuHeadlineFont.setSize(gui::constants::MENU_HEADLINE_FONT_SIZE_BASE * xScale);
-        menuCaptionFont.setSize(gui::constants::MENU_CAPTION_FONT_SIZE_BASE * xScale);
-        menuChoiceFont.setSize(gui::constants::MENU_CHOICE_FONT_SIZE_BASE * xScale);
-        captionFont.setSize(gui::constants::CAPTION_FONT_SIZE_BASE * xScale);
+    void FontManager::recalculateFontSizes(double aspectX,
+                                           double aspectY,
+                                           double xScale,
+                                           double yScale) {
+        double scaling = std::min(xScale, yScale) * std::min(aspectX, aspectY);
+
+        menuHeadlineFont.setSize(gui::constants::MENU_HEADLINE_FONT_SIZE_BASE * scaling);
+        menuCaptionFont.setSize(gui::constants::MENU_CAPTION_FONT_SIZE_BASE * scaling);
+        menuChoiceFont.setSize(gui::constants::MENU_CHOICE_FONT_SIZE_BASE * scaling);
+        captionFont.setSize(gui::constants::CAPTION_FONT_SIZE_BASE * scaling);
     }
 
     const SkFont& FontManager::getFontForVariant(

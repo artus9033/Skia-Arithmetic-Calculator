@@ -68,13 +68,20 @@ namespace gui::renderer {
         grContext->flush();
     }
 
-    void SkiaRendererImpl::handleWindowResized(
-        [[maybe_unused]] gui::window::WindowBase<SkCanvas>* window, double xScale, double yScale) {
+    void SkiaRendererImpl::handleWindowResized(gui::window::WindowBase<SkCanvas>* window,
+                                               double xScale,
+                                               double yScale) {
         reinitializeSurface();
 
         skSurface->getCanvas()->scale(xScale, yScale);
 
-        FontManager::recalculateFontSizes(xScale);
+        auto windowSize = window->getWindowSize();
+
+        FontManager::recalculateFontSizes(
+            windowSize.width / static_cast<double>(constants::FONT_ASPECT_BASE_WINDOW_WIDTH),
+            windowSize.height / static_cast<double>(constants::FONT_ASPECT_BASE_WINDOW_HEIGHT),
+            xScale,
+            yScale);
     }
 
     void SkiaRendererImpl::renderCenteredTextsRows(

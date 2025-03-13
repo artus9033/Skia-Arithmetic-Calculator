@@ -69,9 +69,24 @@ namespace gui::renderer {
 
         /**
          * @brief Recalculates the font sizes
-         * @param xScale The scale factor for the x-axis
+         *
+         * This method adapts the font sizes by muliplying them by the a scale factor.
+         *
+         * The scale factor is calculated according to the following formula:
+         *
+         * scaling = min(aspectX, aspectY) * min(xScale, yScale)
+         *
+         * @param aspectX The aspect ratio of the window width to the base width
+         * (constants::FONT_ASPECT_BASE_WINDOW_WIDTH)
+         * @param aspectY The aspect ratio of the window height to the base height
+         * (constants::FONT_ASPECT_BASE_WINDOW_HEIGHT)
+         * @param xScale The scale factor for the X axis
+         * @param yScale The scale factor for the Y axis
          */
-        static void recalculateFontSizes(float xScale);
+        static void recalculateFontSizes(double aspectX,
+                                         double aspectY,
+                                         double xScale,
+                                         double yScale);
 
         /**
          * @brief Gets the font for the given variant
