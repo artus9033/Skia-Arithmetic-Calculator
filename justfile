@@ -52,7 +52,12 @@ run-gui:
 # run the tests
 run-tests:
     @echo "== Running tests ({{build-type}}) =="
-    ./build/bin/run_tests
+
+    @if [[ "$OS" == "Windows_NT" ]]; then \
+        ./build/bin/run_tests || exit /b %ERRORLEVEL%; \
+    else \
+        ./build/bin/run_tests || exit $?; \
+    fi
 
 # below: source files for clang-tidy and clang-format; disabled feature on windows
 sourceFiles := if os_family() == 'unix' {
@@ -65,9 +70,9 @@ sourceFiles := if os_family() == 'unix' {
 [unix]
 clang-tidy:
     # generate build/compile_commands.json
-    just configure
+    just configure || exit $?
     # -p to use build/compile_commands.json
-    clang-tidy -format-style=file -header-filter='^src/.*' -p build {{sourceFiles}}
+    clang-tidy -format-style=file -header-filter='^src/.*' -p build {{sourceFiles}} || exit $?
 
 # run cppcheck
 [unix]
@@ -75,7 +80,7 @@ cppcheck:
     cppcheck --enable=all --inconclusive --suppress=missingIncludeSystem \
         --suppress=unmatchedSuppression --library=zlib -I src/ -I src/business_logic -I src/gui_app \
         -I build/_deps/spd-src/include --suppress='*:build/_deps/*' \
-        --config-exclude=build/_deps --check-level=exhaustive --inline-suppr --force src/
+        --config-exclude=build/_deps --check-level=exhaustive --inline-suppr --force src/ || exit $?
 
 # check clang-format
 [unix]

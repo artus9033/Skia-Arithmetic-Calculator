@@ -84,12 +84,12 @@ if(BUILD_DOCS)
     add_subdirectory(docs)
 endif()
 
-# install pre-commit & pre-push hooks
+# install pre-commit & pre-push hooks if git is available and only on UNIXes
 if(NOT GIT_FOUND)
   find_package(Git QUIET)
 endif()
 
-if(GIT_FOUND AND EXISTS ${PROJECT_SOURCE_DIR}/.git)
+if(UNIX AND GIT_FOUND AND EXISTS ${PROJECT_SOURCE_DIR}/.git)
     if(NOT EXISTS ${PROJECT_SOURCE_DIR}/.git/hooks/pre-commit)
         message(STATUS "Installing pre-commit hook")
 

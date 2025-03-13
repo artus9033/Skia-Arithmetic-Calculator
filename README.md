@@ -228,7 +228,7 @@ The last job (`Deploy to GitHub Pages (CD)`) deploys the documentation built in 
 
 ## GIT Hooks
 
-CMake will install the following git hooks:
+CMake will install the following git hooks if git is available & only on UNIXes (to avoid implementing return code propagation in justfile in platform-specific ways that would clutter the file):
 
 - `pre-commit` (source: `pre-commit.in`) - runs `just` commands:
   - `check-clang-format` - linting
