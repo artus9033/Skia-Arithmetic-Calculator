@@ -53,7 +53,8 @@ run-gui:
 run-tests:
     @echo "== Running tests ({{build-type}}) =="
 
-    ./build/bin/run_tests || exit /b %ERRORLEVEL%;
+    ./build/bin/run_tests
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # run the tests
 [unix]
