@@ -91,7 +91,6 @@ namespace business_logic::elements::blocks {
             return business_logic::elements::blocks::BlockType::Constant;
         }
 
-       protected:
         /**
          * The input ports of the block
          */

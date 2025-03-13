@@ -27,13 +27,11 @@ namespace business_logic::components {
 
         virtual ~UIText() = default;
 
-        // disable copy semantics
-        UIText(const UIText&) = delete;
-        UIText& operator=(const UIText&) = delete;
+        UIText(const UIText&);
+        UIText& operator=(const UIText&);
 
-        // disable move semantics
-        UIText(UIText&&) = delete;
-        UIText& operator=(UIText&&) = delete;
+        UIText(UIText&&);
+        UIText& operator=(UIText&&);
 
         /**
          * @brief Gets the text

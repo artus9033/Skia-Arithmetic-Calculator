@@ -1,15 +1,17 @@
 #include "SkiaRendererImpl.h"
 
+#include <utility>
+
 namespace gui::renderer {
     SkiaRendererImpl::SkiaRendererImpl(gui::window::WindowBase<SkCanvas>* window,
                                        std::shared_ptr<business_logic::BlocksManager> blocksManager)
         : gui::renderer::delegate::UIRendererDelegate<SkCanvas>(),
-          business_logic::Loggable<SkiaRendererImpl>(),
-          blocksManager(blocksManager),
+
+          blocksManager(std::move(blocksManager)),
           window(window),
           uiRendererDelegatePtr(
               static_cast<gui::renderer::delegate::UIRendererDelegate<SkCanvas>*>(this)) {
-        if (!window) {
+        if (window == nullptr) {
             throw std::runtime_error("Invalid window handle provided to SkiaRendererImpl");
         }
 
@@ -24,13 +26,15 @@ namespace gui::renderer {
     void SkiaRendererImpl::reinitializeSurface() {
         auto windowSize = window->getWindowSize();
 
-        if (windowSize.width == 0 && windowSize.height == 0) return;
+        if (windowSize.width == 0 && windowSize.height == 0) {
+            return;
+        }
 
         logger->info("Reinitializing Skia surface with width {} and height {}",
                      windowSize.width,
                      windowSize.height);
 
-        sk_sp<const GrGLInterface> interface = GrGLMakeNativeInterface();
+        sk_sp<const GrGLInterface> const interface = GrGLMakeNativeInterface();
         if (!interface) {
             throw std::runtime_error("Failed to create GL interface");
         }
@@ -42,7 +46,7 @@ namespace gui::renderer {
         framebufferInfo.fFormat = GL_RGBA8;
 
         auto framebufferSize = window->getFramebufferSize();
-        GrBackendRenderTarget renderTarget = GrBackendRenderTargets::MakeGL(
+        GrBackendRenderTarget const renderTarget = GrBackendRenderTargets::MakeGL(
             framebufferSize.width, framebufferSize.height, 0, 8, framebufferInfo);
 
         skSurface = SkSurfaces::WrapBackendRenderTarget(grContext.get(),
@@ -92,10 +96,10 @@ namespace gui::renderer {
         auto rowsHeights = std::vector<SkScalar>(rows.size());
         std::transform(
             rows.begin(), rows.end(), rowsHeights.begin(), [](const components::UITextsRow& row) {
-                SkScalar maxHeight = std::accumulate(
+                SkScalar const maxHeight = std::accumulate(
                     row.getUiTexts().begin(),
                     row.getUiTexts().end(),
-                    0.0f,
+                    0.0F,
                     [](SkScalar currentMax, const auto& text) {
                         return std::max(
                             currentMax,
@@ -108,16 +112,16 @@ namespace gui::renderer {
             });
 
         auto sumOfHeights =
-            std::accumulate(rowsHeights.begin(), rowsHeights.end(), static_cast<SkScalar>(0.0f));
+            std::accumulate(rowsHeights.begin(), rowsHeights.end(), static_cast<SkScalar>(0.0F));
 
         auto screenCenterX = static_cast<SkScalar>(size.width) / 2.0F;
         auto screenCenterY = static_cast<SkScalar>(size.height) / 2.0F;
 
         // Y start, will be updated as we render each row
         auto renderY = screenCenterY -
-                       sumOfHeights * (1.0f + CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT) /
-                           2.0F;  // apply a margin
-                                  // between rows
+                       (sumOfHeights * (1.0F + CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT) /
+                        2.0F);  // apply a margin
+                                // between rows
 
         int rowIndex = 0;
         for (const auto& row : rows) {
@@ -135,14 +139,14 @@ namespace gui::renderer {
                            });
 
             const auto sumOfWidths = std::accumulate(
-                textsWidths.begin(), textsWidths.end(), static_cast<SkScalar>(0.0f));
+                textsWidths.begin(), textsWidths.end(), static_cast<SkScalar>(0.0F));
 
             // X start, will be updated as we render each text
             auto renderX =
-                screenCenterX - sumOfWidths *
-                                    (1.0f + CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT) /
-                                    2.0F;  // apply a margin
-                                           // between texts
+                screenCenterX -
+                (sumOfWidths * (1.0F + CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT) /
+                 2.0F);  // apply a margin
+                         // between texts
 
             auto halfMarginY =
                 rowsHeights[rowIndex] * CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT / 2.0F;
@@ -154,7 +158,7 @@ namespace gui::renderer {
             int textIndex = 0;
             for (const auto& uiText : row.getUiTexts()) {
                 auto font = FontManager::getFontForVariant(uiText.getVariant());
-                auto text = uiText.getText();
+                const auto& text = uiText.getText();
 
                 auto halfMarginX = textsWidths[textIndex] *
                                    CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT / 2.0F;

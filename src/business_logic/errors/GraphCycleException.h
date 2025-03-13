@@ -20,7 +20,7 @@ namespace business_logic::errors {
                 cyclePath)
             : std::runtime_error("Graph cycle detected"), cyclePath(cyclePath) {}
 
-        virtual ~GraphCycleException() noexcept override = default;
+        ~GraphCycleException() noexcept override = default;
 
         /**
          * @brief Gets the cycle path

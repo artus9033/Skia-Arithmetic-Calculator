@@ -166,13 +166,13 @@ namespace business_logic::input {
         bool isInvalid() {
             // if side A was clicked but is no longer valid (i.e., block has been deleted),
             // the interaction becomes invalid
-            if (startSide.has_value() && !startSide.value().block) {
+            if (startSide.has_value() && (startSide.value().block == nullptr)) {
                 return true;
             }
 
             // if side B was clicked but is no longer valid (i.e., block has been deleted),
             // the interaction becomes invalid
-            if (endSide.has_value() && !endSide.value().block) {
+            if (endSide.has_value() && (endSide.value().block == nullptr)) {
                 return true;
             }
 

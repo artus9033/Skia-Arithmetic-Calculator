@@ -5,7 +5,7 @@
  * @return 0 on success, non-zero on failure
  */
 int main(int argc, char* argv[]) {
-    QApplication app(argc, argv);
+    QApplication const app(argc, argv);
 
     spdlog::set_level(SET_LOG_ACTIVE_LEVEL);
 

@@ -22,13 +22,11 @@ namespace business_logic::components {
 
         virtual ~UITextsRow() = default;
 
-        // disable copy semantics
-        UITextsRow(const UITextsRow&) = delete;
-        UITextsRow& operator=(const UITextsRow&) = delete;
+        UITextsRow(const UITextsRow&);
+        UITextsRow& operator=(const UITextsRow&);
 
-        // disable move semantics
-        UITextsRow(UITextsRow&&) = delete;
-        UITextsRow& operator=(UITextsRow&&) = delete;
+        UITextsRow(UITextsRow&&);
+        UITextsRow& operator=(UITextsRow&&);
 
         /**
          * @brief Gets the texts in this row

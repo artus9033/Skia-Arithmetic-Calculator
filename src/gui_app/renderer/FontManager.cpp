@@ -78,7 +78,7 @@ namespace gui::renderer {
                                            double aspectY,
                                            double xScale,
                                            double yScale) {
-        double scaling = std::min(xScale, yScale) * std::min(aspectX, aspectY);
+        double const scaling = std::min(xScale, yScale) * std::min(aspectX, aspectY);
 
         menuHeadlineFont.setSize(gui::constants::MENU_HEADLINE_FONT_SIZE_BASE * scaling);
         menuCaptionFont.setSize(gui::constants::MENU_CAPTION_FONT_SIZE_BASE * scaling);

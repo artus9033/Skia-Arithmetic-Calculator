@@ -41,7 +41,7 @@ namespace business_logic {
         Loggable() {
             // get the name of the given class; may be mangled
             // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-            auto name = typeid(Clazz).name();
+            const auto *name = typeid(Clazz).name();
 
             // if gnu libstdc++ available, demangle it
 #ifdef __GNUC__

@@ -7,7 +7,7 @@ namespace gui::elements {
                                        int mouseX,
                                        int mouseY,
                                        bool isHovered) {  // dark gray outline
-        static SkPaint blockOutlinePaint = []() {
+        static SkPaint const blockOutlinePaint = []() {
             SkPaint paint;
 
             paint.setColor(gui::renderer::colors::BLOCK_OUTLINE_COLOR);
@@ -19,7 +19,7 @@ namespace gui::elements {
         }();
 
         // red hovered outline
-        static SkPaint blockOutlineHoveredPaint = []() {
+        static SkPaint const blockOutlineHoveredPaint = []() {
             SkPaint paint;
 
             paint.setColor(gui::renderer::colors::BLOCK_HOVERED_OUTLINE_COLOR);
@@ -31,7 +31,7 @@ namespace gui::elements {
         }();
 
         // blueish hovered outline
-        static SkPaint portOutlineHoveredPaint = []() {
+        static SkPaint const portOutlineHoveredPaint = []() {
             SkPaint paint;
 
             paint.setColor(gui::renderer::colors::PURPLE_BLUE);
@@ -42,7 +42,7 @@ namespace gui::elements {
             return paint;
         }();
 
-        static SkPaint portOutlinePaint = []() {
+        static SkPaint const portOutlinePaint = []() {
             SkPaint paint;
 
             paint.setColor(gui::renderer::colors::BLOCK_PORT_OUTLINE_COLOR);
@@ -54,7 +54,7 @@ namespace gui::elements {
         }();
 
         // light blue gray fill
-        static SkPaint blockFillPaint = []() {
+        static SkPaint const blockFillPaint = []() {
             SkPaint paint;
 
             paint.setColor(gui::renderer::colors::BLOCK_BACKGROUND_COLOR);
@@ -63,7 +63,7 @@ namespace gui::elements {
             return paint;
         }();
 
-        static SkPaint textPaint = []() {
+        static SkPaint const textPaint = []() {
             SkPaint paint;
 
             paint.setColor(gui::renderer::colors::TEXT_COLOR);
@@ -73,8 +73,8 @@ namespace gui::elements {
             return paint;
         }();
 
-        auto& inputPorts = block->getInputPorts();
-        auto& outputPorts = block->getOutputPorts();
+        const auto& inputPorts = block->getInputPorts();
+        const auto& outputPorts = block->getOutputPorts();
 
         const auto leftX = block->getLeftX();
         const auto rightX = block->getRightX();
@@ -87,19 +87,19 @@ namespace gui::elements {
         // note: the below uses int arithmetic for performance optimization; the assumption is that
         // business_logic::constants::PORT_CIRCLE_RADIUS is an int already, which is guarded by
         // static_assert in the header
-        int inputCx = leftX + business_logic::constants::TOTAL_PORT_RADIUS_HALF,
-            outputCx = rightX - business_logic::constants::TOTAL_PORT_RADIUS_HALF,
-            inputCy = cy -
+        int inputCx = leftX + business_logic::constants::TOTAL_PORT_RADIUS_HALF;
+        int outputCx = rightX - business_logic::constants::TOTAL_PORT_RADIUS_HALF;
+        int inputCy = cy -
                       (business_logic::constants::PORT_CIRCLE_RADIUS_HALF -
                        business_logic::constants::PORT_CIRCLE_OUTLINE_WIDTH / 2) *
                           inputPorts.size() -
-                      business_logic::constants::PORT_CIRCLE_MARGIN_HALF * (inputPorts.size() - 1),
-            outputCy =
-                cy -
-                (business_logic::constants::PORT_CIRCLE_RADIUS_HALF -
-                 business_logic::constants::PORT_CIRCLE_OUTLINE_WIDTH / 2) *
-                    outputPorts.size() -
-                business_logic::constants::PORT_CIRCLE_MARGIN_HALF * (outputPorts.size() - 1);
+                      business_logic::constants::PORT_CIRCLE_MARGIN_HALF * (inputPorts.size() - 1);
+        int outputCy =
+            cy -
+            (business_logic::constants::PORT_CIRCLE_RADIUS_HALF -
+             business_logic::constants::PORT_CIRCLE_OUTLINE_WIDTH / 2) *
+                outputPorts.size() -
+            business_logic::constants::PORT_CIRCLE_MARGIN_HALF * (outputPorts.size() - 1);
 
         // draw the block
         // NOLINTNEXTLINE(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
@@ -112,20 +112,20 @@ namespace gui::elements {
             gui::renderer::FontManager::getFontForVariant(components::UIText::Variant::Caption);
         const auto captionFontSize = captionFont.getSize();
 
-        auto blockNameCstr = magic_enum::enum_name(block->getBlockType()).data();
+        const auto* blockNameCstr = magic_enum::enum_name(block->getBlockType()).data();
         auto blockNameWidth =
             captionFont.measureText(blockNameCstr, strlen(blockNameCstr), SkTextEncoding::kUTF8);
 
         // draw the block name
         canvas->drawString(blockNameCstr,
-                           leftX + width / 2 - blockNameWidth / 2,
-                           cy + captionFontSize / 4,
+                           leftX + (width / 2) - (blockNameWidth / 2),
+                           cy + (captionFontSize / 4),
                            captionFont,
                            textPaint);
 
         // draw the input ports
         for (size_t i = 0; i < inputPorts.size(); i++) {
-            bool isPortHovered =
+            bool const isPortHovered =
                 isHovered && business_logic::geometry::isCircleHovered(
                                  mouseX,
                                  mouseY,
@@ -144,10 +144,10 @@ namespace gui::elements {
                 inputCx, inputCy, business_logic::constants::PORT_CIRCLE_RADIUS, blockFillPaint);
 
             if (isPortHovered) {
-                auto cstr = inputPorts[i].name.c_str();
+                const auto* cstr = inputPorts[i].name.c_str();
 
                 // measure the text
-                SkScalar captionWidth =
+                SkScalar const captionWidth =
                     captionFont.measureText(cstr, strlen(cstr), SkTextEncoding::kUTF8);
 
                 // render port name to the left of the port
@@ -155,7 +155,7 @@ namespace gui::elements {
                                    inputCx - business_logic::constants::TOTAL_PORT_RADIUS_HALF -
                                        captionFontSize - captionWidth,
                                    inputCy + business_logic::constants::TOTAL_PORT_RADIUS_HALF -
-                                       captionFontSize / 4,
+                                       (captionFontSize / 4),
                                    captionFont,
                                    textPaint);
             }
@@ -169,7 +169,7 @@ namespace gui::elements {
 
         // draw the output ports
         for (size_t i = 0; i < outputPorts.size(); i++) {
-            bool isPortHovered =
+            bool const isPortHovered =
                 isHovered && business_logic::geometry::isCircleHovered(
                                  mouseX,
                                  mouseY,
@@ -188,14 +188,14 @@ namespace gui::elements {
                 outputCx, outputCy, business_logic::constants::PORT_CIRCLE_RADIUS, blockFillPaint);
 
             if (isPortHovered) {
-                auto cstr = outputPorts[i].name.c_str();
+                const auto* cstr = outputPorts[i].name.c_str();
 
                 // render port name to the right of the port
                 canvas->drawString(
                     cstr,
                     outputCx + business_logic::constants::TOTAL_PORT_RADIUS_HALF + captionFontSize,
                     outputCy + business_logic::constants::TOTAL_PORT_RADIUS_HALF -
-                        captionFontSize / 4,
+                        (captionFontSize / 4),
                     captionFont,
                     textPaint);
             }
@@ -221,12 +221,12 @@ namespace gui::elements {
         const auto topY = block->getTopY();
         const auto width = block->getWidth();
 
-        auto blockValueCstr = blockValue.c_str();
+        const auto* blockValueCstr = blockValue.c_str();
         auto blockValueWidth = gui::renderer::FontManager::captionFont.measureText(
             blockValueCstr, strlen(blockValueCstr), SkTextEncoding::kUTF8);
 
         canvas->drawString(blockValueCstr,
-                           leftX + width / 2 - blockValueWidth / 2,
+                           leftX + (width / 2) - (blockValueWidth / 2),
                            topY - gui::renderer::FontManager::captionFont.getSize(),
                            gui::renderer::FontManager::captionFont,
                            gui::renderer::FontManager::textFontFillPaint);

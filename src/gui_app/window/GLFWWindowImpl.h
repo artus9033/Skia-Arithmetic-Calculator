@@ -48,13 +48,13 @@ namespace gui::window {
 
             // Get primary monitor
             GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-            if (!primaryMonitor) {
+            if (primaryMonitor == nullptr) {
                 throw std::runtime_error("Failed to get primary monitor");
             }
 
             // Get video mode (which contains screen width and height)
             const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
-            if (!videoMode) {
+            if (videoMode == nullptr) {
                 throw std::runtime_error("Failed to get primary monitor's video mode");
             }
 
@@ -67,7 +67,8 @@ namespace gui::window {
 
         void postInitialize() {
             // initially invoke window->handleMouseMove
-            double mouseX, mouseY;
+            double mouseX;
+            double mouseY;
             glfwGetCursorPos(glfwWindow, &mouseX, &mouseY);
 
             this->handleMouseMove(mouseX, mouseY);
@@ -80,7 +81,7 @@ namespace gui::window {
             logger->info("GLFWWindowImpl {} has been destroyed",
                          business_logic::stringifyAddressOf(this));
 
-            if (glfwWindow) {
+            if (glfwWindow != nullptr) {
                 glfwDestroyWindow(glfwWindow);
             }
             glfwTerminate();
@@ -107,7 +108,7 @@ namespace gui::window {
          * handle
          * @return GLFWwindow* The window handle
          */
-        operator GLFWwindow*() const { return glfwWindow; }
+        explicit operator GLFWwindow*() const { return glfwWindow; }
 
        private:
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
@@ -115,7 +116,7 @@ namespace gui::window {
         // the current scope explicitly
         using business_logic::Loggable<GLFWWindowImpl<RendererImpl, Canvas>>::logger;
 
-        GLFWwindow* glfwWindow;
+        GLFWwindow* glfwWindow{};
         inline static bool initializedGLFW;
 
         std::unique_ptr<RendererImpl> renderer;
@@ -127,7 +128,7 @@ namespace gui::window {
             if (!initializedGLFW) {
                 fprintf(stdout, "Initializing GLFW\n");
 
-                if (glfwInit()) {
+                if (glfwInit() != 0) {
                     glfwSetErrorCallback([](int error, const char* description) {
                         fprintf(stderr, "GLFW Error %d: %s\n", error, description);
                     });
@@ -144,7 +145,7 @@ namespace gui::window {
         /**
          * \copydoc WindowBase::shouldClose
          */
-        bool shouldClose() const override { return glfwWindowShouldClose(glfwWindow); }
+        bool shouldClose() const override { return glfwWindowShouldClose(glfwWindow) != 0; }
 
         /**
          * @brief Initializes the GLFW window
@@ -166,7 +167,7 @@ namespace gui::window {
             logger->info(
                 "Creating window with title: {} and initial size: {}x{}", title, width, height);
 
-            if (!glfwWindow) {
+            if (glfwWindow == nullptr) {
                 glfwTerminate();
                 throw std::runtime_error("Failed to create GLFW window");
             }
@@ -179,57 +180,57 @@ namespace gui::window {
                                           handleWindowResized(glfwWindow, winWidth, winHeight);
                                       });
 
-            glfwSetKeyCallback(
-                glfwWindow,
-                [](GLFWwindow* glfwWindow,
-                   int key,
-                   [[maybe_unused]] int scancode,
-                   int action,
-                   [[maybe_unused]] int mods) {
-                    if (action == GLFW_PRESS) {
-                        if (key >= GLFW_KEY_0 && key <= GLFW_KEY_9) {
-                            WindowBase<Canvas>* window = static_cast<WindowBase<Canvas>*>(
-                                glfwGetWindowUserPointer(glfwWindow));
+            glfwSetKeyCallback(glfwWindow,
+                               [](GLFWwindow* glfwWindow,
+                                  int key,
+                                  [[maybe_unused]] int scancode,
+                                  int action,
+                                  [[maybe_unused]] int mods) {
+                                   if (action == GLFW_PRESS) {
+                                       if (key >= GLFW_KEY_0 && key <= GLFW_KEY_9) {
+                                           auto* window = static_cast<WindowBase<Canvas>*>(
+                                               glfwGetWindowUserPointer(glfwWindow));
 
-                            int number = key - GLFW_KEY_0;
-                            window->handleNumericKeyPress(number);
-                        } else if (key == GLFW_KEY_ESCAPE) {
-                            WindowBase<Canvas>* window = static_cast<WindowBase<Canvas>*>(
-                                glfwGetWindowUserPointer(glfwWindow));
+                                           int number = key - GLFW_KEY_0;
+                                           window->handleNumericKeyPress(number);
+                                       } else if (key == GLFW_KEY_ESCAPE) {
+                                           auto* window = static_cast<WindowBase<Canvas>*>(
+                                               glfwGetWindowUserPointer(glfwWindow));
 
-                            window->handleEscapeKeyPress();
-                        }
-                    }
-                });
+                                           window->handleEscapeKeyPress();
+                                       }
+                                   }
+                               });
 
             glfwSetMouseButtonCallback(
                 glfwWindow,
                 [](GLFWwindow* glfwWindow, int button, int action, [[maybe_unused]] int mods) {
                     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-                        WindowBase<Canvas>* window =
+                        auto* window =
                             static_cast<WindowBase<Canvas>*>(glfwGetWindowUserPointer(glfwWindow));
 
                         window->handleMouseDown();
                     } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-                        WindowBase<Canvas>* window =
+                        auto* window =
                             static_cast<WindowBase<Canvas>*>(glfwGetWindowUserPointer(glfwWindow));
 
                         window->handleMouseUp();
                     } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-                        WindowBase<Canvas>* window =
+                        auto* window =
                             static_cast<WindowBase<Canvas>*>(glfwGetWindowUserPointer(glfwWindow));
 
                         window->handleRightClick();
                     }
                 });
             glfwSetCursorPosCallback(glfwWindow, [](GLFWwindow* glfwWindow, double x, double y) {
-                WindowBase<Canvas>* window =
+                auto* window =
                     static_cast<WindowBase<Canvas>*>(glfwGetWindowUserPointer(glfwWindow));
 
                 window->handleMouseMove(x, y);
             });
 
-            int fbWidth, fbHeight;
+            int fbWidth;
+            int fbHeight;
             glfwGetFramebufferSize(glfwWindow, &fbWidth, &fbHeight);
 
             renderer = std::make_unique<RendererImpl>(this, this->blocksManager);
@@ -247,7 +248,8 @@ namespace gui::window {
             auto* self = static_cast<GLFWWindowImpl*>(glfwGetWindowUserPointer(window));
 
             if (self && self->renderer) {
-                int fbWidth, fbHeight;
+                int fbWidth;
+                int fbHeight;
                 glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
 
                 self->winSize = {.width = winWidth, .height = winHeight};

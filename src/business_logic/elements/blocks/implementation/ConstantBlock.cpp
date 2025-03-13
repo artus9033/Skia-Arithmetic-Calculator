@@ -8,8 +8,7 @@ namespace business_logic::elements::blocks {
         business_logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
         business_logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
         business_logic::delegate::IWindowDelegate* windowDelegate)
-        : business_logic::Loggable<ConstantBlock>(),
-          BaseBlock(cx,
+        : BaseBlock(cx,
                     cy,
                     CONSTANT_BLOCK_WIDTH,
                     CONSTANT_BLOCK_HEIGHT,
@@ -26,7 +25,7 @@ namespace business_logic::elements::blocks {
             "Edit Constant Value", "Value:", this->portValues[&outputPorts[0]]);
 
         if (maybeNewValue) {
-            auto newValue = maybeNewValue.value();
+            const auto& newValue = maybeNewValue.value();
 
             logger->info("Constant block {} value changed from '{}' to '{}'",
                          selfId,

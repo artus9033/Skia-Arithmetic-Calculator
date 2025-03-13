@@ -60,7 +60,7 @@ namespace business_logic::elements::blocks {
          */
         void updateWidthHeight(int newWidth, int newHeight);
 
-        virtual ~BaseBlock() noexcept override;
+        ~BaseBlock() noexcept override;
 
         /**
          * @brief Checks if the block is hovered over by the mouse

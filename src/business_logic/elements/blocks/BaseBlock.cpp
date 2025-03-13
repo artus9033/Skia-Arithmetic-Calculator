@@ -1,5 +1,7 @@
 #include "BaseBlock.h"
 
+#include <utility>
+
 /**
  * @brief The base classes and structs for elements
  */
@@ -23,11 +25,10 @@ namespace business_logic::elements::blocks {
           topY(0),
           bottomY(0),
           centerY(0),
-          logger(logger),
+          logger(std::move(logger)),
           newBlockChoiceDelegate(newBlockChoiceDelegate),
           blockLifecycleManagerDelegate(blockLifecycleManagerDelegate),
-          windowDelegate(windowDelegate),
-    {
+          windowDelegate(windowDelegate) {
         cacheCornerCoordinates();
     }
 
@@ -79,7 +80,7 @@ namespace business_logic::elements::blocks {
 
     std::optional<std::string> BaseBlock::getValueToRenderAboveBlock(
         [[maybe_unused]] bool isHovered) {
-        auto& outputPorts = getOutputPorts();
+        const auto& outputPorts = getOutputPorts();
 
         // if more or less than 1 output port is present, do not render the value above the block
         if (outputPorts.size() != 1) {
@@ -112,7 +113,7 @@ namespace business_logic::elements::blocks {
     std::optional<const business_logic::elements::structures::Port*> BaseBlock::checkPort(
         const business_logic::elements::structures::Port* port,
         const geometry::Point2D& point) const {
-        auto& predCoordinates = getPortCoordinates(port);
+        const auto& predCoordinates = getPortCoordinates(port);
 
         if (business_logic::geometry::isCircleHovered(point.x,
                                                       point.y,

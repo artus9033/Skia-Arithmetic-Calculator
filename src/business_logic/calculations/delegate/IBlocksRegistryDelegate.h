@@ -19,6 +19,7 @@ namespace business_logic::calculations::delegate {
 
     class IBlocksRegistryDelegate {
        public:
+        IBlocksRegistryDelegate() = default;
         virtual ~IBlocksRegistryDelegate() = default;
 
         // disable copy semantics

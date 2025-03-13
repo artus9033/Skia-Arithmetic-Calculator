@@ -9,9 +9,9 @@ namespace gui::elements {
             auto startSide = connectPortsInteraction.getStartSide();
 
             const auto* startSideBlockPtr = startSide.block;
-            auto startSidePortPtr = startSide.port;
+            const auto* startSidePortPtr = startSide.port;
 
-            if (startSideBlockPtr && startSidePortPtr) {
+            if ((startSideBlockPtr != nullptr) && (startSidePortPtr != nullptr)) {
                 auto portCoords = startSideBlockPtr->getPortCoordinates(startSidePortPtr);
 
                 canvas->drawLine(portCoords.x, portCoords.y, mouseX, mouseY, connectorPaint);
@@ -99,19 +99,19 @@ namespace gui::elements {
 
             // render the existing port connections
             for (const auto& [source, destinations] : connectionsRegistry) {
-                auto& sourceBlock = source.block;
-                auto& sourcePort = source.port;
-                auto& sourcePortCoords = sourceBlock->getPortCoordinates(sourcePort);
+                const auto& sourceBlock = source.block;
+                const auto& sourcePort = source.port;
+                const auto& sourcePortCoords = sourceBlock->getPortCoordinates(sourcePort);
 
                 for (const auto& dest : destinations) {
-                    auto& destBlock = dest.block;
-                    auto& destPort = dest.port;
+                    const auto& destBlock = dest.block;
+                    const auto& destPort = dest.port;
 
                     auto isPartOfCycle =
                         maybeGraphCycle.has_value() &&
                         maybeGraphCycle->contains({.block = destBlock, .port = destPort});
 
-                    auto& destPortCoords = destBlock->getPortCoordinates(destPort);
+                    const auto& destPortCoords = destBlock->getPortCoordinates(destPort);
 
                     canvas->drawLine(sourcePortCoords.x,
                                      sourcePortCoords.y,

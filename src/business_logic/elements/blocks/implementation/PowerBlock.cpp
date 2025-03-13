@@ -10,8 +10,7 @@ namespace business_logic::elements::blocks {
         business_logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
         business_logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
         business_logic::delegate::IWindowDelegate* windowDelegate)
-        : business_logic::Loggable<PowerBlock>(),
-          BaseBlock(cx,
+        : BaseBlock(cx,
                     cy,
                     POWER_BLOCK_WIDTH,
                     POWER_BLOCK_HEIGHT,

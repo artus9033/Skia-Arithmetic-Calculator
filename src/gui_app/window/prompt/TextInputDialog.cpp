@@ -8,15 +8,15 @@ namespace gui::window::prompt {
         business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
 
-        QString defaultValueQstr = QString::fromStdString(defaultValue);
+        QString const defaultValueQstr = QString::fromStdString(defaultValue);
 
-        bool ok;
-        QString text = QInputDialog::getText(nullptr,
-                                             QString::fromStdString(title),
-                                             QString::fromStdString(prompt),
-                                             QLineEdit::Normal,
-                                             defaultValueQstr,
-                                             &ok);
+        bool ok = false;
+        QString const text = QInputDialog::getText(nullptr,
+                                                   QString::fromStdString(title),
+                                                   QString::fromStdString(prompt),
+                                                   QLineEdit::Normal,
+                                                   defaultValueQstr,
+                                                   &ok);
 
         // restore focus to the window
         windowDelegate->focusWindow();

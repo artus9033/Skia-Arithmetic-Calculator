@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <utility>
 
 #include "business_logic/BlocksManager.h"
 #include "business_logic/elements/blocks/BlocksRegistry.h"
@@ -27,7 +28,7 @@ namespace gui::window {
        public:
         WindowBase(int width, int height, std::shared_ptr<spdlog::logger> logger)
             : blocksManager(std::make_shared<gui::elements::SkiaBlocksManagerRenderer>(this)),
-              logger(logger),
+              logger(std::move(logger)),
               winSize({.width = width, .height = height}),
               framebufferSize({.width = width, .height = height}) {}
 

@@ -46,7 +46,6 @@ namespace business_logic::elements::blocks {
             return business_logic::elements::blocks::BlockType::Multiply;
         }
 
-       protected:
         static const std::vector<business_logic::elements::structures::Port> inputPorts;
         static const std::vector<business_logic::elements::structures::Port> outputPorts;
     };

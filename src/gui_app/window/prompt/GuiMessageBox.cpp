@@ -19,9 +19,10 @@ namespace gui::window::prompt {
         business_logic::delegate::IWindowDelegate* windowDelegate) {
         ensureQApplication();
 
-        bool retVal = QMessageBox::question(nullptr,
-                                            QString::fromStdString(title),
-                                            QString::fromStdString(message)) == QMessageBox::Yes;
+        bool const retVal =
+            QMessageBox::question(nullptr,
+                                  QString::fromStdString(title),
+                                  QString::fromStdString(message)) == QMessageBox::Yes;
 
         // restore focus to the window
         windowDelegate->focusWindow();
