@@ -21,6 +21,14 @@ namespace business_logic::calculations::delegate {
        public:
         virtual ~IBlocksRegistryDelegate() = default;
 
+        // disable copy semantics
+        IBlocksRegistryDelegate(const IBlocksRegistryDelegate&) = delete;
+        IBlocksRegistryDelegate& operator=(const IBlocksRegistryDelegate&) = delete;
+
+        // disable move semantics
+        IBlocksRegistryDelegate(IBlocksRegistryDelegate&&) = delete;
+        IBlocksRegistryDelegate& operator=(IBlocksRegistryDelegate&&) = delete;
+
         /**
          * @brief Gets the blocks
          * @return The blocks

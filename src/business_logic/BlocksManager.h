@@ -27,11 +27,6 @@
 #include "logging/Loggable.h"
 
 namespace business_logic {
-    // using an empty namespace to avoid polluting the outer scope of business_logic
-    namespace {
-        namespace components = business_logic::components;
-    }  // namespace
-
     /**
      * @brief Manages the blocks in the GUI, both their rendering and interaction
      */
@@ -44,7 +39,15 @@ namespace business_logic {
        public:
         explicit BlocksManager(business_logic::delegate::IWindowDelegate* windowDelegate);
 
-        virtual ~BlocksManager() noexcept override = default;
+        ~BlocksManager() noexcept override = default;
+
+        // disable copy semantics
+        BlocksManager(const BlocksManager&) = delete;
+        BlocksManager& operator=(const BlocksManager&) = delete;
+
+        // disable move semantics
+        BlocksManager(BlocksManager&&) = delete;
+        BlocksManager& operator=(BlocksManager&&) = delete;
 
         /**
          * @brief Handles the mouse down event

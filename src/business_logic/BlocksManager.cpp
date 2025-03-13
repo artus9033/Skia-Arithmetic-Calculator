@@ -4,12 +4,10 @@ namespace business_logic {
 
     BlocksManager::BlocksManager(delegate::IWindowDelegate* windowDelegate)
         : calculations::BlocksCalculator(this),
-          business_logic::Loggable<BlocksManager>(),
           draggedBlock(nullptr),
           mouseX(0),
           mouseY(0),
           dragOffset({.width = 0, .height = 0}),
-          doubleClickCtLastMouseClickTime(),
           windowDelegate(windowDelegate) {}
 
     void BlocksManager::handleMouseDown() {
@@ -50,7 +48,7 @@ namespace business_logic {
             // single click
 
             if (maybeClickedBlock) {
-                auto clickedBlock = maybeClickedBlock.value();
+                const auto& clickedBlock = maybeClickedBlock.value();
 
                 auto maybeClickedPort =
                     clickedBlock->getPortAtCoordinates({.x = mouseX, .y = mouseY});
@@ -87,7 +85,7 @@ namespace business_logic {
     }
 
     void BlocksManager::handleMouseUp() {
-        if (draggedBlock) {
+        if (draggedBlock != nullptr) {
             logger->info("Finished dragging block {}", draggedBlock->getSelfId());
             draggedBlock->onDragEnd();
             draggedBlock = nullptr;
@@ -131,7 +129,7 @@ namespace business_logic {
         mouseX = x;
         mouseY = y;
 
-        if (draggedBlock) {
+        if (draggedBlock != nullptr) {
             draggedBlock->onDragProgress(mouseX - dragOffset.width, mouseY - dragOffset.height);
         }
     }
@@ -233,23 +231,23 @@ namespace business_logic {
 
         index = 0;  // reset for re-use
 
-        inputChoicesUiTextsRows.reserve(choices.size() / constants::MAX_INPUT_CHOICES_PER_ROW + 1);
+        inputChoicesUiTextsRows.reserve((choices.size() / constants::MAX_INPUT_CHOICES_PER_ROW) +
+                                        1);
         {
             std::vector<components::UIText> rowBuff;
             size_t number = 1;
             for (; number <= choices.size(); number++) {
-                rowBuff.push_back(components::UIText(
-                    std::to_string(number) + " " + choices[number - 1].displayName,
-                    components::UIText::Variant::Choice));
+                rowBuff.emplace_back(std::to_string(number) + " " + choices[number - 1].displayName,
+                                     components::UIText::Variant::Choice);
 
                 if (number % constants::MAX_INPUT_CHOICES_PER_ROW == 0) {
-                    inputChoicesUiTextsRows.push_back(components::UITextsRow(rowBuff));
+                    inputChoicesUiTextsRows.emplace_back(rowBuff);
                     rowBuff.clear();
                 }
             }
 
             if (!rowBuff.empty()) {
-                inputChoicesUiTextsRows.push_back(components::UITextsRow(rowBuff));
+                inputChoicesUiTextsRows.emplace_back(rowBuff);
             }
 
             logger->info("Prepared {} input choices for rendering", number);
@@ -316,7 +314,7 @@ namespace business_logic {
         }
 
         // ensure draggedBlock is not referencing the deleted block
-        if (draggedBlock && draggedBlock == block) {
+        if (draggedBlock == block) {
             draggedBlock = nullptr;
         }
     }

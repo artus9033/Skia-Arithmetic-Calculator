@@ -1,6 +1,7 @@
 #ifndef UITEXT_H
 #define UITEXT_H
 
+#include <cstdint>
 #include <string>
 
 /**
@@ -15,7 +16,7 @@ namespace business_logic::components {
         /**
          * @brief The visual display variant of the text
          */
-        enum class Variant { Headline, MenuCaption, Choice, Caption };
+        enum class Variant : std::uint8_t { Headline, MenuCaption, Choice, Caption };
 
         /**
          * @brief Constructor
@@ -25,6 +26,14 @@ namespace business_logic::components {
         UIText(const std::string& text, const Variant& variant);
 
         virtual ~UIText() = default;
+
+        // disable copy semantics
+        UIText(const UIText&) = delete;
+        UIText& operator=(const UIText&) = delete;
+
+        // disable move semantics
+        UIText(UIText&&) = delete;
+        UIText& operator=(UIText&&) = delete;
 
         /**
          * @brief Gets the text

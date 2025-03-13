@@ -67,7 +67,7 @@ clang-tidy:
     # generate build/compile_commands.json
     just configure
     # -p to use build/compile_commands.json
-    clang-tidy -format-style=file -header-filter=. -p build {{sourceFiles}}
+    clang-tidy -format-style=file -header-filter='^src/.*' -p build {{sourceFiles}}
 
 # run cppcheck
 [unix]

@@ -24,6 +24,14 @@ namespace business_logic::calculations {
 
         virtual ~BlocksCalculator() noexcept = default;
 
+        // disable copy semantics
+        BlocksCalculator(const BlocksCalculator&) = delete;
+        BlocksCalculator& operator=(const BlocksCalculator&) = delete;
+
+        // disable move semantics
+        BlocksCalculator(BlocksCalculator&&) = delete;
+        BlocksCalculator& operator=(BlocksCalculator&&) = delete;
+
         /**
          * @brief Calculates the values flowing through the graph
          * @throws `business_logic::errors::GraphCycleException` if a cycle is detected

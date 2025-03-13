@@ -31,7 +31,7 @@ namespace gui::window {
               winSize({.width = width, .height = height}),
               framebufferSize({.width = width, .height = height}) {}
 
-        virtual ~WindowBase() override = default;
+        ~WindowBase() override = default;
 
         // delete copy semantics
         WindowBase(const WindowBase&) = delete;

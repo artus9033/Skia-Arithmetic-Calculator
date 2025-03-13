@@ -14,15 +14,20 @@ namespace business_logic::elements::blocks {
         business_logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
         business_logic::delegate::IWindowDelegate* windowDelegate,
         std::shared_ptr<spdlog::logger> logger)
-        : width(blockWidth),
+        : cx(cx),
+          cy(cy),
+          width(blockWidth),
           height(blockHeight),
+          leftX(0),
+          rightX(0),
+          topY(0),
+          bottomY(0),
+          centerY(0),
           logger(logger),
           newBlockChoiceDelegate(newBlockChoiceDelegate),
           blockLifecycleManagerDelegate(blockLifecycleManagerDelegate),
-          windowDelegate(windowDelegate) {
-        this->cx = cx;
-        this->cy = cy;
-
+          windowDelegate(windowDelegate),
+    {
         cacheCornerCoordinates();
     }
 
@@ -52,8 +57,8 @@ namespace business_logic::elements::blocks {
     void BaseBlock::cacheCornerCoordinates() {
         auto windowSize = windowDelegate->getWindowSize();
 
-        leftX = std::min(std::max(0, cx - width / 2), windowSize.width - width);
-        topY = std::min(std::max(0, cy - height / 2), windowSize.height - height);
+        leftX = std::min(std::max(0, cx - (width / 2)), windowSize.width - width);
+        topY = std::min(std::max(0, cy - (height / 2)), windowSize.height - height);
 
         bottomY = topY + height;
 
@@ -69,7 +74,7 @@ namespace business_logic::elements::blocks {
             bottomY = windowSize.height;
         }
 
-        centerY = static_cast<float>(topY + bottomY) / 2.0f;
+        centerY = static_cast<float>(topY + bottomY) / 2.0F;
     }
 
     std::optional<std::string> BaseBlock::getValueToRenderAboveBlock(

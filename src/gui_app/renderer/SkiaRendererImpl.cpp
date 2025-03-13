@@ -110,13 +110,13 @@ namespace gui::renderer {
         auto sumOfHeights =
             std::accumulate(rowsHeights.begin(), rowsHeights.end(), static_cast<SkScalar>(0.0f));
 
-        auto screenCenterX = static_cast<SkScalar>(size.width) / 2.0f;
-        auto screenCenterY = static_cast<SkScalar>(size.height) / 2.0f;
+        auto screenCenterX = static_cast<SkScalar>(size.width) / 2.0F;
+        auto screenCenterY = static_cast<SkScalar>(size.height) / 2.0F;
 
         // Y start, will be updated as we render each row
         auto renderY = screenCenterY -
                        sumOfHeights * (1.0f + CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT) /
-                           2.0f;  // apply a margin
+                           2.0F;  // apply a margin
                                   // between rows
 
         int rowIndex = 0;
@@ -141,11 +141,11 @@ namespace gui::renderer {
             auto renderX =
                 screenCenterX - sumOfWidths *
                                     (1.0f + CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT) /
-                                    2.0f;  // apply a margin
+                                    2.0F;  // apply a margin
                                            // between texts
 
             auto halfMarginY =
-                rowsHeights[rowIndex] * CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT / 2.0f;
+                rowsHeights[rowIndex] * CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT / 2.0F;
 
             // apply 1st half of the margin between rows
             renderY += halfMarginY;
@@ -157,7 +157,7 @@ namespace gui::renderer {
                 auto text = uiText.getText();
 
                 auto halfMarginX = textsWidths[textIndex] *
-                                   CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT / 2.0f;
+                                   CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT / 2.0F;
                 // apply 1st half of the margin before the element
                 renderX += halfMarginX;
 

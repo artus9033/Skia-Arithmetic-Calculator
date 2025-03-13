@@ -15,5 +15,13 @@ Checks: "*,
         -cppcoreguidelines-non-private-member-variables-in-classes,
         -misc-non-private-member-variables-in-classes,
         -misc-include-cleaner,
+        -readability-identifier-length,
+        -bugprone-easily-swappable-parameters,
+        -cert-dcl59-cpp,
+        -misc-no-recursion,
+        -readability-function-cognitive-complexity,
+        -misc-header-include-cycle,
+        -cppcoreguidelines-avoid-magic-numbers,
+        -readability-magic-numbers,
+        -readability-container-data-pointer
 "
-HeaderFilterRegex: ".*"
