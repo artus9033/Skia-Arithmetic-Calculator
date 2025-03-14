@@ -27,7 +27,7 @@ namespace business_logic::constants {
     constexpr int TOTAL_PORT_RADIUS = PORT_CIRCLE_RADIUS + PORT_CIRCLE_OUTLINE_WIDTH;
     constexpr int TOTAL_PORT_RADIUS_HALF = TOTAL_PORT_RADIUS / 2;
 
-    constexpr int PORT_CIRCLE_MARGIN = 0;  // PORT_CIRCLE_RADIUS / 2
+    constexpr int PORT_CIRCLE_MARGIN = PORT_CIRCLE_RADIUS / 2;
     constexpr int PORT_CIRCLE_MARGIN_HALF = PORT_CIRCLE_MARGIN / 2;
 
     // Block-related constants

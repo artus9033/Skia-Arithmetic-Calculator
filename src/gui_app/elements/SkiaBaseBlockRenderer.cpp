@@ -1,7 +1,7 @@
 #include "SkiaBaseBlockRenderer.h"
 
 namespace gui::elements {
-
+    // NOLINTBEGIN(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
     void SkiaBaseBlockRenderer::render(business_logic::elements::blocks::BaseBlock* block,
                                        SkCanvas* canvas,
                                        int mouseX,
@@ -84,22 +84,28 @@ namespace gui::elements {
         const auto width = block->getWidth();
         auto& portCoordinates = block->getPortCoordinates();
 
-        // note: the below uses int arithmetic for performance optimization; the assumption is that
-        // business_logic::constants::PORT_CIRCLE_RADIUS is an int already, which is guarded by
-        // static_assert in the header
-        int inputCx = leftX + business_logic::constants::TOTAL_PORT_RADIUS_HALF;
-        int outputCx = rightX - business_logic::constants::TOTAL_PORT_RADIUS_HALF;
-        int inputCy = cy -
-                      (business_logic::constants::PORT_CIRCLE_RADIUS_HALF -
-                       business_logic::constants::PORT_CIRCLE_OUTLINE_WIDTH / 2) *
-                          inputPorts.size() -
-                      business_logic::constants::PORT_CIRCLE_MARGIN_HALF * (inputPorts.size() - 1);
-        int outputCy =
-            cy -
-            (business_logic::constants::PORT_CIRCLE_RADIUS_HALF -
-             business_logic::constants::PORT_CIRCLE_OUTLINE_WIDTH / 2) *
-                outputPorts.size() -
-            business_logic::constants::PORT_CIRCLE_MARGIN_HALF * (outputPorts.size() - 1);
+        // note 1: the below uses int arithmetic for performance optimization; the assumption is
+        // that the constants are for sure integers, which is guarded by static_assert in the header
+        // ---
+        // note 2: below a sum of port circle radius / 2  + port circle outline width is used
+        // instead of TOTAL_PORT_RADIUS, since leftX is already at the edge of the block; therefore
+        // the offset must be by half of the radius + the outline width
+        const auto portCircleOffsetFromBlockEdge =
+            business_logic::constants::PORT_CIRCLE_RADIUS_HALF +
+            business_logic::constants::PORT_CIRCLE_OUTLINE_WIDTH;
+        const auto inputCx = leftX + portCircleOffsetFromBlockEdge;
+        const auto outputCx = rightX - portCircleOffsetFromBlockEdge;
+
+        const auto inputsTotalHeight =
+            business_logic::constants::TOTAL_PORT_RADIUS * 2 * inputPorts.size() +
+            business_logic::constants::PORT_CIRCLE_MARGIN * (inputPorts.size() - 1);
+
+        const auto outputsTotalHeight =
+            business_logic::constants::TOTAL_PORT_RADIUS * 2 * outputPorts.size() +
+            business_logic::constants::PORT_CIRCLE_MARGIN * (outputPorts.size() - 1);
+
+        auto inputCy = static_cast<int>(std::round(cy - (inputsTotalHeight / 2.0F)));
+        auto outputCy = static_cast<int>(std::round(cy - (outputsTotalHeight / 2.0F)));
 
         // draw the block
         // NOLINTNEXTLINE(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
@@ -118,13 +124,20 @@ namespace gui::elements {
 
         // draw the block name
         canvas->drawString(blockNameCstr,
-                           leftX + (width / 2) - (blockNameWidth / 2),
+                           leftX + (static_cast<SkScalar>(width) / 2.0F) - (blockNameWidth / 2),
                            cy + (captionFontSize / 4),
                            captionFont,
                            textPaint);
 
         // draw the input ports
         for (size_t i = 0; i < inputPorts.size(); i++) {
+            // advance to the center of the circle
+            inputCy += business_logic::constants::TOTAL_PORT_RADIUS;
+
+            // update the port coordinates map after advancing
+            portCoordinates[&inputPorts[i]] = {.x = inputCx, .y = inputCy};
+
+            // check if port hovered after advancing to the center
             bool const isPortHovered =
                 isHovered && business_logic::geometry::isCircleHovered(
                                  mouseX,
@@ -160,15 +173,19 @@ namespace gui::elements {
                                    textPaint);
             }
 
-            // update the port coordinates map
-            portCoordinates[&inputPorts[i]] = {.x = inputCx, .y = inputCy};
-
-            inputCy += business_logic::constants::TOTAL_PORT_RADIUS * 2 +
+            inputCy += business_logic::constants::TOTAL_PORT_RADIUS +
                        business_logic::constants::PORT_CIRCLE_MARGIN;
         }
 
         // draw the output ports
         for (size_t i = 0; i < outputPorts.size(); i++) {
+            // advance to the center of the circle
+            outputCy += business_logic::constants::TOTAL_PORT_RADIUS;
+
+            // update the port coordinates map after advancing
+            portCoordinates[&outputPorts[i]] = {.x = outputCx, .y = outputCy};
+
+            // check if port hovered after advancing to the center
             bool const isPortHovered =
                 isHovered && business_logic::geometry::isCircleHovered(
                                  mouseX,
@@ -200,10 +217,7 @@ namespace gui::elements {
                     textPaint);
             }
 
-            // update the port coordinates map
-            portCoordinates[&outputPorts[i]] = {.x = outputCx, .y = outputCy};
-
-            outputCy += business_logic::constants::TOTAL_PORT_RADIUS * 2 +
+            outputCy += business_logic::constants::TOTAL_PORT_RADIUS +
                         business_logic::constants::PORT_CIRCLE_MARGIN;
         }
 
@@ -226,9 +240,10 @@ namespace gui::elements {
             blockValueCstr, strlen(blockValueCstr), SkTextEncoding::kUTF8);
 
         canvas->drawString(blockValueCstr,
-                           leftX + (width / 2) - (blockValueWidth / 2),
+                           leftX + (static_cast<SkScalar>(width) / 2.0F) - (blockValueWidth / 2.0F),
                            topY - gui::renderer::FontManager::captionFont.getSize(),
                            gui::renderer::FontManager::captionFont,
                            gui::renderer::FontManager::textFontFillPaint);
     }
+    // NOLINTEND(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
 }  // namespace gui::elements
