@@ -18,8 +18,6 @@
 #include <dbghelp.h>
 #include <windows.h>
 
-#include <iostream>
-
 #pragma comment(lib, "dbghelp.lib")
 #endif
 

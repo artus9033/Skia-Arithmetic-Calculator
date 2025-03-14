@@ -12,7 +12,8 @@ namespace gui::window::prompt {
      *
      * This class asserts that a QApplication is created, which is required for e.g. Qt dialogs.
      */
-    class QAppSingletonProto {
+    class
+        QAppSingletonProto {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
         static void ensureQApplication();
 

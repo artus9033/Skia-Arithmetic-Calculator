@@ -23,7 +23,8 @@ namespace gui::renderer::delegate {
      * The delegate is used to render the UI elements.
      */
     template <typename Canvas>
-    class UIRendererDelegate {
+    class
+        UIRendererDelegate {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
         virtual ~UIRendererDelegate() = default;
 

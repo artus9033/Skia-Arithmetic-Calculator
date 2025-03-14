@@ -42,7 +42,8 @@
         "dialogs",
         "fontconfig",
         "windeployqt",
-        "UNDNAME"
+        "UNDNAME",
+        "hicpp"
 	]
   }
   

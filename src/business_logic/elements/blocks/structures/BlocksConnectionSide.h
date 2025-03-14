@@ -54,7 +54,7 @@ namespace std {
         std::size_t operator()(
             const business_logic::elements::structures::BlocksConnectionSide& p) const {
             return std::hash<business_logic::elements::blocks::BaseBlock*>()(p.block) ^
-                   (std::hash<const business_logic::elements::structures::Port*>()(p.port) << 1);
+                   (std::hash<const business_logic::elements::structures::Port*>()(p.port) << 1U);
         }
     };
 }  // namespace std

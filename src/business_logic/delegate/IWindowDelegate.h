@@ -14,7 +14,8 @@ namespace business_logic::delegate {
      *
      * The delegate is used for basic window operations.
      */
-    class IWindowDelegate {
+    class
+        IWindowDelegate {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
         virtual ~IWindowDelegate() = default;
 

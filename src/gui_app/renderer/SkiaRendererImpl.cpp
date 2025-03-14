@@ -66,6 +66,7 @@ namespace gui::renderer {
         SkCanvas* canvas = skSurface->getCanvas();
         canvas->clear(colors::WINDOW_BACKGROUND_COLOR);
 
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
         reinterpret_cast<gui::elements::SkiaBlocksManagerRenderer*>(blocksManager.get())
             ->render(canvas, window->getWindowSize(), uiRendererDelegatePtr);
 
@@ -73,8 +74,8 @@ namespace gui::renderer {
     }
 
     void SkiaRendererImpl::handleWindowResized(gui::window::WindowBase<SkCanvas>* window,
-                                               double xScale,
-                                               double yScale) {
+                                               float xScale,
+                                               float yScale) {
         reinitializeSurface();
 
         skSurface->getCanvas()->scale(xScale, yScale);
@@ -82,8 +83,10 @@ namespace gui::renderer {
         auto windowSize = window->getWindowSize();
 
         FontManager::recalculateFontSizes(
-            windowSize.width / static_cast<double>(constants::FONT_ASPECT_BASE_WINDOW_WIDTH),
-            windowSize.height / static_cast<double>(constants::FONT_ASPECT_BASE_WINDOW_HEIGHT),
+            static_cast<float>(windowSize.width) /
+                static_cast<float>(constants::FONT_ASPECT_BASE_WINDOW_WIDTH),
+            static_cast<float>(windowSize.height) /
+                static_cast<float>(constants::FONT_ASPECT_BASE_WINDOW_HEIGHT),
             xScale,
             yScale);
     }

@@ -15,7 +15,8 @@ namespace business_logic::delegate {
     /**
      * @brief Delegate that manages the lifecycles of blocks
      */
-    class IBlockLifecycleManagerDelegate {
+    class
+        IBlockLifecycleManagerDelegate {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
         virtual ~IBlockLifecycleManagerDelegate() = default;
 

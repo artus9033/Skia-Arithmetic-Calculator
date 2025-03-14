@@ -33,8 +33,8 @@
 
 // below: 20% margin between texts, 10% margin between rows
 // for SkiaRendererImpl::renderCenteredTextsRows
-#define CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT 0.5f
-#define CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT 0.35f
+constexpr float CENTERED_TEXT_ROWS_MARGIN_HORIZONTAL_NORM_PERCENT = 0.5F;
+constexpr float CENTERED_TEXT_ROWS_MARGIN_VERTICAL_NORM_PERCENT = 0.35F;
 
 namespace gui::renderer {
     // using an empty namespace to avoid polluting the outer scope of gui::renderer
@@ -66,6 +66,14 @@ namespace gui::renderer {
          */
         ~SkiaRendererImpl() override;
 
+        // disable copy semantics
+        SkiaRendererImpl(const SkiaRendererImpl&) = delete;
+        SkiaRendererImpl& operator=(const SkiaRendererImpl&) = delete;
+
+        // disable move semantics
+        SkiaRendererImpl(SkiaRendererImpl&&) = delete;
+        SkiaRendererImpl& operator=(SkiaRendererImpl&&) = delete;
+
         /**
          * @brief Renders the current frame
          */
@@ -78,8 +86,8 @@ namespace gui::renderer {
          * @param yScale New window y scale
          */
         void handleWindowResized(gui::window::WindowBase<SkCanvas>* window,
-                                 double xScale,
-                                 double yScale);
+                                 float xScale,
+                                 float yScale);
 
         /**
          * \copydoc gui::renderer::delegate::UIRendererDelegate::renderCenteredTextsRows

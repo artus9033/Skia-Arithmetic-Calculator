@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
@@ -62,12 +63,19 @@ namespace gui::window {
                 std::round(videoMode->width * 0.6), std::round(videoMode->height * 0.6), title);
         };
 
+        // disable copy semantics
         GLFWWindowImpl(const GLFWWindowImpl&) = delete;
         GLFWWindowImpl& operator=(const GLFWWindowImpl&) = delete;
 
+        // disable move semantics
+        GLFWWindowImpl(GLFWWindowImpl&&) = delete;
+        GLFWWindowImpl& operator=(GLFWWindowImpl&&) = delete;
+
         void postInitialize() {
             // initially invoke window->handleMouseMove
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             double mouseX;
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             double mouseY;
             glfwGetCursorPos(glfwWindow, &mouseX, &mouseY);
 
@@ -126,14 +134,14 @@ namespace gui::window {
          */
         static void initGLFW() {
             if (!initializedGLFW) {
-                fprintf(stdout, "Initializing GLFW\n");
+                std::cout << "Initializing GLFW" << std::endl;
 
                 if (glfwInit() != 0) {
                     glfwSetErrorCallback([](int error, const char* description) {
-                        fprintf(stderr, "GLFW Error %d: %s\n", error, description);
+                        std::cerr << "GLFW Error " << error << ": " << description << std::endl;
                     });
 
-                    fprintf(stdout, "Initialized GLFW\n");
+                    std::cout << "Initialized GLFW" << std::endl;
 
                     initializedGLFW = true;
                 } else {
@@ -229,7 +237,9 @@ namespace gui::window {
                 window->handleMouseMove(x, y);
             });
 
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             int fbWidth;
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             int fbHeight;
             glfwGetFramebufferSize(glfwWindow, &fbWidth, &fbHeight);
 
@@ -248,15 +258,17 @@ namespace gui::window {
             auto* self = static_cast<GLFWWindowImpl*>(glfwGetWindowUserPointer(window));
 
             if (self && self->renderer) {
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 int fbWidth;
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 int fbHeight;
                 glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
 
                 self->winSize = {.width = winWidth, .height = winHeight};
                 self->framebufferSize = {.width = fbWidth, .height = fbHeight};
 
-                double xScale = static_cast<double>(fbWidth) / winWidth;
-                double yScale = static_cast<double>(fbHeight) / winHeight;
+                float xScale = static_cast<float>(fbWidth) / static_cast<float>(winWidth);
+                float yScale = static_cast<float>(fbHeight) / static_cast<float>(winHeight);
 
                 self->logger->info(
                     "Informing renderer {} of window size change to {}x{}, framebuffer size to "

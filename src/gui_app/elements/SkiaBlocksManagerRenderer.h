@@ -52,11 +52,6 @@ namespace gui::elements {
          * The paint for the connector lines that form a cycle
          */
         static SkPaint cycleConnectorPaint;
-
-        /**
-         * The renderer for the blocks
-         */
-        SkiaBaseBlockRenderer blockRenderer;
     };
 }  // namespace gui::elements
 

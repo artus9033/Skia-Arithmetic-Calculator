@@ -1,6 +1,7 @@
 #ifndef BUSINESS_LOGIC_ELEMENTS_BLOCKS_STRUCTURES_PORT_H
 #define BUSINESS_LOGIC_ELEMENTS_BLOCKS_STRUCTURES_PORT_H
 
+#include <cstdint>
 #include <string>
 
 namespace business_logic::elements::structures {
@@ -17,7 +18,7 @@ namespace business_logic::elements::structures {
         /**
          * @brief The type of the port
          */
-        enum class Type { INPUT, OUTPUT };
+        enum class Type : std::uint8_t { INPUT, OUTPUT };
 
         /**
          * @brief The type of the port

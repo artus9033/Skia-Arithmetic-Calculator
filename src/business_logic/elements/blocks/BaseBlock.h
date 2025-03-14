@@ -18,6 +18,10 @@
 #include "structures/Port.h"
 #include "typenames.h"
 
+namespace business_logic::delegate {
+    class IBlockLifecycleManagerDelegate;  // forward declaration to satisfy clang-tidy
+}
+
 /**
  * @brief The elements (i.e., renderable entities constituting for the calculator) module
  */
@@ -49,7 +53,9 @@ namespace business_logic::elements::blocks {
             int blockWidth,
             int blockHeight,
             business_logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate,
+            // NOLINTBEGIN
             business_logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate,
+            // NOLINTEND
             business_logic::delegate::IWindowDelegate* windowDelegate,
             std::shared_ptr<spdlog::logger> logger);
 
@@ -61,6 +67,14 @@ namespace business_logic::elements::blocks {
         void updateWidthHeight(int newWidth, int newHeight);
 
         ~BaseBlock() noexcept override;
+
+        // disable copy semantics
+        BaseBlock(const BaseBlock&) = delete;
+        BaseBlock& operator=(const BaseBlock&) = delete;
+
+        // disable move semantics
+        BaseBlock(BaseBlock&&) = delete;
+        BaseBlock& operator=(BaseBlock&&) = delete;
 
         /**
          * @brief Checks if the block is hovered over by the mouse
@@ -212,7 +226,8 @@ namespace business_logic::elements::blocks {
         }
 
         /**
-         * @brief Gets the cache of coordinates of the ports of the block; updated after rendering
+         * @brief Gets the cache of (center) coordinates of the ports of the block; updated after
+         * rendering
          */
         std::unordered_map<const structures::Port*, geometry::Point2D>& getPortCoordinates() {
             return portCoordinates;
@@ -279,10 +294,12 @@ namespace business_logic::elements::blocks {
          */
         business_logic::delegate::INewBlockChoiceDelegate* newBlockChoiceDelegate;
 
+        // NOLINTBEGIN
         /**
          * The delegate that manages the lifecycles of blocks
          */
         business_logic::delegate::IBlockLifecycleManagerDelegate* blockLifecycleManagerDelegate;
+        // NOLINTEND
 
         /**
          * The delegate of the window
@@ -295,7 +312,8 @@ namespace business_logic::elements::blocks {
         static const FloatingPoint NaN;
 
         /**
-         * @brief Caches the coordinates of the ports of the block; must be updated after rendering
+         * @brief Caches the (center) coordinates of the ports of the block; must be updated after
+         * rendering
          */
         std::unordered_map<const structures::Port*, geometry::Point2D> portCoordinates;
 
@@ -323,7 +341,7 @@ namespace std {
     template <>
     struct hash<business_logic::elements::blocks::BaseBlock> {
         std::size_t operator()(const business_logic::elements::blocks::BaseBlock& p) const {
-            return std::hash<int>()(p.cx) ^ (std::hash<int>()(p.cy) << 1);
+            return std::hash<int>()(p.cx) ^ (std::hash<int>()(p.cy) << 1U);
         }
     };
 }  // namespace std

@@ -22,11 +22,11 @@ namespace business_logic::components {
 
         virtual ~UITextsRow() = default;
 
-        UITextsRow(const UITextsRow&);
+        UITextsRow(const UITextsRow&) = default;
         UITextsRow& operator=(const UITextsRow&);
 
-        UITextsRow(UITextsRow&&);
-        UITextsRow& operator=(UITextsRow&&);
+        UITextsRow(UITextsRow&&) noexcept;
+        UITextsRow& operator=(UITextsRow&&) noexcept;
 
         /**
          * @brief Gets the texts in this row

@@ -42,6 +42,7 @@ namespace business_logic::input {
                                       business_logic::delegate::IBlockLifecycleManagerDelegate*
                                           blockLifecycleManagerDelegate) {
             if (isStarted()) {
+                // NOLINTBEGIN(bugprone-unchecked-optional-access)
                 logger->info(
                     "Interaction handling new event; it was already started, completing it");
 
@@ -115,6 +116,8 @@ namespace business_logic::input {
 
                 // reset the interaction
                 resetInteraction();
+
+                // NOLINTEND(bugprone-unchecked-optional-access)
             } else {
                 logger->info("Interaction handling new event; it was not started, starting it");
 
@@ -127,17 +130,19 @@ namespace business_logic::input {
         /**
          * @brief Gets an immutable reference to the start side
          */
-        [[maybe_unused]] const business_logic::elements::structures::BlocksConnectionSide&
+        [[maybe_unused]] const std::optional<
+            business_logic::elements::structures::BlocksConnectionSide>&
         getStartSide() const {
-            return startSide.value();
+            return startSide;
         }
 
         /**
          * @brief Gets an immutable reference to the end side
          */
-        [[maybe_unused]] const business_logic::elements::structures::BlocksConnectionSide&
+        [[maybe_unused]] const std::optional<
+            business_logic::elements::structures::BlocksConnectionSide>&
         getEndSide() const {
-            return endSide.value();
+            return endSide;
         }
 
         /**

@@ -74,11 +74,11 @@ namespace gui::renderer {
         return font;
     }();
 
-    void FontManager::recalculateFontSizes(double aspectX,
-                                           double aspectY,
-                                           double xScale,
-                                           double yScale) {
-        double const scaling = std::min(xScale, yScale) * std::min(aspectX, aspectY);
+    void FontManager::recalculateFontSizes(float aspectX,
+                                           float aspectY,
+                                           float xScale,
+                                           float yScale) {
+        const float scaling = std::min(xScale, yScale) * std::min(aspectX, aspectY);
 
         menuHeadlineFont.setSize(gui::constants::MENU_HEADLINE_FONT_SIZE_BASE * scaling);
         menuCaptionFont.setSize(gui::constants::MENU_CAPTION_FONT_SIZE_BASE * scaling);

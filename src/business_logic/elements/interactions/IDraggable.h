@@ -9,7 +9,8 @@ namespace business_logic::elements::interactions {
     /**
      * @brief Interface for elements that can be dragged
      */
-    class IDraggable {
+    class
+        IDraggable {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
         virtual ~IDraggable() = default;
 

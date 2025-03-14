@@ -7,7 +7,8 @@ namespace business_logic::delegate {
     /**
      * @brief Delegate that is notified when a new block is chosen to be added to the canvas
      */
-    class INewBlockChoiceDelegate {
+    class
+        INewBlockChoiceDelegate {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
         virtual ~INewBlockChoiceDelegate() = default;
 

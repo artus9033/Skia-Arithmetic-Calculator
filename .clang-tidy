@@ -23,5 +23,9 @@ Checks: "*,
         -misc-header-include-cycle,
         -cppcoreguidelines-avoid-magic-numbers,
         -readability-magic-numbers,
-        -readability-container-data-pointer
+        -readability-container-data-pointer,
+        -cert-err58-cpp,
+        -misc-unused-alias-decls,
+        -cppcoreguidelines-interfaces-global-init,
+        -performance-avoid-endl
 "

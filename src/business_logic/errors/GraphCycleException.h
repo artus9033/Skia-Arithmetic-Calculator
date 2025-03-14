@@ -22,6 +22,14 @@ namespace business_logic::errors {
 
         ~GraphCycleException() noexcept override = default;
 
+        // disable copy semantics
+        GraphCycleException(const GraphCycleException&) = delete;
+        GraphCycleException& operator=(const GraphCycleException&) = delete;
+
+        // disable move semantics
+        GraphCycleException(GraphCycleException&&) = delete;
+        GraphCycleException& operator=(GraphCycleException&&) = delete;
+
         /**
          * @brief Gets the cycle path
          * @return The cycle path

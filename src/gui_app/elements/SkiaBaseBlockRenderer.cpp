@@ -97,12 +97,14 @@ namespace gui::elements {
         const auto outputCx = rightX - portCircleOffsetFromBlockEdge;
 
         const auto inputsTotalHeight =
-            business_logic::constants::TOTAL_PORT_RADIUS * 2 * inputPorts.size() +
-            business_logic::constants::PORT_CIRCLE_MARGIN * (inputPorts.size() - 1);
+            // NOLINTNEXTLINE(bugprone-implicit-widening-of-multiplication-result)
+            (business_logic::constants::TOTAL_PORT_RADIUS * 2 * inputPorts.size()) +
+            (business_logic::constants::PORT_CIRCLE_MARGIN * (inputPorts.size() - 1));
 
         const auto outputsTotalHeight =
-            business_logic::constants::TOTAL_PORT_RADIUS * 2 * outputPorts.size() +
-            business_logic::constants::PORT_CIRCLE_MARGIN * (outputPorts.size() - 1);
+            // NOLINTNEXTLINE(bugprone-implicit-widening-of-multiplication-result)
+            (business_logic::constants::TOTAL_PORT_RADIUS * 2 * outputPorts.size()) +
+            (business_logic::constants::PORT_CIRCLE_MARGIN * (outputPorts.size() - 1));
 
         auto inputCy = static_cast<int>(std::round(cy - (inputsTotalHeight / 2.0F)));
         auto outputCy = static_cast<int>(std::round(cy - (outputsTotalHeight / 2.0F)));

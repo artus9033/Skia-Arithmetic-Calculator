@@ -28,7 +28,16 @@ namespace gui::elements {
      */
     class SkiaBaseBlockRenderer {
        public:
-        virtual ~SkiaBaseBlockRenderer() = default;
+        SkiaBaseBlockRenderer() = delete;
+        virtual ~SkiaBaseBlockRenderer() = delete;
+
+        // disable copy semantics
+        SkiaBaseBlockRenderer(const SkiaBaseBlockRenderer&) = delete;
+        SkiaBaseBlockRenderer& operator=(const SkiaBaseBlockRenderer&) = delete;
+
+        // disable move semantics
+        SkiaBaseBlockRenderer(SkiaBaseBlockRenderer&&) = delete;
+        SkiaBaseBlockRenderer& operator=(SkiaBaseBlockRenderer&&) = delete;
 
         /**
          * @brief Renders a block on an SkCanvas
@@ -47,6 +56,7 @@ namespace gui::elements {
                            int mouseY,
                            bool isHovered);
 
+       private:
         /**
          * @brief Renders the value above the block
          *
@@ -54,8 +64,6 @@ namespace gui::elements {
          * @param canvas The canvas to render the value above the block on
          * @param isHovered Whether the block is hovered
          * @param blockValue The value to render above the block
-         *
-         * @see business_logic::elements::blocks::BaseBlock::renderValueAboveBlock
          */
         static void renderValueAboveBlock(const business_logic::elements::blocks::BaseBlock* block,
                                           SkCanvas* canvas,

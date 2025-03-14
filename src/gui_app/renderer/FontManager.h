@@ -83,10 +83,7 @@ namespace gui::renderer {
          * @param xScale The scale factor for the X axis
          * @param yScale The scale factor for the Y axis
          */
-        static void recalculateFontSizes(double aspectX,
-                                         double aspectY,
-                                         double xScale,
-                                         double yScale);
+        static void recalculateFontSizes(float aspectX, float aspectY, float xScale, float yScale);
 
         /**
          * @brief Gets the font for the given variant

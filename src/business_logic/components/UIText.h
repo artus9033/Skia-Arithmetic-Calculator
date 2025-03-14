@@ -27,11 +27,11 @@ namespace business_logic::components {
 
         virtual ~UIText() = default;
 
-        UIText(const UIText&);
+        UIText(const UIText&) = default;
         UIText& operator=(const UIText&);
 
-        UIText(UIText&&);
-        UIText& operator=(UIText&&);
+        UIText(UIText&&) noexcept;
+        UIText& operator=(UIText&&) noexcept;
 
         /**
          * @brief Gets the text

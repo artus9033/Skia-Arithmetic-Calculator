@@ -6,8 +6,6 @@ namespace business_logic::components {
         std::copy(texts.begin(), texts.end(), std::back_inserter(this->texts));
     }
 
-    UITextsRow::UITextsRow(const UITextsRow& other) : texts(other.texts) {}
-
     UITextsRow& UITextsRow::operator=(const UITextsRow& other) {
         if (this != &other) {
             this->texts = other.texts;
@@ -16,9 +14,9 @@ namespace business_logic::components {
         return *this;
     }
 
-    UITextsRow::UITextsRow(UITextsRow&& other) : texts(std::move(other.texts)) {}
+    UITextsRow::UITextsRow(UITextsRow&& other) noexcept : texts(std::move(other.texts)) {}
 
-    UITextsRow& UITextsRow::operator=(UITextsRow&& other) {
+    UITextsRow& UITextsRow::operator=(UITextsRow&& other) noexcept {
         if (this != &other) {
             this->texts = std::move(other.texts);
         }

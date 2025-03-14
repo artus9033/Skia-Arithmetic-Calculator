@@ -1,12 +1,14 @@
 #include "SkiaBlocksManagerRenderer.h"
 
 namespace gui::elements {
+    // NOLINTBEGIN(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
     void SkiaBlocksManagerRenderer::maybeRenderDraggedLine(SkCanvas* canvas) {
         // make sure the interaction still references valid objects
         connectPortsInteraction.sanitize();
 
         if (connectPortsInteraction.isStarted()) {
-            auto startSide = connectPortsInteraction.getStartSide();
+            // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+            auto startSide = connectPortsInteraction.getStartSide().value();
 
             const auto* startSideBlockPtr = startSide.block;
             const auto* startSidePortPtr = startSide.port;
@@ -18,6 +20,7 @@ namespace gui::elements {
             }
         }
     }
+    // NOLINTEND(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
 
     SkPaint SkiaBlocksManagerRenderer::connectorPaint = []() {
         SkPaint paint;
@@ -39,6 +42,7 @@ namespace gui::elements {
         return paint;
     }();
 
+    // NOLINTBEGIN(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
     void SkiaBlocksManagerRenderer::render(
         SkCanvas* canvas,
         const business_logic::geometry::Size2D& size,
@@ -94,7 +98,7 @@ namespace gui::elements {
             for (const auto& block : blocks) {
                 auto isFocused = maybeHoveredBlock.has_value() && (maybeHoveredBlock == block);
 
-                blockRenderer.render(block.get(), canvas, mouseX, mouseY, isFocused);
+                SkiaBaseBlockRenderer::render(block.get(), canvas, mouseX, mouseY, isFocused);
             }
 
             // render the existing port connections
@@ -125,4 +129,5 @@ namespace gui::elements {
             maybeRenderDraggedLine(canvas);
         }
     }
+    // NOLINTEND(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
 }  // namespace gui::elements

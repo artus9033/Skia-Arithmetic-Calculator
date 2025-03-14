@@ -6,7 +6,8 @@ namespace business_logic::elements::interactions {
     /**
      * @brief Interface for elements that can be double-clicked
      */
-    class IDoubleClickable {
+    class
+        IDoubleClickable {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
         virtual ~IDoubleClickable() = default;
 
