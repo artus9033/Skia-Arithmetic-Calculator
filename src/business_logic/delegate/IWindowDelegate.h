@@ -1,6 +1,8 @@
 #ifndef BUSINESS_LOGIC_WINDOW_DELEGATE_I_WINDOW_DELEGATE_H
 #define BUSINESS_LOGIC_WINDOW_DELEGATE_I_WINDOW_DELEGATE_H
 
+#include <optional>
+
 #include "geometry/Size2D.h"
 #include "typenames.h"
 

@@ -16,20 +16,19 @@ jobs:
       - name: Environment basic setup
         uses: ./.github/actions/basic-setup
         with:
-          cache-skia: "false" # this would cache the empty "touched" skia dir
+          cache-skia: "true"
 
       - name: Check spelling
         run: just check-spelling
 
       - name: Install tools
+        # since LLVM v18 (default for Ubuntu 24) has a bug (https://github.com/llvm/llvm-project/issues/79505#issuecomment-2726487324), v19 is enforced directly
         run: |
           sudo apt update
-          sudo apt install -y clang-format clang-tidy cppcheck
-
-      - name: Trick CMake into thinking Skia is already built
-        run: |
-          mkdir -p build/_deps/skia/out/Release
-          touch build/_deps/skia/out/Release/libskia.a
+          sudo apt install -y clang-format cppcheck
+          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+          sudo rm /usr/bin/clang-tidy
+          sudo ln -s /usr/bin/clang-tidy-19 /usr/bin/clang-tidy
 
       - name: Run static code analysis with cppcheck
         run: just cppcheck
