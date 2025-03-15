@@ -93,33 +93,19 @@ else()
     message("\nSkia already cloned to ${SKIA_CLONE_PATH}")
 endif()
 
-# if debug
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(SKIA_OUT_DIR "Debug")
-else()
-    set(SKIA_OUT_DIR "Release")
-endif()
-
 if(UNIX)
-    set(SKIA_SHARED_LIB ${SKIA_CLONE_PATH}/out/${SKIA_OUT_DIR}/libskia.a)
+    set(SKIA_SHARED_LIB ${SKIA_CLONE_PATH}/out/Release/libskia.a)
 else()
-    set(SKIA_SHARED_LIB ${SKIA_CLONE_PATH}/out/${SKIA_OUT_DIR}/skia.lib)
+    set(SKIA_SHARED_LIB ${SKIA_CLONE_PATH}/out/Release/skia.lib)
 endif()
 
 if(NOT EXISTS ${SKIA_SHARED_LIB})
     message("\n(!) ${SKIA_SHARED_LIB} does not exist -> will prepare & build Skia")
 
     # configure GN build
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(SKIA_BUILD_ARGS "is_official_build=false"
-            "is_debug=true"
-            "extra_cflags=[\"-MTd\"]"
-        )
-    else()
-        set(SKIA_BUILD_ARGS "is_official_build=true"
-            "is_debug=false"
-        )
-    endif()
+    set(SKIA_BUILD_ARGS "is_official_build=true"
+        "is_debug=false"
+    )
 
     list(APPEND SKIA_BUILD_ARGS "is_component_build=false skia_use_gl=true skia_enable_gpu=true")
 
@@ -175,7 +161,7 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
     message("\nConfiguring Skia build with gn, this may take a while...")
     message("GN flags: ${SKIA_BUILD_ARGS_STR}")
     execute_process(
-        COMMAND bin/gn gen out/${SKIA_OUT_DIR} --args=${SKIA_BUILD_ARGS_STR}
+        COMMAND bin/gn gen out/Release --args=${SKIA_BUILD_ARGS_STR}
         WORKING_DIRECTORY ${SKIA_CLONE_PATH}
         ERROR_VARIABLE cmdError
         OUTPUT_VARIABLE cmdOutput
@@ -193,7 +179,7 @@ if(NOT EXISTS ${SKIA_SHARED_LIB})
     # build Skia
     message("\nBuilding Skia with ninja, this may take a while...")
     execute_process(
-        COMMAND ninja -C out/${SKIA_OUT_DIR}
+        COMMAND ninja -C out/Release
         WORKING_DIRECTORY ${SKIA_CLONE_PATH}
         ERROR_VARIABLE cmdError
         OUTPUT_VARIABLE cmdOutput
@@ -216,7 +202,7 @@ add_library(skia STATIC IMPORTED GLOBAL)
 
 if(WIN32)
     set_target_properties(skia PROPERTIES
-        IMPORTED_LOCATION ${SKIA_CLONE_PATH}/out/${SKIA_OUT_DIR}/skia.lib
+        IMPORTED_LOCATION ${SKIA_CLONE_PATH}/out/Release/skia.lib
     )
 else()
     set_target_properties(skia PROPERTIES
