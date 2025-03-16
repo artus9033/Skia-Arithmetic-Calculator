@@ -1,9 +1,10 @@
 #include "QAppSingletonProto.h"
 
 namespace gui::window::prompt {
-    void QAppSingletonProto::ensureQApplication() {
-        if (QApplication::instance() == nullptr) {
-            throw std::runtime_error("QApplication instance has not been set!");
-        }
+    std::unique_ptr<QApplication> QAppSingletonProto::createTempQApplication() {
+        int fakeArgc = 0;
+        char** fakeArgv = nullptr;
+
+        return std::make_unique<QApplication>(fakeArgc, fakeArgv);
     }
 }  // namespace gui::window::prompt

@@ -6,16 +6,14 @@ namespace gui::window::prompt {
         const std::string& prompt,
         const std::string& defaultValue,
         business_logic::delegate::IWindowDelegate* windowDelegate) {
-        ensureQApplication();
-
-        QString const defaultValueQstr = QString::fromStdString(defaultValue);
+        const auto app = createTempQApplication();
 
         bool ok = false;
-        QString const text = QInputDialog::getText(nullptr,
+        const QString text = QInputDialog::getText(nullptr,
                                                    QString::fromStdString(title),
                                                    QString::fromStdString(prompt),
                                                    QLineEdit::Normal,
-                                                   defaultValueQstr,
+                                                   QString::fromStdString(defaultValue),
                                                    &ok);
 
         // restore focus to the window
@@ -26,6 +24,8 @@ namespace gui::window::prompt {
         } else {
             return std::nullopt;
         }
+
+        return std::nullopt;
     }
 
     std::optional<FloatingPoint> TextInputDialog::promptForFloatingPointInput(
@@ -33,8 +33,6 @@ namespace gui::window::prompt {
         const std::string& prompt,
         const std::optional<FloatingPoint>& defaultValue,
         business_logic::delegate::IWindowDelegate* windowDelegate) {
-        ensureQApplication();
-
         auto input = promptForTextInput(
             title, prompt, defaultValue ? (defaultValue.value()).str() : "", windowDelegate);
 

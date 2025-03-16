@@ -57,8 +57,8 @@ namespace business_logic {
 
             // extract just the class name to get rid of the namespace & possible template arguments
             // using regex; e.g.
-            // 'business_logic::window::GLFWWindowImpl<business_logic::renderer::SkiaRendererImpl>'
-            // -> 'GLFWWindowImpl'
+            // 'business_logic::window::GLFWQtWindowImpl<business_logic::renderer::SkiaRendererImpl>'
+            // -> 'GLFWQtWindowImpl'
             const std::regex regex(R"([^:<>]+(?=<|$))");
             std::cmatch match;
             if (std::regex_search(name, match, regex)) {

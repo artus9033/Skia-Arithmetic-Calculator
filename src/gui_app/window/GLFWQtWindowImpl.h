@@ -15,23 +15,25 @@
 
 namespace gui::window {
     /**
-     * @brief Class responsible for managing the GLFW window and its lifecycle
+     * @brief Class responsible for managing the GLFW main window, any Qt dialogs / modals and their
+     * lifecycle
      *
      * @tparam RendererImpl The renderer implementation type
      * @tparam Canvas The canvas type
      */
     template <typename RendererImpl, typename Canvas>
-    class GLFWWindowImpl : protected business_logic::Loggable<GLFWWindowImpl<RendererImpl, Canvas>>,
-                           public window::WindowBase<Canvas> {
+    class GLFWQtWindowImpl
+        : protected business_logic::Loggable<GLFWQtWindowImpl<RendererImpl, Canvas>>,
+          public window::WindowBase<Canvas> {
        public:
         /**
-         * @brief Constructs a new GLFWWindowImpl
+         * @brief Constructs a new GLFWQtWindowImpl
          * @param width Initial window width
          * @param height Initial window height
-         * @param title GLFWWindowImpl title
+         * @param title GLFWQtWindowImpl title
          */
-        explicit GLFWWindowImpl(int width, int height, const char* title)
-            : business_logic::Loggable<GLFWWindowImpl<RendererImpl, Canvas>>(),
+        explicit GLFWQtWindowImpl(int width, int height, const char* title)
+            : business_logic::Loggable<GLFWQtWindowImpl<RendererImpl, Canvas>>(),
               window::WindowBase<Canvas>(width, height, logger) {
             initGLFW();
 
@@ -41,10 +43,10 @@ namespace gui::window {
         }
 
         /**
-         * @brief Constructs a new GLFWWindowImpl that takes the full size of the primary monitor
-         * @param title GLFWWindowImpl title
+         * @brief Constructs a new GLFWQtWindowImpl that takes the full size of the primary monitor
+         * @param title GLFWQtWindowImpl title
          */
-        static GLFWWindowImpl<RendererImpl, Canvas> MakeFullscreen(const char* title) {
+        static GLFWQtWindowImpl<RendererImpl, Canvas> MakeFullscreen(const char* title) {
             initGLFW();
 
             // Get primary monitor
@@ -59,17 +61,17 @@ namespace gui::window {
                 throw std::runtime_error("Failed to get primary monitor's video mode");
             }
 
-            return GLFWWindowImpl<RendererImpl, Canvas>(
+            return GLFWQtWindowImpl<RendererImpl, Canvas>(
                 std::round(videoMode->width * 0.6), std::round(videoMode->height * 0.6), title);
         };
 
         // disable copy semantics
-        GLFWWindowImpl(const GLFWWindowImpl&) = delete;
-        GLFWWindowImpl& operator=(const GLFWWindowImpl&) = delete;
+        GLFWQtWindowImpl(const GLFWQtWindowImpl&) = delete;
+        GLFWQtWindowImpl& operator=(const GLFWQtWindowImpl&) = delete;
 
         // disable move semantics
-        GLFWWindowImpl(GLFWWindowImpl&&) = delete;
-        GLFWWindowImpl& operator=(GLFWWindowImpl&&) = delete;
+        GLFWQtWindowImpl(GLFWQtWindowImpl&&) = delete;
+        GLFWQtWindowImpl& operator=(GLFWQtWindowImpl&&) = delete;
 
         void postInitialize() {
             // initially invoke window->handleMouseMove
@@ -85,14 +87,17 @@ namespace gui::window {
         /**
          * @brief Destructor that cleans up the GLFW window and terminates GLFW
          */
-        ~GLFWWindowImpl() override {
-            logger->info("GLFWWindowImpl {} has been destroyed",
+        ~GLFWQtWindowImpl() override {
+            logger->info("GLFWQtWindowImpl {} is being destroyed",
                          business_logic::stringifyAddressOf(this));
 
             if (glfwWindow != nullptr) {
                 glfwDestroyWindow(glfwWindow);
             }
             glfwTerminate();
+
+            logger->info("GLFWQtWindowImpl {} has been destroyed",
+                         business_logic::stringifyAddressOf(this));
         }
 
         /**
@@ -112,8 +117,8 @@ namespace gui::window {
         };
 
         /**
-         * @brief Allows conversion of GLFWWindowImpl instance that gets the underlying GLFW window
-         * handle
+         * @brief Allows conversion of GLFWQtWindowImpl instance that gets the underlying GLFW
+         * window handle
          * @return GLFWwindow* The window handle
          */
         explicit operator GLFWwindow*() const { return glfwWindow; }
@@ -122,7 +127,7 @@ namespace gui::window {
         // since Loggable is a template base class, the compiler does not see Logger::logger in the
         // current scope; so as not to use this->logger explicitly each time, the below brings it to
         // the current scope explicitly
-        using business_logic::Loggable<GLFWWindowImpl<RendererImpl, Canvas>>::logger;
+        using business_logic::Loggable<GLFWQtWindowImpl<RendererImpl, Canvas>>::logger;
 
         GLFWwindow* glfwWindow{};
         inline static bool initializedGLFW;
@@ -255,7 +260,7 @@ namespace gui::window {
          * @param winHeight The height of the window
          */
         static void handleWindowResized(GLFWwindow* window, int winWidth, int winHeight) {
-            auto* self = static_cast<GLFWWindowImpl*>(glfwGetWindowUserPointer(window));
+            auto* self = static_cast<GLFWQtWindowImpl*>(glfwGetWindowUserPointer(window));
 
             if (self && self->renderer) {
                 // NOLINTNEXTLINE(cppcoreguidelines-init-variables)

@@ -3,7 +3,7 @@
 
 #include <skia/include/core/SkCanvas.h>
 
-#include "GLFWWindowImpl.h"
+#include "GLFWQtWindowImpl.h"
 #include "renderer/SkiaRendererImpl.h"
 
 #endif  // SKIA_GLFW_WINDOW_IMPL_H

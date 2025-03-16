@@ -7,7 +7,7 @@
 #include <stdexcept>
 
 #include "renderer/SkiaRendererImpl.h"
-#include "window/GLFWWindowImpl.h"
+#include "window/GLFWQtWindowImpl.h"
 
 /**
  * @brief The actual GUI / renderer implementation counterpart

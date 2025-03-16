@@ -2,20 +2,24 @@
 #define QAPP_HOLDER_PROTO_H
 
 #include <QApplication>
+#include <memory>
 
 /**
  * @brief GUI user prompt utilities
  */
 namespace gui::window::prompt {
     /**
-     * @brief An internal helper class for ensuring a QApplication is created
-     *
-     * This class asserts that a QApplication is created, which is required for e.g. Qt dialogs.
+     * @brief An internal helper class for handling QApplication
      */
     class
         QAppSingletonProto {  // NOLINT(cppcoreguidelines-special-member-functions,hicpp-special-member-functions)
        public:
-        static void ensureQApplication();
+        /**
+         * @brief Create a temporary QApplication instance
+         *
+         * @return The temporary QApplication
+         */
+        static std::unique_ptr<QApplication> createTempQApplication();
 
         virtual ~QAppSingletonProto() = default;
     };

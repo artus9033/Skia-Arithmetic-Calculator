@@ -4,7 +4,7 @@ namespace gui::window::prompt {
     void GuiMessageBox::showWarning(const std::string& title,
                                     const std::string& message,
                                     business_logic::delegate::IWindowDelegate* windowDelegate) {
-        ensureQApplication();
+        const auto app = createTempQApplication();
 
         QMessageBox::warning(
             nullptr, QString::fromStdString(title), QString::fromStdString(message));
@@ -17,7 +17,7 @@ namespace gui::window::prompt {
         const std::string& title,
         const std::string& message,
         business_logic::delegate::IWindowDelegate* windowDelegate) {
-        ensureQApplication();
+        const auto app = createTempQApplication();
 
         bool const retVal =
             QMessageBox::question(nullptr,
