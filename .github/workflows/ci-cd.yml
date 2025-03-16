@@ -36,8 +36,9 @@ jobs:
       - name: Check clang-format
         run: just check-clang-format
 
-      # - name: Run clang-tidy
-      #   run: just clang-tidy
+      - name: Run clang-tidy
+        if: github.ref == 'refs/heads/main' # spare time, run this only as part of non-release workflows
+        run: just clang-tidy
 
   cd-build-artifacts:
     needs: ci-checks
