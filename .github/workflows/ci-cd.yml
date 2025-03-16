@@ -53,6 +53,9 @@ jobs:
 
     name: Build artifacts (CD)
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -75,7 +78,7 @@ jobs:
         id: upload-gui-app-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gui_app-${{ matrix.os }}
+          name: gui_app-${{ runner.os }}
           path: build/bin/*
 
       - name: Upload documentation files as artifact
@@ -85,11 +88,21 @@ jobs:
         with:
           path: build/docs/html/
 
+      - name: Zip binary (Linux and macOS)
+        if: runner.os != 'Windows'
+        run: |
+          zip -r bundle-${{ runner.os }}.zip build/bin/
+
+      - name: Zip binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Compress-Archive -Path build\bin\* -DestinationPath bundle-${{ runner.os }}.zip
+
       - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: build/bin/*
+          files: bundle-${{ runner.os }}.zip
 
   cd-deploy-pages:
     needs: cd-build-artifacts
