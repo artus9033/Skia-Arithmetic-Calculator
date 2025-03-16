@@ -3,7 +3,7 @@ enable_testing()
 
 # collect all test source files
 file(GLOB_RECURSE TEST_SOURCES 
-    "src/*.cpp"
+    "*.cpp"
 )
 
 # create test executable
@@ -12,7 +12,10 @@ add_executable(run_tests ${TEST_SOURCES})
 # set include directories
 target_include_directories(run_tests
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/mocks
+        ${spdlog_SOURCE_DIR}/include
 )
 
 # discover tests
@@ -25,6 +28,7 @@ target_link_libraries(run_tests
         business_logic
         GTest::gtest
         GTest::gtest_main
+        GTest::gmock
 )
 
 # configure output directory
