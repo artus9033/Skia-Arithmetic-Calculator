@@ -35,29 +35,36 @@ Business logic is implemented as a static library, and the GUI is implemented as
 
 ## Prerequisites
 
+Development environment - general requirements:
+
 - CMake 3.20 or higher
-- clang & clang++
 - Git
 - Python 3.x (required by Skia build scripts)
 - Doxygen installed
-- Qt6 installed (MacOS & Linux only, **needed both for runtime and build time**)
+- Qt6 development packages
 - `clang` and `clang++` installed (**especially Windows**: `winget install -e --id LLVM.LLVM`)
 - `lldb` (if debugging)
 
-Platform-specific requirements:
+Development environment - platform-specific requirements:
 
 - harfbuzz installed (MacOS only)
 - X11, XCB & XKB development libraries installed (Linux only)
 - fontconfig installed (Linux only) - required for font loading
 - (**Windows only**) configured the path to Qt installation's `cmake` directory in [`config-windows.cmake`](/config-windows.cmake) that can be copied over from [`config-windows.cmake.example`](/config-windows.cmake.example)
+- Qt6 (MacOS & Linux only, **needed both for runtime and build time**)
+
+Runtime environment requirements:
+
+- X11 & XCB installed (Linux only) or Wayland with `qt6-wayland` (Linux only)
+- Qt6 (MacOS & Linux only)
+- fontconfig (Linux only)
+- GLFW lib, version 3 (MacOS & Linux only, Windows build is `winqtdeploy`ed with the DLL)
 
 The project automatically downloads and builds all other dependencies:
 
 - GLFW
 - Skia
 - Google Test
-
-For font rendering
 
 ## Quickstart
 
@@ -214,7 +221,7 @@ The project contains a GitHub Actions [workflow](/.github/workflows/ci-cd.yml) t
 
 ### CI
 
-The continuous integration job checks the spelling with CSpell, Runs cppcheck on the files, runs clang-format ~~and clang-tidy~~. The runner used is `ubuntu-latest`.
+The continuous integration job checks the spelling with CSpell, Runs cppcheck on the files, runs clang-format and clang-tidy. The runner used is `ubuntu-latest`.
 
 ### CD
 
