@@ -358,6 +358,10 @@ namespace business_logic {
                 logger->info("User confirmed removal of block '{}'", block->getSelfId());
 
                 blocks.erase(std::remove(blocks.begin(), blocks.end(), block), blocks.end());
+
+                if (connectPortsInteraction.isStarted()) {
+                    connectPortsInteraction.resetInteraction();
+                }
             } else {
                 logger->info("User cancelled removal of block '{}'", block->getSelfId());
             }
